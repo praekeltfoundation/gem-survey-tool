@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="col-sm-2">
+      <hr>
+
+      <ul class="nav nav-stacked">
+        <li><a href="javascript:;">Contact Groups</a></li>
+        <li><a href="create-contact-group">Create New Group</a></li>
+      </ul>
+
+      <hr>
+
+  	</div>
+    <div class="col-sm-6">
+    <div class="col-md-12">
+      <hr>
+    <strong>Contact Groups</strong>
+      <hr>
+    </div>
+<div class="col-md-12">
+      <table class="table table-striped">
+        <thead>
+    <tr>
+        <th>Name</th>
+        <th>Created By</th>
+        <th>Created At</th>
+        <th>Rules</th>
+    </tr>
+    </thead>
+    {% for contactgroup in contactgroups %}
+    <tr>
+        <td>{{ contactgroup.name }}</td>
+        <td>{{ contactgroup.created_by.username }}</td>
+        <td>{{ contactgroup.created_at }}</td>
+        <td>{{ contactgroup.rules }}</td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+    </div>
+{% endblock %}
+

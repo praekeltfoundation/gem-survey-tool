@@ -2,6 +2,8 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.views.generic.base import TemplateView
+from models import ContactGroup
 
 
 def user_login(request):
@@ -43,3 +45,29 @@ def user_login(request):
         # No context variables to pass to the template system, hence the
         # blank dictionary object...
         return render_to_response('login.html', {}, context)
+
+
+class ContactGroupsView(TemplateView):
+
+    template_name = "contact-groups.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ContactGroupsView, self).get_context_data(**kwargs)
+
+        contactgroups = ContactGroup.objects.all()
+        context['contactgroups'] = contactgroups
+
+        return context
+
+
+class CreateContactGroupsView(TemplateView):
+
+    template_name = "createcontactgroup.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateContactGroupsView, self).get_context_data(**kwargs)
+
+        contactgroups = ContactGroup.objects.all()
+        context['contactgroups'] = contactgroups
+
+        return context

@@ -1,12 +1,23 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic.base import TemplateView
-from views import user_login
+from django.contrib.auth.decorators import login_required
+from views import user_login, ContactGroupsView, CreateContactGroupsView
 
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^$', TemplateView.as_view(template_name='home.html')),
+    url(r'^$', login_required(TemplateView.as_view(template_name='base.html'))),
+
+    url(r'^t/$', (TemplateView.as_view(template_name='t.html'))),
+
+    url(r'^contact-groups/$', ContactGroupsView.as_view(),
+        name='contactgroups'),
+
+    url(r'^contact-groups/create-contact-group/$', CreateContactGroupsView.as_view(),
+        name='createcontactgroup'),
+
+    url(r'^service-dashboard/$', (TemplateView.as_view(template_name='servicedashboard.html')),name='servicedashboard'),
 
     url(r'^admin/', include(admin.site.urls)),
 
