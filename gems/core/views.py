@@ -3,7 +3,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic.base import TemplateView
-from models import ContactGroup
+from models import ContactGroup, SurveyResult, Survey, Contact
+import json
 
 
 def user_login(request):
@@ -71,3 +72,42 @@ class CreateContactGroupsView(TemplateView):
         context['contactgroups'] = contactgroups
 
         return context
+
+
+def save_data(request):
+
+    if(request.method == 'POST'):
+        data=json.loads(request.body)
+        answers = None
+        contact_msisdn = None
+        if data.has_key('user'):
+            user = data['user']
+            if user.has_key('answers'):
+                answers = user["answers"]
+        if data.has_key('contact'):
+            contact = data['contact']
+            if contact.has_key('msisdn'):
+                contact_msisdn = contact['msisdn']
+
+        # we have data
+        if answers and contact_msisdn:
+            try:
+                # fetch/create the survey
+                # fix this
+                survey = Survey.objects.get_or_create(survey_id='1', name='Test', defaults={'survey_id': 1, 'name': 'Test'})
+                survey.save()
+                # add the contact
+                contact = Contact.objects.get_or_create(msisdn=contact_msisdn, defaults={'age': 18, 'gender': 'F'})
+                contact.save()
+                # add the survey result
+                survey_result = SurveyResult.objects.create();
+                survey_result.survey_id = survey.survey_id
+                survey_result.contact = contact
+                survey_result.answer = answers
+                survey.save()
+            except:
+                return HttpResponse('FAILED')
+            else:
+                return HttpResponse('OK')
+    else:
+        return HttpResponse('FAILED')
