@@ -21,13 +21,13 @@ urlpatterns = patterns('',
 
     url(r'^t/$', (TemplateView.as_view(template_name='t.html'))),
 
-    url(r'^contact-groups/$', login_required(ContactGroupsView.as_view(),
-        name='contactgroups')),
+    url(r'^contact-groups/$', login_required(ContactGroupsView.as_view()),
+        name='contactgroups'),
 
-    url(r'^contact-groups/create-contact-group/$', login_required(CreateContactGroupsView.as_view(),
-        name='createcontactgroup')),
+    url(r'^contact-groups/create-contact-group/$', login_required(CreateContactGroupsView.as_view()),
+        name='createcontactgroup'),
 
-    url(r'^service-dashboard/$', login_required((TemplateView.as_view(template_name='servicedashboard.html')),name='servicedashboard')),
+    url(r'^service-dashboard/$', login_required(TemplateView.as_view(template_name='servicedashboard.html'))),
 
     url(r'^admin/', include(admin.site.urls)),
 
