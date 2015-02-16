@@ -25,3 +25,5 @@ django-celery-email==1.0.4
 redis
 django-hstore==1.3.5
 django-queryset-csv
+djangorestframework
+django-filter

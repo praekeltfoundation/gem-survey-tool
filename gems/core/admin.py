@@ -1,6 +1,5 @@
 from django.contrib import admin
-from models import Survey, Contact, SurveyResults, ContactGroup, \
-    ContactGroupMembers
+from models import Survey, Contact, SurveyResult, ContactGroup, ContactGroupMember
 
 
 class SurveyAdmin(admin.ModelAdmin):
@@ -11,8 +10,8 @@ class ContactAdmin(admin.ModelAdmin):
     list_display = ('msisdn',)
 
 
-class SurveyResultsAdmin(admin.ModelAdmin):
-    list_display = ('survey_id','msisdn','answer')
+class SurveyResultAdmin(admin.ModelAdmin):
+    list_display = ('survey_id','contact','answer')
 
 
 class ContactGroupAdmin(admin.ModelAdmin):
@@ -26,6 +25,6 @@ class ContactGroupMemberAdmin(admin.ModelAdmin):
 
 admin.site.register(Survey, SurveyAdmin)
 admin.site.register(Contact, ContactAdmin)
-admin.site.register(SurveyResults, SurveyResultsAdmin)
+admin.site.register(SurveyResult, SurveyResultAdmin)
 admin.site.register(ContactGroup, ContactGroupAdmin)
-admin.site.register(ContactGroupMembers, ContactGroupMemberAdmin)
+admin.site.register(ContactGroupMember, ContactGroupMemberAdmin)
