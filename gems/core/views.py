@@ -3,7 +3,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic.base import TemplateView
-from models import ContactGroup
+from models import ContactGroup, Survey, SurveyResults
+import djqscsv
 
 
 def user_login(request):
@@ -71,3 +72,7 @@ class CreateContactGroupsView(TemplateView):
         context['contactgroups'] = contactgroups
 
         return context
+
+def export(request, pk):
+    qs = SurveyResults.objects.filter(pk=pk)
+    return djqscsv.render_to_csv_response(qs)
