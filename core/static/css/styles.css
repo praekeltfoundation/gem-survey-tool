@@ -29,3 +29,41 @@ footer {
   -o-border-radius: 10px;
   border-radius: 10px;
 }
+
+.sign-up{
+    margin: 150px auto;
+    width: 300px;
+}​
+
+.yellow{
+    background-color: #fee62c;
+ }
+
+ .pink{
+     background-color: #ec2b8b;
+ }
+
+ .green{
+     background-color: #00b9ad;
+ }
+
+ .right{
+     float:right;
+ }
+
+ .white-front{
+     color: white;
+ }
+
+ .no-width{
+     width: inherit;
+ }
+
+ .login-logo{
+     width: 300px;
+     margin-bottom: 30px;
+     padding-left: 40px;
+     padding-right: 40px;
+ }
+
+
