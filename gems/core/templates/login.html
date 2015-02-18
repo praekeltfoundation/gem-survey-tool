@@ -1,22 +1,36 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <!-- Is anyone getting tired of repeatedly entering the header over and over?? -->
-        <title>GEM</title>
-    </head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>GHE Survey</title>
+		<meta name="generator" content="Bootply" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+		<!--[if lt IE 9]>
+			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<link href="{{ STATIC_URL }}css/styles.css" rel="stylesheet">
+	</head>
 
-    <body>
-        <h1>Login to GEMS</h1>
-
-        <form id="login_form" method="post" action="/login/">
-            {% csrf_token %}
-            Username: <input type="text" name="username" value="" size="50" />
-            <br />
-            Password: <input type="password" name="password" value="" size="50" />
-            <br />
-
-            <input type="submit" value="submit" />
-        </form>
+    <body id="login">
+        <div class="container">
+			<form class="form-horizontal sign-up centered" method="post" action="/login/">
+                {% csrf_token %}
+                <img class="login-logo" src="{{ STATIC_URL }}img/ghelogo.png">
+				<div class="form-group">
+					 <label for="username" class="col-sm-2 control-label">Username:</label>
+						<input type="text" class="form-control no-width right" id="username" name="username"/>
+				</div>
+				<div class="form-group">
+					 <label for="password" class="col-sm-2 control-label">Password:</label>
+						<input type="password" class="form-control no-width right" id="password" name="password"/>
+				</div>
+				<div class="form-group">
+						 <input type="submit" value="Sign in" class="btn btn-default right pink white-front"/>
+				</div>
+			</form>
+</div>
 
     </body>
 </html>
