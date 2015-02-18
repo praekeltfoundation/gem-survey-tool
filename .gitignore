@@ -22,7 +22,6 @@ var/
 .installed.cfg
 *.egg
 ev/
-core/
 .idea/
 
 # PyInstaller

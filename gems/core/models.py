@@ -11,7 +11,7 @@ class HStoreModel(models.Model):
 
 
 class Survey(models.Model):
-    survey_id = models.CharField(max_length=50)
+    survey_id = models.CharField(max_length=64)
     name=models.CharField(max_length=200)
 
     def __unicode__(self):
@@ -19,16 +19,16 @@ class Survey(models.Model):
 
 
 class Contact(models.Model):
-    msisdn = models.CharField(max_length=12)
+    msisdn = models.CharField(max_length=15)
     age = models.CharField(max_length=12)
     gender = models.CharField(max_length=12)
 
     def __unicode__(self):
-        return u'%s' % self.msisdn
+        return self.msisdn
 
 
 class SurveyResult(HStoreModel):
-    survey_id = models.ForeignKey(Survey)
+    survey = models.ForeignKey(Survey)
     contact = models.ForeignKey(Contact)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
