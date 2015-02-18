@@ -3,7 +3,9 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic.base import TemplateView
-from models import ContactGroup, SurveyResult, Survey, Contact
+from django.core import serializers
+from django.db import connection
+from models import *
 import json
 import djqscsv
 
@@ -81,6 +83,8 @@ def save_data(request):
         data=json.loads(request.body)
         answers = None
         contact_msisdn = None
+        conversation_key = None
+
         if data.has_key('user'):
             user = data['user']
             if user.has_key('answers'):
@@ -89,16 +93,18 @@ def save_data(request):
             contact = data['contact']
             if contact.has_key('msisdn'):
                 contact_msisdn = contact['msisdn']
+        if data.has_key('conversation_key'):
+            conversation_key = data['conversation_key']
 
         # we have data
-        if answers and contact_msisdn:
+        if answers and contact_msisdn and conversation_key:
             try:
                 # fetch/create the survey
                 # fix this
-                survey = Survey.objects.get_or_create(survey_id='1', name='Test', defaults={'survey_id': 1, 'name': 'Test'})
+                survey = Survey.objects.get_or_create(survey_id=conversation_key, defaults={'survey_id': conversation_key, 'name': 'New Survey - Please update name in Admin console'})
                 survey.save()
                 # add the contact
-                contact = Contact.objects.get_or_create(msisdn=contact_msisdn, defaults={'age': 18, 'gender': 'F'})
+                contact = Contact.objects.get_or_create(msisdn=contact_msisdn)
                 contact.save()
                 # add the survey result
                 survey_result = SurveyResult.objects.create();
@@ -114,7 +120,113 @@ def save_data(request):
         return HttpResponse('FAILED')
 
 
-
 def export(request, pk):
     qs = SurveyResult.objects.filter(pk=pk)
     return djqscsv.render_to_csv_response(qs)
+
+
+class UIField:
+    def __init__(self, name, type):
+        self.name = name
+        self.type = type
+
+
+class UIFieldEncoder(json.JSONEncoder):
+    def default(self, obj):
+        """
+        :type obj: UIField
+        """
+        if isinstance(obj, UIField):
+            return [obj.name, obj.type]
+        return json.JSONEncoder.default(self, obj)
+
+
+def get_exclusion_list():
+    """
+    Function that returns a list of fields to be excluded from the results
+    :rtype : Tuple
+    :return: a list of fields to be excluded from the results
+    """
+    return ('id', 'answer')
+
+
+def get_surveyresult_meta_keys():
+    """
+    :rtype: List of UIField objects
+    :return: Set of keys from the surveyresult meta
+    """
+    excluded_fields = get_exclusion_list()
+    field_keys = []
+
+    for field in sorted(SurveyResult._meta.concrete_fields + SurveyResult._meta.many_to_many + SurveyResult._meta.virtual_fields):
+        if field.name not in  excluded_fields:
+            field_keys.append(UIField(field.name, 'N'))
+
+    return field_keys
+
+
+def serialize_list_to_json(data, encoder):
+    """
+    Serialize data to a json string
+    :param data: List of objects to serialize
+    :param encoder: The encoder to use for the type
+    :rtype: string
+    :return: data serialized as a json string
+    """
+    #return json.dumps([x.__dict__ for x in data])
+    return json.dumps(data, cls=encoder)
+
+
+def query(request):
+    """
+
+    :param request:
+    :return:
+    """
+
+    # TODO: Build query here
+    results = SurveyResult.objects.all()
+
+    return generate_json_response(serializers.serialize('json', list(results), fields=('survey', 'contact', 'created_at', 'updated_at', 'answer')))
+
+
+def get_surveyresult_hstore_keys():
+    """
+    :rtype: List of UIField objects
+    :return: Unique set of keys from the answer hstore field in the surveyresult table
+    """
+    sql = 'select distinct hKey from (select skeys(answer) as hKey from core_surveyresult) as dt'
+    cursor = connection.cursor()
+    answer_keys = []
+
+    cursor.execute(sql)
+
+    for answer_key in cursor.fetchall():
+        answer_keys.append(UIField(answer_key, 'H'))
+
+    return answer_keys
+
+
+def generate_json_response(content):
+    """
+    :param content: JSON content for the response body
+    :rtype: HttpResponse
+    :return: Returns a JSON response
+    """
+    response = HttpResponse(content,content_type='application/json')
+    response['Content-Length'] = len(content)
+
+    return response
+
+
+def get_unique_keys(request):
+    """
+    Function returns a unique set of fields from the meta and the hstore
+    :rtype: HttpResponse
+    :return: HttpResponse with json payload
+    """
+    answer_keys = get_surveyresult_hstore_keys()
+    field_keys = get_surveyresult_meta_keys()
+    keys = sorted(answer_keys + field_keys, key=lambda f: f.name)
+
+    return generate_json_response(serialize_list_to_json(keys, UIFieldEncoder))

@@ -11,7 +11,7 @@ class ContactAdmin(admin.ModelAdmin):
 
 
 class SurveyResultAdmin(admin.ModelAdmin):
-    list_display = ('survey_id','contact','answer')
+    list_display = ('survey','contact','answer')
 
 
 class ContactGroupAdmin(admin.ModelAdmin):

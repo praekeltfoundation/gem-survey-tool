@@ -1,11 +1,10 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
-from views import user_login, ContactGroupsView, CreateContactGroupsView, save_data, export
+from views import *
 from django.contrib import admin
 from rest_framework import routers, serializers, viewsets
-from gems.core.viewsets import SurveyResultViewSet, ContactViewSet, SurveyViewSet, ContactGroupViewSet, \
-    ContactGroupMemberViewSet
+from gems.core.viewsets import *
 
 admin.autodiscover()
 
@@ -37,7 +36,11 @@ urlpatterns = patterns('',
 
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
-    url(r'^save_data/', save_data, name='saveData'),
+    url(r'^save_data/', save_data, name='save_data'),
 
     url(r'^export/', export, name='export'),
+
+    url(r'^query/', query, name='query'),
+
+    url(r'^get_unique_keys/', get_unique_keys, name='get_unique_keys')
 )
