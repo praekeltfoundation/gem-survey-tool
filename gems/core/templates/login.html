@@ -15,18 +15,19 @@
 
     <body id="login">
         <div class="container">
-			<form class="form-horizontal sign-up centered" action="/login/">
+			<form class="form-horizontal sign-up centered" method="post" action="/login/">
+                {% csrf_token %}
                 <img class="login-logo" src="{{ STATIC_URL }}img/ghelogo.png">
 				<div class="form-group">
 					 <label for="username" class="col-sm-2 control-label">Username:</label>
-						<input type="text" class="form-control no-width right" id="username" />
+						<input type="text" class="form-control no-width right" id="username" name="username"/>
 				</div>
 				<div class="form-group">
 					 <label for="password" class="col-sm-2 control-label">Password:</label>
-						<input type="password" class="form-control no-width right" id="password" />
+						<input type="password" class="form-control no-width right" id="password" name="password"/>
 				</div>
 				<div class="form-group">
-						 <button type="submit" class="btn btn-default right pink white-front">Sign in</button>
+						 <input type="submit" value="Sign in" class="btn btn-default right pink white-front"/>
 				</div>
 			</form>
 </div>
