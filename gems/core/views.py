@@ -8,6 +8,7 @@ from django.db import connection
 from models import *
 import json
 import djqscsv
+import sys
 
 
 def user_login(request):
@@ -101,19 +102,20 @@ def save_data(request):
             try:
                 # fetch/create the survey
                 # fix this
-                survey = Survey.objects.get_or_create(survey_id=conversation_key, defaults={'survey_id': conversation_key, 'name': 'New Survey - Please update name in Admin console'})
+                survey, created = Survey.objects.get_or_create(survey_id=conversation_key, defaults={'survey_id': conversation_key, 'name': 'New Survey - Please update name in Admin console'})
                 survey.save()
                 # add the contact
-                contact = Contact.objects.get_or_create(msisdn=contact_msisdn)
+                contact, created = Contact.objects.get_or_create(msisdn=contact_msisdn)
                 contact.save()
                 # add the survey result
-                survey_result = SurveyResult.objects.create();
-                survey_result.survey_id = survey.survey_id
-                survey_result.contact = contact
-                survey_result.answer = answers
-                survey.save()
-            except:
-                return HttpResponse('FAILED')
+                survey_result = SurveyResult(
+                    survey = survey,
+                    contact = contact,
+                    answer = answers
+                )
+                survey_result.save()
+            except Exception as ex:
+                return HttpResponse('FAILED-EX')
             else:
                 return HttpResponse('OK')
     else:
