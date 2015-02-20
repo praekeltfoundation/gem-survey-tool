@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
-from views import user_login, ContactGroupsView, CreateContactGroupsView, save_data, export
+from views import user_login, ContactGroupsView, CreateContactGroupsView, save_data, export, view_home
 from django.contrib import admin
 from rest_framework import routers, serializers, viewsets
 from gems.core.viewsets import SurveyResultViewSet, ContactViewSet, SurveyViewSet, ContactGroupViewSet, \
@@ -39,4 +39,5 @@ urlpatterns = patterns('',
     url(r'^save_data/', save_data, name='saveData'),
 
     url(r'^export/', export, name='export'),
+    url(r'^home/$', view_home, name='home'),
 )

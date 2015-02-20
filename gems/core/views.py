@@ -6,6 +6,8 @@ from django.views.generic.base import TemplateView
 from models import ContactGroup, SurveyResult, Survey, Contact
 import json
 import djqscsv
+#
+from django.shortcuts import render
 
 
 def user_login(request):
@@ -118,3 +120,7 @@ def save_data(request):
 def export(request, pk):
     qs = SurveyResult.objects.filter(pk=pk)
     return djqscsv.render_to_csv_response(qs)
+
+#for testing menu.html in home.html
+def view_home(request):
+    return render(request, 'home.html')
