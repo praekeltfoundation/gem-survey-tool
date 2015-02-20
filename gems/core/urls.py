@@ -41,5 +41,6 @@ urlpatterns = patterns('',
 
     url(r'^query/', query, name='query'),
 
-    url(r'^get_unique_keys/', get_unique_keys, name='get_unique_keys')
+    url(r'^get_unique_keys/', get_unique_keys, name='get_unique_keys'),
+    url(r'^home/$', view_home, name='home'),
 )

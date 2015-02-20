@@ -10,6 +10,8 @@ from django.db.models import Q
 from models import *
 import json
 import djqscsv
+#
+from django.shortcuts import render
 
 
 def user_login(request):
@@ -246,7 +248,6 @@ def export(request):
     else:
         return HttpResponse('Bad request method')
 
-
 class UIField:
     def __init__(self, name, type):
         self.name = name
@@ -357,3 +358,7 @@ def get_unique_keys(request):
     keys = sorted(answer_keys + field_keys, key=lambda f: f.name)
 
     return generate_json_response(serialize_list_to_json(keys, UIFieldEncoder))
+
+#for testing menu.html in home.html
+def view_home(request):
+    return render(request, 'home.html')
