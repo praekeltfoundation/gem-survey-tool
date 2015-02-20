@@ -1,15 +1,20 @@
-<div class="col-sm-2">
-      <hr>
-      
-      <ul class="nav nav-stacked">
-        <li><a href="javascript:;"><i class="glyphicon glyphicon-flash"></i> User</a></li>
-        <li><a href="javascript:;"><i class="glyphicon glyphicon-link"></i> Survey Builder</a></li>
-        <li><a href="contact-groups"><i class="glyphicon glyphicon-list-alt"></i> Contact Management</a></li>
-        <li><a href="service-dashboard"><i class="glyphicon glyphicon-book"></i> Service Dashboard</a></li>
-        <li><a href="javascript:;"><i class="glyphicon glyphicon-briefcase"></i> Survey Data</a></li>
-        <li><a href="admin:index;"><i class="glyphicon glyphicon-plus"></i> Admin..</a></li>
-      </ul>
-      
-      <hr>
+<div class="col-sm-2 yellow left">
+    <div class="menu-logo-container">
+        <img class="menu-logo " src="{{ STATIC_URL }}img/ghelogo.png"/>
+    </div>
+    <hr>
 
-  	</div>
+        <ul class="nav nav-stacked">
+            <li><a href="javascript:;"><img src="{{ STATIC_URL }}img/image18.png"/> User</a></li>
+            <li><a href="javascript:;"><img src="{{ STATIC_URL }}img/image19.png"/> Survey Builder</a></li>
+            <li><a href="javascript:toggleSubmenu(document.getElementById('contact'));"><img src="{{ STATIC_URL }}img/image23.png"/> Contact Management</a></li>
+            <li><a href="javascript:;"><img src="{{ STATIC_URL }}img/image25.png"/> Service Dashboard</a></li>
+            <li><a href="javascript:toggleSubmenu(document.getElementById('survey'));"><img src="{{ STATIC_URL }}img/image21.png"/> Survey Data</a></li>
+            <li><a href="{% url 'admin:index' %}"><img src="{{ STATIC_URL }}img/image20.png"/> Admin..</a></li>
+        </ul>
+
+    <hr>
+</div>
+
+{% include 'survey-data-submenu.html' %}
+{% include 'contact-manag-submenu.html' %}
