@@ -5,6 +5,8 @@ from django.template import RequestContext
 from django.views.generic.base import TemplateView
 from django.core import serializers
 from django.db import connection
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 from models import *
 import json
 import djqscsv
@@ -103,33 +105,157 @@ def save_data(request):
             try:
                 # fetch/create the survey
                 # fix this
-                survey = Survey.objects.get_or_create(survey_id=conversation_key, defaults={'survey_id': conversation_key, 'name': 'New Survey - Please update name in Admin console'})
+                survey, created = Survey.objects.get_or_create(survey_id=conversation_key, defaults={'survey_id': conversation_key, 'name': 'New Survey - Please update name in Admin console'})
                 survey.save()
                 # add the contact
-                contact = Contact.objects.get_or_create(msisdn=contact_msisdn)
+                contact, created = Contact.objects.get_or_create(msisdn=contact_msisdn)
                 contact.save()
                 # add the survey result
-                survey_result = SurveyResult.objects.create();
-                survey_result.survey_id = survey.survey_id
-                survey_result.contact = contact
-                survey_result.answer = answers
-                survey.save()
-            except:
-                return HttpResponse('FAILED')
+                survey_result = SurveyResult(
+                    survey = survey,
+                    contact = contact,
+                    answer = answers
+                )
+                survey_result.save()
+            except Exception as ex:
+                return HttpResponse('FAILED-EX')
             else:
                 return HttpResponse('OK')
     else:
         return HttpResponse('FAILED')
 
 
-def export(request, pk):
-    qs = SurveyResult.objects.filter(pk=pk)
-    return djqscsv.render_to_csv_response(qs)
+class FieldFilter:
+    def __init__(self, operator, value, field, loperator = None):
+        self.operator = operator
+        self.value = value
+
+        if loperator is None:
+            self.loperator = 'and'
+        else:
+            self.loperator = loperator
+
+        self.field = field
+        self.q = None
+
+        if field.type == 'N':
+            # These are the normal fields
+            if operator == 'eq':
+                kwargs = {
+                    '{0}'.format(field.name): value
+                }
+                self.q = Q(**kwargs)
+            elif operator == 'gt' or operator == 'gte' or operator == 'lt' or 'lte':
+                kwargs = {
+                    '{0}__{1}'.format(field.name, operator): value
+                }
+                self.q = Q(**kwargs)
+            elif operator == 'co':
+                kwargs = {
+                    '{0}__contains'.format(field.name): value
+                }
+                self.q = Q(**kwargs)
+        else:
+            # These are the hstore fields
+            if operator == 'eq':
+                self.q = Q(answer={field.name: value})
+            elif operator == 'gt':
+                self.q = Q(answer__gt={field.name: value})
+            elif operator == 'gte':
+                self.q = Q(answer__gte={field.name: value})
+            elif operator == 'lt':
+                self.q = Q(answer__lt={field.name: value})
+            elif operator == 'lte':
+                self.q = Q(answer__lte={field.name: value})
+            elif operator == 'co':
+                self.q = Q(answer__contains={field.name: value})
+
+    @staticmethod
+    def decode(json, field):
+        op = json['operator']
+        value = json['value']
+        lop = None
+        if json.has_key('loperator'):
+            lop = json['loperator']
+
+        return FieldFilter(op, value, field, lop)
+
+class Filter:
+    def __init__(self, field, filters = [], loperator = None):
+        self.field = field
+        self.filters = filters
+
+        if loperator is None:
+            self.loperator = 'and'
+        else:
+            self.loperator = loperator
+
+    @staticmethod
+    def decode(json):
+        field = UIField.decode(json['field'])
+        lop = None
+
+        if json.has_key('loperator'):
+            lop = json['loperator']
+
+        local_filters = []
+        temp_filters = json['filters']
+        for temp_filter in temp_filters:
+            local_filters.append(FieldFilter.decode(temp_filter, field))
+
+        return Filter(field, local_filters, lop)
+
+def build_query(payload, random = False):
+
+    filters = []
+    if(payload.has_key('filters')):
+        for filter_json in payload['filters']:
+            filters.append(Filter.decode(filter_json))
+
+    q = None
+
+    for filter in filters:
+        temp_q = None
+        for fieldFilter in filter.filters:
+            if temp_q is None:
+                temp_q = fieldFilter.q
+            else:
+                if fieldFilter.loperator == 'or':
+                    temp_q = temp_q | fieldFilter.q
+                else:
+                    temp_q = temp_q & fieldFilter.q
+
+        if q is None:
+            q = temp_q
+        else:
+            if filter.loperator == 'or':
+                q = q | temp_q
+            else:
+                q = q & temp_q
+
+    if random == True:
+        return SurveyResult.objects.filter(q).order_by('?')
+    else:
+        return SurveyResult.objects.filter(q)
+
+
+@csrf_exempt
+def export(request):
+    if request.method == 'POST':
+        payload = json.loads(request.body)
+        qs = build_query(payload)
+        return djqscsv.render_to_csv_response(qs)
+    else:
+        return HttpResponse('Bad request method')
 
 class UIField:
     def __init__(self, name, type):
         self.name = name
         self.type = type
+
+    @staticmethod
+    def decode(json):
+        return UIField(json['name'], json['type'])
 
 
 class UIFieldEncoder(json.JSONEncoder):
@@ -178,15 +304,15 @@ def serialize_list_to_json(data, encoder):
     return json.dumps(data, cls=encoder)
 
 
+@csrf_exempt
 def query(request):
     """
 
     :param request:
     :return:
     """
-
-    # TODO: Build query here
-    results = SurveyResult.objects.all()
+    payload = json.loads(request.body)
+    results = build_query(payload, True)
 
     return generate_json_response(serializers.serialize('json', list(results), fields=('survey', 'contact', 'created_at', 'updated_at', 'answer')))
 
@@ -214,6 +340,7 @@ def generate_json_response(content):
     :rtype: HttpResponse
     :return: Returns a JSON response
     """
+
     response = HttpResponse(content,content_type='application/json')
     response['Content-Length'] = len(content)
 
