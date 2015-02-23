@@ -91,13 +91,30 @@ footer {
     position: relative;
  }
 
- /*submenu*/
+ .menu-text{
+     color: rgb(66, 66, 66);
+ }
+
+ .menu-text:hover, .menu-text:focus{
+     color: rgb(80, 80, 80);
+     background-color: rgb(221, 203, 63) !important;
+ }
+
 .submenu{
     position: absolute;
     left: 200px;
     height: 100%;
     width: 200px;
     display: none;
+}
+
+.submenu-text{
+    color: rgb(255, 255, 255);
+}
+
+.submenu-text:hover, .submenu-text:focus{
+    color: rgb(221, 221, 221);
+    background-color: rgb(206, 63, 134) !important;
 }
 
 .top{
