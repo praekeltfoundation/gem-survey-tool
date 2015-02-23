@@ -16,3 +16,31 @@ function toggleSubmenu(div)
         }
     }
 }
+
+var gems = angular.module('gems', []);
+
+gems.controller('contentController', function ($scope, $http) {
+    $scope.ContactGroups = {};
+
+    function getContactGroups() {
+        $http.get('/contactgroup/').
+        success(function(data) {
+            $scope.ContactGroups = data;
+        }).
+        error(function(data) {
+            alert("failed to retreive data.");
+        });
+    };
+
+    $scope.getContactGroups = getContactGroups;
+});
+
+function editContactGroup(id)
+{
+
+}
+
+function deleteContactGroup(id)
+{
+
+}

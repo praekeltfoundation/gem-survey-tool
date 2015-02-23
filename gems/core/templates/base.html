@@ -11,10 +11,11 @@
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 		<link href="{{ STATIC_URL }}css/styles.css" rel="stylesheet">
-        <script src="{{ STATIC_URL }}js/script.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/angular.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/script.js"></script>
 	</head>
 
-<body>
+<body ng-app="gems">
     <div class="container">
 
         <!-- upper section -->
@@ -23,6 +24,30 @@
 
             {% block content %}
             {% endblock %}
+            <div ng-controller="contentController">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Created By</th>
+                            <th>Created At</th>
+                            <th>Rules</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="cg in ContactGroups">
+                            <th>{{ cg.name }}</th>
+                            <th>{{ cg.created_by_username }}</th>
+                            <th>{{ cg.created_at }}</th>
+                            <th>{{ cg.rules }}</th>
+                            <th><button class="btn btn-default" {{ cg.group_id }}>Edit</button><button class="btn btn-default" {{ cg.group_id }}>Delete</button> </th>
+                        </tr>
+                    </tbody>
+                </table>
+                <button ng-click="getContactGroups()">Call</button>
+            </div>
         </div>
     </div>
 </body>
+</html>
