@@ -19,10 +19,15 @@ function toggleSubmenu(div)
 
 var gems = angular.module('gems', []);
 
+gems.config(function($interpolateProvider){
+    $interpolateProvider.startSymbol('{$');
+    $interpolateProvider.endSymbol('$}');
+});
+
 gems.controller('contentController', function ($scope, $http) {
     $scope.ContactGroups = {};
 
-    function getContactGroups() {
+    $scope.getContactGroups = function getContactGroups() {
         $http.get('/contactgroup/').
         success(function(data) {
             $scope.ContactGroups = data;
@@ -32,7 +37,7 @@ gems.controller('contentController', function ($scope, $http) {
         });
     };
 
-    $scope.getContactGroups = getContactGroups;
+    $scope.getContactGroups();
 });
 
 function editContactGroup(id)

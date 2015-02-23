@@ -37,11 +37,11 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="cg in ContactGroups">
-                            <th>{{ cg.name }}</th>
-                            <th>{{ cg.created_by_username }}</th>
-                            <th>{{ cg.created_at }}</th>
-                            <th>{{ cg.rules }}</th>
-                            <th><button class="btn btn-default" {{ cg.group_id }}>Edit</button><button class="btn btn-default" {{ cg.group_id }}>Delete</button> </th>
+                            <th>{$ cg.name $}</th>
+                            <th>{$ cg.created_by_username $}</th>
+                            <th>{$ cg.created_at $}</th>
+                            <th>{$ cg.rules $}</th>
+                            <th><button class="btn btn-default" {$ cg.group_id $}>Edit</button><button class="btn btn-default" {$ cg.group_id $}>Delete</button> </th>
                         </tr>
                     </tbody>
                 </table>
