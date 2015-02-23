@@ -5,7 +5,7 @@
     <hr>
 
         <ul class="nav nav-stacked">
-            <li><a class="menu-text" href="javascript:;"><img src="{{ STATIC_URL }}img/image18.png"/> User</a></li>
+            <li><a class="menu-text" href="javascript:;"><img src="{{ STATIC_URL }}img/image18.png"/> {{ user.get_username }}</a></li>
             <li><a class="menu-text" href="javascript:;"><img src="{{ STATIC_URL }}img/image19.png"/> Survey Builder</a></li>
             <li><a class="menu-text" href="javascript:toggleSubmenu(document.getElementById('contact'));"><img src="{{ STATIC_URL }}img/image23.png"/> Contact Management</a></li>
             <li><a class="menu-text" href="javascript:;"><img src="{{ STATIC_URL }}img/image25.png"/> Service Dashboard</a></li>
