@@ -264,7 +264,10 @@ class UIFieldEncoder(json.JSONEncoder):
         :type obj: UIField
         """
         if isinstance(obj, UIField):
-            return [obj.name, obj.type]
+            retVal = {}
+            retVal["name"] = obj.name
+            retVal["type"] = obj.type
+            return retVal
         return json.JSONEncoder.default(self, obj)
 
 
