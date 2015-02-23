@@ -1,4 +1,4 @@
-function toggleSubmenu(div)
+function toggleSubMenu(div)
 {
     var submenus = document.getElementsByClassName('submenu');
     for (var i = 0; i < submenus.length; i++)
@@ -14,5 +14,14 @@ function toggleSubmenu(div)
         {
             submenus[i].style.display = "none";
         }
+    }
+}
+
+function hideSubMenu()
+{
+    var submenus = document.getElementsByClassName('submenu');
+    for (var i = 0; i < submenus.length; i++)
+    {
+        submenus[i].style.display="none";
     }
 }
