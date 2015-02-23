@@ -25,3 +25,10 @@ function hideSubMenu()
         submenus[i].style.display="none";
     }
 }
+
+var gems = angular.module('gems', []);
+
+gems.config(function($interpolateProvider) {
+    $interpolateProvider.startSymbol('{$');
+    $interpolateProvider.endSymbol('$}');
+});

@@ -7,20 +7,54 @@
 		<meta name="generator" content="Bootply" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+        <link href="{{ STATIC_URL }}css/bootstrap-toggle.min.css" rel="stylesheet">
 		<!--[if lt IE 9]>
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 		<link href="{{ STATIC_URL }}css/styles.css" rel="stylesheet">
+        <script src="{{ STATIC_URL }}js/jquery-1.11.2.min.js"></script>
         <script src="{{ STATIC_URL }}js/angular.js"></script>
+        <script src="{{ STATIC_URL }}js/bootstrap-toggle.min.js"></script>
         <script src="{{ STATIC_URL }}js/script.js"></script>
+        <script src="{{ STATIC_URL }}js/QueryController.js"></script>
 	</head>
 
-<body>
+<body ng-app="gems">
     <div class="container">
 
         <!-- upper section -->
         <div class="row">
             {% include 'menu.html' %}
+
+
+            <div class="col-sm-8" ng-controller="queryController">
+                <form ng-submit="">
+                    <div class="row">
+                        <h1>Create Group</h1>
+                    </div>
+                    <div class="row">
+                        <h5>Define the rules of your contact group:</h5>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <select class="form-control">
+                                <option ng-repeat="field in fields" value="{$$index$}">{$field.name$}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <select class="form-control">
+                                <option ng-repeat="op in operators" value="{$$index$}">{$op.name$}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <input class="form-control" placeholder="Value">
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="checkbox" checked data-toggle="toggle" data-size="small">
+                        </div>
+                    </div>
+                </form>
+            </div>
 
             {% block content %}
             {% endblock %}
