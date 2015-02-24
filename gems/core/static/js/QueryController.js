@@ -18,11 +18,63 @@ gems.controller('queryController', function($scope, $http){
         {name: 'Value is null', operator: 'nu'}
     ];
 
+    $scope.filters = [
+        {
+            "field": {
+                "type": "N",
+                "name": "contact"
+            },
+            "filters": [
+                {
+                    "operator": "lt",
+                    "value": "18"
+                },
+                {
+                    "loperator": "or",
+                    "operator": "gt",
+                    "value": "12"
+                }
+            ]
+        },
+        {
+            "loperator": "or",
+            "field": {
+                "type": "N",
+                "name": "survey"
+            },
+            "filters": [
+                {
+                    "operator": "eq",
+                    "value": "female"
+                }
+            ]
+        }
+    ];
+
     $scope.fetchFields = function fetchFields(){
         $http.get('/get_unique_keys/')
             .success(function(data){
                 $scope.fields = data;
+                $scope.processFilters();
             })
+    };
+
+    $scope.addFilter = function addFilter(){
+        console.log('addFilter');
+    };
+
+    $scope.addFieldFilter = function addFieldFilter(){
+        console.log('addFilterFields');
+    };
+
+    $scope.removeFieldFilter = function removeFieldFilter(pIndex, index){
+        $scope.filters[pIndex].filters.splice(index, 1);
+    };
+
+    $scope.processFilters = function processFilters(){
+        // TODO: change all the fields to be $scope.fields[x] refs
+        // TODO: change all the operators to be $scope.operators[x] refs
+        $scope.filters[0].field = $scope.fields[0];
     };
 
     $scope.fetchFields();

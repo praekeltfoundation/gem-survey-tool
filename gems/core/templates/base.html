@@ -16,6 +16,7 @@
         <script src="{{ STATIC_URL }}js/angular.js"></script>
         <script src="{{ STATIC_URL }}js/bootstrap-toggle.min.js"></script>
         <script src="{{ STATIC_URL }}js/script.js"></script>
+        <script src="{{ STATIC_URL }}js/toggleCheckbox.js"></script>
         <script src="{{ STATIC_URL }}js/QueryController.js"></script>
 	</head>
 
@@ -24,7 +25,7 @@
 
         <!-- upper section -->
         <div class="row">
-            {% include 'menu.html' %}
+            <!--{% include 'menu.html' %}-->
 
 
             <div class="col-sm-8" ng-controller="queryController">
@@ -35,25 +36,43 @@
                     <div class="row">
                         <h5>Define the rules of your contact group:</h5>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <select class="form-control">
-                                <option ng-repeat="field in fields" value="{$$index$}">{$field.name$}</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-3">
-                            <select class="form-control">
-                                <option ng-repeat="op in operators" value="{$$index$}">{$op.name$}</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-3">
-                            <input class="form-control" placeholder="Value">
-                        </div>
-                        <div class="col-sm-3">
-                            <input type="checkbox" checked data-toggle="toggle" data-size="small">
+                    <div class="row" ng-repeat="filter in filters">
+                        <div class="row" ng-repeat="fieldFilter in filter.filters">
+                            <h4>{$$parent.$index$} - {$$index$}</h4>
+                            <p>{$fieldFilter$}</p>
+                            <div class="col-sm-3" ng-if="$index == 0">
+                                <select class="form-control" ng-model="filter.field" ng-options="field.name for field in fields"></select>
+                            </div>
+                            <div class="row" ng-if="$index != 0">
+                                <div class="col-sm-3 col-sm-offset-5">
+                                    <input toggle-checkbox class="form-control" data-on="and" data-off="or" ng-true-value="'and'" ng-false-value="'or'" ng-model="fieldFilter.loperator" type="checkbox">
+                                </div>
+                            </div>
+                            <div class="col-sm-3" ng-if="$index != 0">
+                            </div>
+                            <div class="col-sm-3">
+                                <select class="form-control" ng-model="fieldFilter.operator" ng-options="op.operator as op.name for op in operators"></select>
+                            </div>
+                            <div class="col-sm-3" ng-model="filter.value">
+                                <input class="form-control" placeholder="Value" ng-model="fieldFilter.value">
+                            </div>
+                            <div class="col-sm-3" ng-if="$index != 0">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <a ng-click="removeFieldFilter($parent.$parent.$index, $index)"><img width="16" height="16" src="{{ STATIC_URL }}img/red_cross.png"></a>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <a ng-click="addFieldFilter()" href="">Add new condition+ #TODO STYLING</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <a ng-click="addFilter()" href="">Add new data field #TODO STYLING</a>
+                    </div>
                 </form>
+                {$filters$}
             </div>
 
             {% block content %}
