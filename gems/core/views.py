@@ -87,7 +87,11 @@ class CreateContactGroupsView(TemplateView):
 def save_data(request):
 
     if(request.method == 'POST'):
-        logger.info('save_data - POST - Body[ %s ]' %(request.body));
+        msg = 'save_data - POST - Body[ %s ]' %(request.body);
+        f = open('/tmp/debug.log', 'a')
+        f.write('%s\n' % (msg))
+        f.close()
+        logger.info(msg);
         data=json.loads(request.body)
         if type(data) is unicode:
             #decode the string again
