@@ -3,6 +3,8 @@ var gems = angular.module('gems');
 gems.controller('queryController', function($scope, $http){
 
     $scope.fields = [];
+    $scope.results = [];
+    $scope.queryStarted = false;
 
     $scope.operators = [
         {name: 'Less than', operator: 'lt'},
@@ -17,6 +19,8 @@ gems.controller('queryController', function($scope, $http){
         {name: 'Text is exactly', operator: 'ex'},
         {name: 'Value is null', operator: 'nu'}
     ];
+
+    $scope.queryWords = 'TODO';
 
     $scope.filters = [
         {
@@ -60,22 +64,44 @@ gems.controller('queryController', function($scope, $http){
     };
 
     $scope.addFilter = function addFilter(){
-        console.log('addFilter');
+        $scope.filters.push(
+            {
+                loperator: "and",
+                field:null,
+                filters: [{loperator: null, operator: null, value: null}]
+            })
     };
 
-    $scope.addFieldFilter = function addFieldFilter(){
-        console.log('addFilterFields');
+    $scope.addFieldFilter = function addFieldFilter(pIndex){
+        $scope.filters[pIndex].filters.push({loperator: 'and', operator: null, value: null});
     };
 
     $scope.removeFieldFilter = function removeFieldFilter(pIndex, index){
         $scope.filters[pIndex].filters.splice(index, 1);
     };
 
+    $scope.removeFilter = function removeFilter(pIndex){
+        $scope.filters.splice(pIndex, 1);
+    }
+
     $scope.processFilters = function processFilters(){
         // TODO: change all the fields to be $scope.fields[x] refs
         // TODO: change all the operators to be $scope.operators[x] refs
         $scope.filters[0].field = $scope.fields[0];
     };
+
+    $scope.fetchResults = function fetchResults(){
+        $scope.results = [];
+        $scope.queryStarted = true;
+        $http({
+            url: '/query/',
+            method: 'POST',
+            data: { filters: $scope.filters }
+            })
+            .then(function(data){
+                $scope.results = data.data;
+            })
+    }
 
     $scope.fetchFields();
 });

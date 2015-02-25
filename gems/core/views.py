@@ -10,7 +10,6 @@ from django.db.models import Q
 from models import *
 import json
 import djqscsv
-#
 from django.shortcuts import render
 
 
@@ -81,6 +80,7 @@ class CreateContactGroupsView(TemplateView):
         return context
 
 
+@csrf_exempt
 def save_data(request):
 
     if(request.method == 'POST'):
@@ -121,6 +121,8 @@ def save_data(request):
                 return HttpResponse('FAILED-EX')
             else:
                 return HttpResponse('OK')
+        else:
+            return HttpResponse('FAILED-BAD-DATA')
     else:
         return HttpResponse('FAILED')
 
@@ -164,7 +166,11 @@ class FieldFilter:
             elif operator == 'gte':
                 self.q = Q(answer__gte={field.name: value})
             elif operator == 'lt':
-                self.q = Q(answer__lt={field.name: value})
+                kwargs = {
+                    'answer__{0}'.format(operator): '{0}, {1}'.format(field.name, value)
+                }
+                #self.q = Q(answer__lt={field.name: value})
+                self.q=Q(**kwargs)
             elif operator == 'lte':
                 self.q = Q(answer__lte={field.name: value})
             elif operator == 'co':
