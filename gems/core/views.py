@@ -12,7 +12,9 @@ import json
 import djqscsv
 #
 from django.shortcuts import render
+import logging
 
+logger = logging.getLogger('gems.debug');
 
 def user_login(request):
     # Like before, obtain the context for the user's request.
@@ -85,6 +87,7 @@ class CreateContactGroupsView(TemplateView):
 def save_data(request):
 
     if(request.method == 'POST'):
+        logger.info('save_data - POST - Body[ %s ]' %(request.body));
         data=json.loads(request.body)
         if type(data) is unicode:
             #decode the string again
