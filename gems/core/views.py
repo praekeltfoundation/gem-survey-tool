@@ -81,6 +81,7 @@ class CreateContactGroupsView(TemplateView):
         return context
 
 
+@csrf_exempt
 def save_data(request):
 
     if(request.method == 'POST'):
