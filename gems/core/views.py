@@ -166,11 +166,7 @@ class FieldFilter:
             elif operator == 'gte':
                 self.q = Q(answer__gte={field.name: value})
             elif operator == 'lt':
-                kwargs = {
-                    'answer__{0}'.format(operator): '{0}, {1}'.format(field.name, value)
-                }
-                #self.q = Q(answer__lt={field.name: value})
-                self.q=Q(**kwargs)
+                self.q = Q(answer__lt={field.name: value})
             elif operator == 'lte':
                 self.q = Q(answer__lte={field.name: value})
             elif operator == 'co':

@@ -55,10 +55,22 @@ gems.controller('queryController', function($scope, $http){
         }
     ];
 
+    $scope.cleanFields = function cleanFields(data){
+        if(data && data.length > 0){
+            for(var x = 0; x < data.length; ++x){
+                if( typeof(data[x].name) == 'object'){
+                    data[x].name = data[x].name[0];
+                }
+            }
+        }
+
+        return data;
+    };
+
     $scope.fetchFields = function fetchFields(){
         $http.get('/get_unique_keys/')
             .success(function(data){
-                $scope.fields = data;
+                $scope.fields = $scope.cleanFields(data);
                 $scope.processFilters();
             })
     };
