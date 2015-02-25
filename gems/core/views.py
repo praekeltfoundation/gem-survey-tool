@@ -86,6 +86,9 @@ def save_data(request):
 
     if(request.method == 'POST'):
         data=json.loads(request.body)
+        if type(data) is unicode:
+            #decode the string again
+            data=json.loads(data);
         answers = None
         contact_msisdn = None
         conversation_key = None
