@@ -14,7 +14,7 @@ import djqscsv
 from django.shortcuts import render
 import logging
 
-logger = logging.getLogger('gems.debug');
+logger = logging.getLogger(__name__);
 
 def user_login(request):
     # Like before, obtain the context for the user's request.
