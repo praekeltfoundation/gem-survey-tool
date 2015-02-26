@@ -3,8 +3,6 @@ var gems = angular.module('gems');
 gems.controller('queryController', function($scope, $http){
 
     $scope.fields = [];
-    $scope.queryStarted = false;
-    $scope.numberOfRows = 0;
 
     $scope.operators = [
         {name: 'Less than', operator: 'lt'},
@@ -19,9 +17,8 @@ gems.controller('queryController', function($scope, $http){
     ];
 
     $scope.queryWords = '';
-    $scope.columns = [];
-    $scope.rows = [];
 
+    /*
     $scope.filters = [
         {
             "field": {
@@ -54,6 +51,9 @@ gems.controller('queryController', function($scope, $http){
             ]
         }
     ];
+    */
+
+    //$scope.filters = $scope.groupFilter;
 
     $scope.queryWordOperator = function queryWordOperator(op){
         var retVal = '';
@@ -84,18 +84,6 @@ gems.controller('queryController', function($scope, $http){
         }
 
         return retVal;
-    };
-
-    $scope.cleanFields = function cleanFields(data){
-        if(data && data.length > 0){
-            for(var x = 0; x < data.length; ++x){
-                if( typeof(data[x].name) == 'object'){
-                    data[x].name = data[x].name[0];
-                }
-            }
-        }
-
-        return data;
     };
 
     $scope.fetchFields = function fetchFields(){
@@ -138,50 +126,6 @@ gems.controller('queryController', function($scope, $http){
         }
     };
 
-    $scope.fetchResults = function fetchResults(){
-        $scope.rows = [];
-        $scope.queryStarted = true;
-        var payload = {};
-
-        if($scope.numberOfRows != null && $scope.numberOfRows > 0){
-            payload.limit = $scope.numberOfRows;
-        }
-
-        payload.filters = $scope.filters;
-
-        $http({
-            url: '/query/',
-            method: 'POST',
-            data: payload
-            })
-            .then(function(data){
-                var results = data.data;
-
-                for(var x = 0; x < results.length; ++x){
-                    var fields = results[x].fields;
-                    var answer = fields['answer'];
-                    var row = {
-                        selected: false,
-                        fields: []
-                    };
-
-                    for(var y = 0; y < $scope.columns.length; ++y){
-                        var column = $scope.columns[y];
-
-                        if(fields.hasOwnProperty(column.name)){
-                            row.fields.push(fields[column.name]);
-                        } else if(answer.hasOwnProperty(column.name)){
-                            row.fields.push(answer[column.name]);
-                        } else {
-                            row.fields.push('');
-                        }
-                    }
-
-                    $scope.rows.push(row);
-                }
-            })
-    }
-
     $scope.makeQueryWords = function makeQueryWords(){
         var words = '';
 
@@ -210,44 +154,6 @@ gems.controller('queryController', function($scope, $http){
         }
 
         $scope.queryWords = words;
-    };
-
-    $scope.selectRow = function selectRow(index){
-        $scope.rows[index].selected = true;
-    };
-
-    $scope.selectFunction = function selectFunction(){
-        if($scope.allRowsSelected()){
-            // deselect all rows
-            for(var x = 0; x < $scope.rows.length; ++x){
-                $scope.rows[x].selected = false;
-            }
-        } else {
-            // select all rows
-            for(var x = 0; x < $scope.rows.length; ++x){
-                $scope.rows[x].selected = true;
-            }
-        }
-    };
-
-    $scope.allRowsSelected = function allRowsSelected(){
-        var retVal = true;
-
-        for(var x = 0; x < $scope.rows.length; ++x){
-            retVal = retVal && $scope.rows[x].selected;
-        }
-
-        return retVal;
-    };
-
-    $scope.anyRowsSelected = function anyRowsSelected(){
-        var retVal = false;
-
-        for(var x = 0; x < $scope.rows.length; ++x){
-            retVal = retVal || $scope.rows[x].selected;
-        }
-
-        return retVal;
     };
 
     $scope.fetchFields();
