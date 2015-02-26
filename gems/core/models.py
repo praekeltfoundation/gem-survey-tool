@@ -34,6 +34,7 @@ class SurveyResult(HStoreModel):
 
 class ContactGroup(HStoreModel):
     group_id = models.CharField(max_length=5)
+    group_key = models.CharField(max_length=32)
     name = models.CharField(max_length=50)
     created_by = models.ForeignKey(User)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -51,6 +51,14 @@ footer {
      background-color: #00b9ad;
  }
 
+ .red{
+     background-color: #d81f23;
+ }
+
+ .orange{
+     background-color: #f79c1a;
+ }
+
  .right{
      float:right;
  }
@@ -121,4 +129,8 @@ footer {
 .row-breath{
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+.modal-dialog-center{
+    top: 25%;
 }
