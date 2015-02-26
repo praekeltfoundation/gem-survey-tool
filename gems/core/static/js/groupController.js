@@ -1,7 +1,7 @@
 var gems = angular.module('gems');
 
 gems.controller('groupController', function($scope, $http){
-    $scope.groupName = '';
+    $scope.groupName = $scope.getGroupName();
     $scope.fields = [];
     $scope.queryStarted = false;
     $scope.numberOfRows = 0;
@@ -110,12 +110,40 @@ gems.controller('groupController', function($scope, $http){
         return retVal;
     };
 
-    $scope.saveGroup = function saveGroup(){
+    $scope.getGroup = function getGroup(query_words, filters){
+        var group = {
+            name: $scope.groupName,
+            members: [],
+            query_words: query_words,
+            filters: JSON.stringify( filters )
+        };
+
+        var contactIndex = 0;
+
+        for(var x = 0; x < $scope.fields.length; ++x){
+            if($scope.fields[x].name === 'contact' ){
+                contactIndex = x;
+                break;
+            }
+        }
+
+        for(var x = 0; x < $scope.rows.length; ++x){
+            if($scope.rows[x].selected){
+                group.members.push($scope.rows[x].fields[contactIndex]);
+            }
+        }
+
+        return group;
+    };
+
+    $scope.saveGroup = function saveGroup(query_words, filters){
+        var group = $scope.getGroup(query_words, filters);
         // TODO
         $scope.cancel();
     };
 
-    $scope.updateGroup = function updateGroup(){
+    $scope.updateGroup = function updateGroup(query_words, filters){
+        var group = $scope.getGroup(query_words, filters);
         // TODO
         $scope.cancel();
     };

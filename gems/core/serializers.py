@@ -33,13 +33,13 @@ class SurveyResultSerializer(serializers.HyperlinkedModelSerializer):
 class ContactSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Contact
-        fields = ('msisdn', 'age', 'gender')
+        fields = ('msisdn')
 
 
 class ContactGroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ContactGroup
-        fields = ('group_id', 'name', 'created_at', 'rules')
+        fields = ('group_id', 'name', 'created_at', 'group_key', 'filters', 'query_words')
 
 class ContactGroupMemberSerializer(serializers.HyperlinkedModelSerializer):
     group = serializers.HyperlinkedRelatedField(
