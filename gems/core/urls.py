@@ -44,7 +44,7 @@ urlpatterns = patterns('',
     url(r'^get_unique_keys/', get_unique_keys, name='get_unique_keys'),
     url(r'^home/$', view_home, name='home'),
 
-    url(r'^contactgroups/$', load_contact_groups),
+    url(r'^contactgroup/$', load_contact_groups),
     url(r'^delete_contactgroup/', delete_contactgroup),
     url(r'^create_contactgroup/', create_contactgroup),
     url(r'^update_contactgroup/', update_contactgroup)

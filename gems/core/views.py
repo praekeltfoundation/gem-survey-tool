@@ -439,10 +439,10 @@ def view_home(request):
     return render(request, 'home.html')
 
 def get_contact_groups(request):
-    return HttpResponse("hello")
-    #contact_groups = ContactGroup.objects.all()
-    #data = serializers.serialize("json", contact_groups)
-    #return HttpResponse(json.dump(data), content_type="application/json")
+    #return HttpResponse("hello")
+    contact_groups = ContactGroup.objects.all()
+    data = serializers.serialize("json", contact_groups)
+    return HttpResponse(json.dump(data), content_type="application/json")
 
 def load_contact_groups(request):
     return render(request, 'contact-groups.html')
