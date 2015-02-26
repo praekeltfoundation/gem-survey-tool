@@ -51,6 +51,14 @@ footer {
      background-color: #00b9ad;
  }
 
+ .red{
+     background-color: #d81f23;
+ }
+
+ .orange{
+     background-color: #f79c1a;
+ }
+
  .right{
      float:right;
  }
@@ -91,7 +99,6 @@ footer {
     position: relative;
  }
 
- /*submenu*/
 .submenu{
     position: absolute;
     left: 200px;
@@ -102,4 +109,8 @@ footer {
 
 .top{
     margin-top: 150px;
+}
+
+.modal-dialog-center{
+    top: 25%;
 }
