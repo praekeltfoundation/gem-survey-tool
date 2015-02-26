@@ -1,3 +1,4 @@
+/*
 function toggleSubMenu(div)
 {
     var submenus = document.getElementsByClassName('submenu');
@@ -25,7 +26,7 @@ function hideSubMenu()
         submenus[i].style.display="none";
     }
 }
-
+*/
 var gems = angular.module('gems', []);
 
 gems.config(function($interpolateProvider) {

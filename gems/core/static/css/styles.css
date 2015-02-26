@@ -101,11 +101,8 @@ footer {
  }
 
 .submenu{
-    position: absolute;
-    left: 200px;
     height: 100%;
-    width: 200px;
-    display: none;
+    min-height: 800px;
 }
 
 .submenu-text{
@@ -119,4 +116,9 @@ footer {
 
 .top{
     margin-top: 150px;
+}
+
+.row-breath{
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
