@@ -7,23 +7,32 @@
 		<meta name="generator" content="Bootply" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+        <link href="{{ STATIC_URL }}css/bootstrap-toggle.min.css" rel="stylesheet">
 		<!--[if lt IE 9]>
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 		<link href="{{ STATIC_URL }}css/styles.css" rel="stylesheet">
-        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.11.2.min.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/angular.min.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/angular-cookies.min.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/script.js"></script>
+        <script src="{{ STATIC_URL }}js/jquery-1.11.2.min.js"></script>
+        <script src="{{ STATIC_URL }}js/angular.js"></script>
+        <script src="{{ STATIC_URL }}js/bootstrap-toggle.min.js"></script>
+        <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+        <script src="{{ STATIC_URL }}js/script.js"></script>
+        <script src="{{ STATIC_URL }}js/toggleCheckbox.js"></script>
+        <script src="{{ STATIC_URL }}js/mainController.js"></script>
+        <script src="{{ STATIC_URL }}js/groupController.js"></script>
+        <script src="{{ STATIC_URL }}js/queryController.js"></script>
 	</head>
 
 <body ng-app="gems">
     <div class="container">
 
         <!-- upper section -->
-        <div class="row">
+        <div class="row" ng-controller="mainController">
             {% include 'menu.html' %}
+
+            {% include 'createcontactgroup.html' %}
+
+            {% include 'contact-groups.html' %}
 
             {% block content %}
             {% endblock %}

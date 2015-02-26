@@ -11,11 +11,8 @@ from django.conf import settings
 from models import *
 import json
 import djqscsv
-#
 from django.shortcuts import render
-
 from go_http.contacts import ContactsApiClient
-
 import logging
 
 logger = logging.getLogger(__name__);
@@ -36,7 +33,8 @@ def user_login(request):
         user = authenticate(username=username, password=password)
 
         # If we have a User object, the details are correct.
-        # If None (Python's way of representing the absence of a value), no user
+        # If None (Python's way of representing the absence of a value),
+        # no user
         # with matching credentials was found.
         if user:
             # Is the account active? It could have been disabled.
@@ -79,7 +77,8 @@ class CreateContactGroupsView(TemplateView):
     template_name = "createcontactgroup.html"
 
     def get_context_data(self, **kwargs):
-        context = super(CreateContactGroupsView, self).get_context_data(**kwargs)
+        context = super(CreateContactGroupsView, self)\
+            .get_context_data(**kwargs)
 
         contactgroups = ContactGroup.objects.all()
         context['contactgroups'] = contactgroups
@@ -92,9 +91,9 @@ def save_data(request):
 
     if(request.method == 'POST'):
         msg = 'save_data - POST - Body[ %s ]' %(request.body);
-        f = open('/tmp/debug.log', 'a')
-        f.write('%s\n' % (msg))
-        f.close()
+        #f = open('/tmp/debug.log', 'a')
+        #f.write('%s\n' % (msg))
+        #f.close()
         logger.info(msg);
         data=json.loads(request.body)
         if type(data) is unicode:
@@ -104,15 +103,15 @@ def save_data(request):
         contact_msisdn = None
         conversation_key = None
 
-        if data.has_key('user'):
+        if 'user' in data:
             user = data['user']
-            if user.has_key('answers'):
+            if 'answers' in user:
                 answers = user["answers"]
-        if data.has_key('contact'):
+        if 'contact' in data:
             contact = data['contact']
-            if contact.has_key('msisdn'):
+            if 'msisdn' in contact:
                 contact_msisdn = contact['msisdn']
-        if data.has_key('conversation_key'):
+        if 'conversation_key' in data:
             conversation_key = data['conversation_key']
 
         # we have data
@@ -120,28 +119,37 @@ def save_data(request):
             try:
                 # fetch/create the survey
                 # fix this
-                survey, created = Survey.objects.get_or_create(survey_id=conversation_key, defaults={'survey_id': conversation_key, 'name': 'New Survey - Please update name in Admin console'})
+                survey, created = Survey.objects.get_or_create(
+                    survey_id=conversation_key,
+                    defaults={
+                        'survey_id': conversation_key,
+                        'name': 'New Survey - Please update name in Admin '
+                                'console'
+                    })
                 survey.save()
                 # add the contact
-                contact, created = Contact.objects.get_or_create(msisdn=contact_msisdn)
+                contact, created = Contact.objects.get_or_create(
+                    msisdn=contact_msisdn)
                 contact.save()
                 # add the survey result
                 survey_result = SurveyResult(
-                    survey = survey,
-                    contact = contact,
-                    answer = answers
+                    survey=survey,
+                    contact=contact,
+                    answer=answers
                 )
                 survey_result.save()
-            except Exception as ex:
+            except Exception:
                 return HttpResponse('FAILED-EX')
             else:
                 return HttpResponse('OK')
+        else:
+            return HttpResponse('FAILED-BAD-DATA')
     else:
         return HttpResponse('FAILED')
 
 
 class FieldFilter:
-    def __init__(self, operator, value, field, loperator = None):
+    def __init__(self, operator, value, field, loperator=None):
         self.operator = operator
         self.value = value
 
@@ -155,12 +163,15 @@ class FieldFilter:
 
         if field.type == 'N':
             # These are the normal fields
-            if operator == 'eq':
+            if operator == 'eq' or operator == 'ex':
                 kwargs = {
                     '{0}'.format(field.name): value
                 }
                 self.q = Q(**kwargs)
-            elif operator == 'gt' or operator == 'gte' or operator == 'lt' or 'lte':
+            elif operator == 'gt' \
+                    or operator == 'gte' \
+                    or operator == 'lt' \
+                    or operator == 'lte':
                 kwargs = {
                     '{0}__{1}'.format(field.name, operator): value
                 }
@@ -170,9 +181,19 @@ class FieldFilter:
                     '{0}__contains'.format(field.name): value
                 }
                 self.q = Q(**kwargs)
+            elif operator == 'neq':
+                kwargs = {
+                    '{0}'.format(field.name): value
+                }
+                self.q = ~Q(**kwargs)
+            elif operator == 'nco':
+                kwargs = {
+                    '{0}__contains'.format(field.name): value
+                }
+                self.q = ~Q(**kwargs)
         else:
             # These are the hstore fields
-            if operator == 'eq':
+            if operator == 'eq' or operator == 'ex':
                 self.q = Q(answer={field.name: value})
             elif operator == 'gt':
                 self.q = Q(answer__gt={field.name: value})
@@ -184,19 +205,24 @@ class FieldFilter:
                 self.q = Q(answer__lte={field.name: value})
             elif operator == 'co':
                 self.q = Q(answer__contains={field.name: value})
+            elif operator == 'neq':
+                self.q = ~Q(answer={field.name: value})
+            elif operator == 'nco':
+                self.q = ~Q(answer__contains={field.name: value})
 
     @staticmethod
     def decode(json, field):
         op = json['operator']
         value = json['value']
         lop = None
-        if json.has_key('loperator'):
+        if 'loperator' in json:
             lop = json['loperator']
 
         return FieldFilter(op, value, field, lop)
 
+
 class Filter:
-    def __init__(self, field, filters = [], loperator = None):
+    def __init__(self, field, filters=[], loperator=None):
         self.field = field
         self.filters = filters
 
@@ -210,7 +236,7 @@ class Filter:
         field = UIField.decode(json['field'])
         lop = None
 
-        if json.has_key('loperator'):
+        if 'loperator' in json:
             lop = json['loperator']
 
         local_filters = []
@@ -220,10 +246,16 @@ class Filter:
 
         return Filter(field, local_filters, lop)
 
-def build_query(payload, random = False):
 
+def build_query(payload, random=False):
+
+    limit = None
     filters = []
-    if(payload.has_key('filters')):
+
+    if 'limit' in payload:
+        limit = payload['limit']
+
+    if 'filters' in payload:
         for filter_json in payload['filters']:
             filters.append(Filter.decode(filter_json))
 
@@ -248,10 +280,15 @@ def build_query(payload, random = False):
             else:
                 q = q & temp_q
 
-    if random == True:
-        return SurveyResult.objects.filter(q).order_by('?')
+    rs = SurveyResult.objects.filter(q)
+
+    if random is True:
+        rs = rs.order_by('?')
+
+    if limit is not None:
+        return rs[:limit]
     else:
-        return SurveyResult.objects.filter(q)
+        return rs
 
 
 @csrf_exempt
@@ -263,10 +300,14 @@ def export(request):
     else:
         return HttpResponse('Bad request method')
 
+
 class UIField:
-    def __init__(self, name, type):
-        self.name = name
-        self.type = type
+    def __init__(self, name, field_type):
+        if type(name) is tuple:
+            self.name = name[0]
+        else:
+            self.name = name
+        self.type = field_type
 
     @staticmethod
     def decode(json):
@@ -279,7 +320,10 @@ class UIFieldEncoder(json.JSONEncoder):
         :type obj: UIField
         """
         if isinstance(obj, UIField):
-            return [obj.name, obj.type]
+            retVal = {}
+            retVal["name"] = obj.name
+            retVal["type"] = obj.type
+            return retVal
         return json.JSONEncoder.default(self, obj)
 
 
@@ -300,7 +344,10 @@ def get_surveyresult_meta_keys():
     excluded_fields = get_exclusion_list()
     field_keys = []
 
-    for field in sorted(SurveyResult._meta.concrete_fields + SurveyResult._meta.many_to_many + SurveyResult._meta.virtual_fields):
+    for field in sorted(
+            SurveyResult._meta.concrete_fields +
+            SurveyResult._meta.many_to_many +
+            SurveyResult._meta.virtual_fields):
         if field.name not in  excluded_fields:
             field_keys.append(UIField(field.name, 'N'))
 
@@ -315,7 +362,6 @@ def serialize_list_to_json(data, encoder):
     :rtype: string
     :return: data serialized as a json string
     """
-    #return json.dumps([x.__dict__ for x in data])
     return json.dumps(data, cls=encoder)
 
 
@@ -329,15 +375,27 @@ def query(request):
     payload = json.loads(request.body)
     results = build_query(payload, True)
 
-    return generate_json_response(serializers.serialize('json', list(results), fields=('survey', 'contact', 'created_at', 'updated_at', 'answer')))
+    return generate_json_response(
+        serializers.serialize(
+            'json',
+            list(results),
+            fields=(
+                'survey',
+                'contact',
+                'created_at',
+                'updated_at',
+                'answer')))
 
 
 def get_surveyresult_hstore_keys():
     """
     :rtype: List of UIField objects
-    :return: Unique set of keys from the answer hstore field in the surveyresult table
+    :return: Unique set of keys from the answer hstore field in the
+             surveyresult table
     """
-    sql = 'select distinct hKey from (select skeys(answer) as hKey from core_surveyresult) as dt'
+    sql = 'select distinct hKey ' \
+          'from (select skeys(answer) as hKey ' \
+          'from core_surveyresult) as dt'
     cursor = connection.cursor()
     answer_keys = []
 
@@ -356,7 +414,7 @@ def generate_json_response(content):
     :return: Returns a JSON response
     """
 
-    response = HttpResponse(content,content_type='application/json')
+    response = HttpResponse(content, content_type='application/json')
     response['Content-Length'] = len(content)
 
     return response
@@ -373,6 +431,7 @@ def get_unique_keys(request):
     keys = sorted(answer_keys + field_keys, key=lambda f: f.name)
 
     return generate_json_response(serialize_list_to_json(keys, UIFieldEncoder))
+
 
 #for testing menu.html in home.html
 def view_home(request):
@@ -464,7 +523,6 @@ def update_contact(request):
     return HttpResponse()
 
 def delete_contact(request):
-
     api = ContactsApiClient(settings.VUMI_TOKEN)
     api.delete_contact()
     return HttpResponse()
