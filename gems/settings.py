@@ -12,7 +12,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('derik', 'dbreedt@retrotrabbit.co.za'),
 )
 
 MANAGERS = ADMINS
@@ -153,11 +153,22 @@ LOGGING = {
             '()': 'django.utils.log.RequireDebugFalse'
         }
     },
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(levelname)s %(module)s %(message)s'
+        }
+    },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/var/praekelt/logs/debug.log',
+            'formatter': 'verbose'
         }
     },
     'loggers': {
@@ -166,6 +177,10 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+        'gems.debug': {
+            'handlers': ['file'],
+            'level': 'DEBUG'
+        }
     }
 }
 

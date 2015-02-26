@@ -11,7 +11,9 @@ from models import *
 import json
 import djqscsv
 from django.shortcuts import render
+import logging
 
+logger = logging.getLogger(__name__);
 
 def user_login(request):
     # Like before, obtain the context for the user's request.
@@ -86,7 +88,15 @@ class CreateContactGroupsView(TemplateView):
 def save_data(request):
 
     if(request.method == 'POST'):
-        data = json.loads(request.body)
+        msg = 'save_data - POST - Body[ %s ]' %(request.body);
+        f = open('/tmp/debug.log', 'a')
+        f.write('%s\n' % (msg))
+        f.close()
+        logger.info(msg);
+        data=json.loads(request.body)
+        if type(data) is unicode:
+            #decode the string again
+            data=json.loads(data);
         answers = None
         contact_msisdn = None
         conversation_key = None
@@ -130,7 +140,7 @@ def save_data(request):
                 return HttpResponse('FAILED-EX')
             else:
                 return HttpResponse('OK')
-        else:
+    else:
             return HttpResponse('FAILED-BAD-DATA')
     else:
         return HttpResponse('FAILED')
@@ -294,7 +304,7 @@ class UIField:
         if type(name) is tuple:
             self.name = name[0]
         else:
-            self.name = name
+        self.name = name
         self.type = field_type
 
     @staticmethod
@@ -336,7 +346,7 @@ def get_surveyresult_meta_keys():
             SurveyResult._meta.concrete_fields +
             SurveyResult._meta.many_to_many +
             SurveyResult._meta.virtual_fields):
-        if field.name not in excluded_fields:
+        if field.name not in  excluded_fields:
             field_keys.append(UIField(field.name, 'N'))
 
     return field_keys
