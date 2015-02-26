@@ -37,7 +37,7 @@ gems.controller('contentController', function ($scope, $http) {
     }
 
     $scope.getContactGroups = function getContactGroups() {
-        $http.get('/contactgroup/').
+        $http.get('/contactgroups/').
             success(function(data) {
                 $scope.ContactGroups = data;
             }).

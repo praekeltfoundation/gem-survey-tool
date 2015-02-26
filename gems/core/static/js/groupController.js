@@ -136,15 +136,32 @@ gems.controller('groupController', function($scope, $http){
         return group;
     };
 
+    //need user
     $scope.saveGroup = function saveGroup(query_words, filters){
         var group = $scope.getGroup(query_words, filters);
-        // TODO
+
+        $http.post('/create_contactgroup/', {group_name : g_name, filters : filters, query_words : query_words}).
+            success(function(status){
+                alert(status);
+            }).
+            error(function(status){
+                alert("Failed to create contact group." + "\n\n" + status);
+            });
+
         $scope.cancel();
     };
 
+    //need group_key
     $scope.updateGroup = function updateGroup(query_words, filters){
         var group = $scope.getGroup(query_words, filters);
-        // TODO
+        $http.post('/update_contactgroup/', {group_key : query_key, filters : filters, query_words : query_words}).
+            success(function(status){
+                alert(status);
+            }).
+            error(function(status){
+                alert("Failed to update contact group." + "\n\n" + status);
+            });
+
         $scope.cancel();
     };
 

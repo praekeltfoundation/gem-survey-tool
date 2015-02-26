@@ -14,6 +14,7 @@ import djqscsv
 from django.shortcuts import render
 from go_http.contacts import ContactsApiClient
 import logging
+import datetime
 
 logger = logging.getLogger(__name__);
 
@@ -446,7 +447,7 @@ def get_contact_groups(request):
 def load_contact_groups(request):
     return render(request, 'contact-groups.html')
 
-def delete_group_contact(request):
+def delete_contactgroup(request):
     if(request.method == 'POST'):
         data=json.loads(request.body)
         group_id = None
@@ -464,65 +465,69 @@ def delete_group_contact(request):
     else:
         return HttpResponse('FAILED')
 
-def create_groupcontact(request):
+def create_contactgroup(request):
     if request.method == 'POST':
         data=json.loads(request.body)
 
         if data.has_key('group_name'):
-            group_name = {u'name': data['group_name'],}
+            group_name = data['group_name']
 
             api = ContactsApiClient(settings.VUMI_TOKEN)
-            data_returned = api.create_group(group_name)
+            data_returned = api.create_group({u'name': group_name,})
 
             #check if the group key has been returned (checks if the group has been created on vumi)
             if 'key' in data_returned:
                 group_key = data_returned['key']
 
-                ContactGroup.objects.create(group_key=group_key,
-                                            name=group_name,
-                                            created_by='',
-                                            created_at='',
-                                            rules='')
+                if data.has_key('filters'):
+                    group_filters = data['filters']
 
-                return HttpResponse("OK")
+                    if data.has_key('query_words'):
+                        group_query_words = data['query_words']
+
+                        date_created = datetime.datetime.now()
+
+                        ContactGroup.objects.create(group_key=group_key,
+                                                    name=group_name,
+                                                    created_by=user,
+                                                    created_at=date_created,
+                                                    filters=group_filters,
+                                                    query_words=group_query_words)
+
+                        return HttpResponse("OK")
+
         return HttpResponse("FAILED")
     else:
         return HttpResponse("FAILED.")
 
-def update_groupcontact(request):
+def update_contactgroup(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
         if data.has_key('group_key'):
-            group_key = {u'key': data['group_key'],}
+            group_key = data['group_key']
+            group = ContactGroup.objects.get(group_key=group_key)
 
-        if data.has_key('group_name'):
-            group_name = {u'name': data['group_name'],}
+            if data.has_key('group_name'):
+                group_name = data['group_name']
 
-        api = ContactsApiClient(settings.VUMI_TOKEN)
-        api.update_group(group_key, group_name)
+                api = ContactsApiClient(settings.VUMI_TOKEN)
+                api.update_group(group_key, group_name)
+                #todo test if it's updated on vumi
 
+                group.name = group_name
+                group.save(save_fields=['name'])
 
+            if data.has_key('filters'):
+                group.filters = data['filters']
+                group.save(save_fields=['filters'])
 
-def create_contact(request):
-    if request.method == 'POST':
-        data=json.loads(request._body)
+            if data.has_key['query_words']:
+                group.query_words = data['query_words']
+                group.save(save_fields=['query_words'])
 
-        if data.has_key(''):
-            data =  0
-
-        api = ContactsApiClient(settings.VUMI_TOKEN)
-        api.create_contact()
-        return HttpResponse()
+            return HttpResponse("OK")
+        else:
+            return HttpResponse("FAILED")
     else:
-        return HttpResponse()
-
-def update_contact(request):
-    api = ContactsApiClient(settings.VUMI_TOKEN)
-    api.update_contact()
-    return HttpResponse()
-
-def delete_contact(request):
-    api = ContactsApiClient(settings.VUMI_TOKEN)
-    api.delete_contact()
-    return HttpResponse()
+        return HttpResponse("FAILED")
