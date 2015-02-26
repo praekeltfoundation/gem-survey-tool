@@ -163,12 +163,6 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-        },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': '/var/praekelt/logs/debug.log',
-            'formatter': 'verbose'
         }
     },
     'loggers': {
@@ -176,10 +170,6 @@ LOGGING = {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
-        },
-        'gems.debug': {
-            'handlers': ['file'],
-            'level': 'DEBUG'
         }
     }
 }

@@ -1,7 +1,4 @@
-{% extends 'base.html' %}
-
-{% block content %}
-    <div ng-controller="contentController">
+<div ng-controller="contentController" class="col-md-8" ng-if="showContactGroups">
     <div>
         <table class="table table-striped">
             <thead>
@@ -44,6 +41,4 @@
             </div>
         </div>
     </div>
-
 </div>
-{% endblock %}
