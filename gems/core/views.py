@@ -12,6 +12,12 @@ import json
 import djqscsv
 #
 from django.shortcuts import render
+
+from go_http.contacts import ContactsApiClient
+
+#token for vumi authentication
+VUMI_TOKEN = '996CA00F-6184-4734-B28F-0A56FD8367A3'
+
 import logging
 
 logger = logging.getLogger(__name__);
@@ -373,3 +379,82 @@ def get_unique_keys(request):
 #for testing menu.html in home.html
 def view_home(request):
     return render(request, 'home.html')
+
+def get_contact_groups(request):
+    return HttpResponse("hello")
+    #contact_groups = ContactGroup.objects.all()
+    #data = serializers.serialize("json", contact_groups)
+    #return HttpResponse(json.dump(data), content_type="application/json")
+
+def load_contact_groups(request):
+    return render(request, 'contact-groups.html')
+
+def delete_group_contact(request):
+    if(request.method == 'POST'):
+        data=json.loads(request.body)
+        group_id = None
+
+        if data.has_key('group_id'):
+             group_id = data['group_id']
+
+        ContactGroup.objects.filter(group_id=group_id).delete()
+
+        key = 'f578cbcb16bc4171a7ccc50d250dca96'
+        api = ContactsApiClient(VUMI_TOKEN)
+        api.delete_group(key)
+
+        return HttpResponse('OK')
+    else:
+        return HttpResponse('FAILED')
+
+def create_groupcontact(request):
+    if request.method == 'POST':
+        data=json.loads(request.body)
+
+        if data.has_key('group_name'):
+            group_data = {u'name': data['group_name'],}
+
+        api = ContactsApiClient(VUMI_TOKEN)
+        group = api.create_group(group_data)
+        return HttpResponse(group[u'key'])
+    else:
+        return HttpResponse("Failed to create group.")
+
+def update_groupcontact(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        if data.has_key('group_key'):
+            group_key = {u'key': data['group_key'],}
+
+        if data.has_key('group_name'):
+            group_name = {u'name': data['group_name'],}
+
+        api = ContactsApiClient(VUMI_TOKEN)
+        api.update_group(group_key, group_name)
+
+
+
+def create_contact(request):
+    if request.method == 'POST':
+        data=json.loads(request._body)
+
+        if data.has_key(''):
+            data =  0
+
+        api = ContactsApiClient(VUMI_TOKEN)
+        api.create_contact()
+        return HttpResponse()
+    else:
+        return HttpResponse()
+
+def update_contact(request):
+    api = ContactsApiClient(VUMI_TOKEN)
+    api.update_contact()
+    return HttpResponse()
+
+def delete_contact(request):
+
+    api = ContactsApiClient(VUMI_TOKEN)
+    api.delete_contact()
+    return HttpResponse()

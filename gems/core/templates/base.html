@@ -11,10 +11,14 @@
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 		<link href="{{ STATIC_URL }}css/styles.css" rel="stylesheet">
-        <script src="{{ STATIC_URL }}js/script.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.11.2.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/angular.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/angular-cookies.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/script.js"></script>
 	</head>
 
-<body>
+<body ng-app="gems">
     <div class="container">
 
         <!-- upper section -->
@@ -23,6 +27,8 @@
 
             {% block content %}
             {% endblock %}
+
         </div>
     </div>
 </body>
+</html>

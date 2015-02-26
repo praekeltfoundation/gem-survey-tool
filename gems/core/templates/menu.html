@@ -5,11 +5,11 @@
     <hr>
 
         <ul class="nav nav-stacked">
-            <li><a href="javascript:;"><img src="{{ STATIC_URL }}img/image18.png"/> User</a></li>
-            <li><a href="javascript:;"><img src="{{ STATIC_URL }}img/image19.png"/> Survey Builder</a></li>
+            <li><a href="javascript:toggleSubmenu('n/a');"><img src="{{ STATIC_URL }}img/image18.png"/> User</a></li>
+            <li><a href="javascript:toggleSubmenu('n/a');"><img src="{{ STATIC_URL }}img/image19.png"/> Survey Builder</a></li>
             <li><a href="javascript:toggleSubmenu(document.getElementById('contact'));"><img src="{{ STATIC_URL }}img/image23.png"/> Contact Management</a></li>
-            <li><a href="javascript:;"><img src="{{ STATIC_URL }}img/image25.png"/> Service Dashboard</a></li>
-            <li><a href="javascript:toggleSubmenu(document.getElementById('survey'));"><img src="{{ STATIC_URL }}img/image21.png"/> Survey Data</a></li>
+            <li><a href="javascript:toggleSubmenu('n/a');"><img src="{{ STATIC_URL }}img/image25.png"/> Service Dashboard</a></li>
+            <li><a href="javascript:toggleSubmenu(document.getElementById('survey-data'));"><img src="{{ STATIC_URL }}img/image21.png"/> Survey Data</a></li>
             <li><a href="{% url 'admin:index' %}"><img src="{{ STATIC_URL }}img/image20.png"/> Admin..</a></li>
         </ul>
 
