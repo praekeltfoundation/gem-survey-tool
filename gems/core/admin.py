@@ -15,7 +15,7 @@ class SurveyResultAdmin(admin.ModelAdmin):
 
 
 class ContactGroupAdmin(admin.ModelAdmin):
-    list_display = ('name','created_by','created_at','rules')
+    list_display = ('name', 'group_key', 'created_by','created_at','query_words', 'filters')
 
 
 class ContactGroupMemberAdmin(admin.ModelAdmin):

@@ -38,7 +38,8 @@ class ContactGroup(HStoreModel):
     name = models.CharField(max_length=50)
     created_by = models.ForeignKey(User)
     created_at = models.DateTimeField(auto_now_add=True)
-    rules = hstore.DictionaryField()
+    filters = models.CharField(max_length=8000)
+    query_words = models.CharField(max_length=8000)
 
     def __unicode__(self):
         return u'%s' % (self.name)

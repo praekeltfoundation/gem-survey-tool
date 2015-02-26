@@ -5,6 +5,7 @@ gems.controller('mainController', function($scope, $http, $window){
     $scope.showContactMenu = false;
     $scope.showCreateGroup = false;
     $scope.showContactGroups = false;
+    $scope.groupName = '';
 
     $scope.filters = [];
     $scope.createGroup = true;
@@ -55,5 +56,21 @@ gems.controller('mainController', function($scope, $http, $window){
 
     $scope.hideViewContactGroups = function hideViewContactGroups(){
         $scope.showContactGroups = false;
+    };
+
+    $scope.showEditContact = function showEditContact(name, filters){
+        $scope.showContactGroups = false;
+        $scope.showCreateGroup = true;
+        $scope.createGroup = false;
+        if(typeof(filters) === 'string'){
+            $scope.filters = JSON.parse(filters);
+        } else {
+            $scope.filters = filters;
+        }
+        $scope.groupName = name;
+    };
+
+    $scope.getGroupName = function getGroupName(){
+        return $scope.groupName;
     };
 });
