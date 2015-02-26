@@ -95,9 +95,9 @@ def save_data(request):
 
     if(request.method == 'POST'):
         msg = 'save_data - POST - Body[ %s ]' %(request.body);
-        f = open('/tmp/debug.log', 'a')
-        f.write('%s\n' % (msg))
-        f.close()
+        #f = open('/tmp/debug.log', 'a')
+        #f.write('%s\n' % (msg))
+        #f.close()
         logger.info(msg);
         data=json.loads(request.body)
         if type(data) is unicode:
@@ -146,7 +146,7 @@ def save_data(request):
                 return HttpResponse('FAILED-EX')
             else:
                 return HttpResponse('OK')
-    else:
+        else:
             return HttpResponse('FAILED-BAD-DATA')
     else:
         return HttpResponse('FAILED')
@@ -310,7 +310,7 @@ class UIField:
         if type(name) is tuple:
             self.name = name[0]
         else:
-        self.name = name
+            self.name = name
         self.type = field_type
 
     @staticmethod

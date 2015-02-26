@@ -12,7 +12,6 @@
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 		<link href="{{ STATIC_URL }}css/styles.css" rel="stylesheet">
-        <script src="{{ STATIC_URL }}js/script.js"></script>
         <script src="{{ STATIC_URL }}js/jquery-1.11.2.min.js"></script>
         <script src="{{ STATIC_URL }}js/angular.js"></script>
         <script src="{{ STATIC_URL }}js/bootstrap-toggle.min.js"></script>
@@ -31,8 +30,9 @@
         <div class="row" ng-controller="mainController">
             {% include 'menu.html' %}
 
-
             {% include 'createcontactgroup.html' %}
+
+            {% include 'contact-groups.html' %}
 
             {% block content %}
             {% endblock %}
