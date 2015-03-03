@@ -154,6 +154,8 @@ gems.controller('queryController', function($scope, $http){
         }
 
         $scope.queryWords = words;
+
+        $scope.setQueryWords($scope.queryWords);
     };
 
     $scope.fetchFields();

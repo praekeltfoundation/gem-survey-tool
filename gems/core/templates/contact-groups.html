@@ -23,7 +23,7 @@
                         <td>{$ data.created_at | date:'MM-dd-yyyy'$}</td>
                         <td>{$ data.query_words $}</td>
                         <td>
-                            <button class="btn btn-default table-button" ng-click="showEditContact(data.name , data.filters)">Edit</button>
+                            <button class="btn btn-default table-button" ng-click="showEditContact(data.name , data.filters, data.group_key)">Edit</button>
                             <button class="btn btn-default table-button" data-toggle="modal" data-target="#confirm-delete" ng-click="setGroupId(data.group_id)">Delete</button>
                         </td>
                     </tr>
