@@ -9,22 +9,17 @@
         <div class="row">
             <div class="form-inline data-line">
                 <label class="grey-font label-size">Survey Name:</label>
-                <input class="input-size" type="text" placeholder="Name">
-            </div>
-            <div class="form-inline data-line">
-                <label class="grey-font label-size">Created By:</label>
-                <select class="input-size" ng-options=""></select>
+                <input class="input-size" type="text" placeholder="Name" ng-model="surveySearchForm.name">
             </div>
             <div class="form-inline data-line">
                 <label class="label-size grey-font">Date Range:</label>
                 <label class="date-label-size grey-font">From:</label>
-                <input class="date-input-size" type="date">
+                <input class="date-input-size" type="text" ng-model="surveySearchForm.from" id="datepicker">
                 <label class="to-label-size grey-font">To:</label>
-                <input class="date-input-size" type="date">
-            </div>
+                <input class="date-input-size" type="text" ng-model="surveySearchForm.to" id="datepicker">
         </div>
         <div class="row button-line">
-            <button class="btn btn-default turquoise-button " ng-click="">Display Results</button>
+            <button class="btn btn-default turquoise-button " ng-click="getSurveys()">Display Results</button>
         </div>
         <div ng-if="">
             <div class="col-md-2">

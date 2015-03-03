@@ -534,3 +534,29 @@ def update_contactgroup(request):
             return HttpResponse("FAILED")
     else:
         return HttpResponse("FAILED")
+
+def get_surveys(request):
+    if request.method == 'POST':
+        data.json.loads(request.body)
+
+        surveys = None
+
+        if data.has_key('name'):
+            surveys = Survey.objects.filter(name__icontains=data['name'])
+
+        #todo check if dates are valid
+        if data.has_key('from'):
+            if surveys is not None:
+                surveys.exclude(created_on__lte=datetime.date(data['from']))
+            else:
+                surveys = Survey.objects.filter(created_on__gte=datetime.date(data['from']))
+
+        if data.has_key('to'):
+            if surveys is not None:
+                surveys.exclude(created_on__gte=datetime.date(data['to']))
+            else:
+                surveys = Survey.objects.filter(created_on__lte=datetime.date(data['to']))
+
+        HttpResponse(json.dump(surveys), content_type="application/json")
+    else:
+        return HttpResponse("FAILED")
