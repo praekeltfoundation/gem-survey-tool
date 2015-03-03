@@ -449,21 +449,24 @@ def load_contact_groups(request):
 
 def delete_contactgroup(request):
     if(request.method == 'POST'):
-        data=json.loads(request.body)
+        data = json.loads(request.body)
         group_id = None
 
         if data.has_key('group_id'):
-             group_id = data['group_id']
+            group_id = data['group_id']
 
-        ContactGroup.objects.filter(group_id=group_id).delete()
+            group = ContactGroup.objects.get(group_id=group_id)
+            key = group.key
+            api = ContactsApiClient(settings.VUMI_TOKEN)
+            deleted_group = api.delete_group(key)
 
-        key = 'f578cbcb16bc4171a7ccc50d250dca96'
-        api = ContactsApiClient(settings.VUMI_TOKEN)
-        api.delete_group(key)
-
-        return HttpResponse('OK')
-    else:
-        return HttpResponse('FAILED')
+            if deleted_group['key'] == key:
+                ContactGroup.objects.filter(group_id=group_id).delete()
+                return HttpResponse('OK')
+            else:
+                return HttpResponse('FAILED')
+        else:
+            return HttpResponse('FAILED')
 
 def create_contactgroup(request):
     if request.method == 'POST':

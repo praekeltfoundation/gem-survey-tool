@@ -136,7 +136,6 @@ gems.controller('groupController', function($scope, $http){
         return group;
     };
 
-    //need user
     $scope.saveGroup = function saveGroup(query_words, filters){
         var group = $scope.getGroup(query_words, filters);
 

@@ -5,6 +5,8 @@ gems.controller('mainController', function($scope, $http, $window){
     $scope.showContactMenu = false;
     $scope.showCreateGroup = false;
     $scope.showContactGroups = false;
+    $scope.showExportSurvey = false;
+    $scope.showExportSurveyData = false;
     $scope.groupName = '';
 
     $scope.filters = [];
@@ -27,10 +29,12 @@ gems.controller('mainController', function($scope, $http, $window){
     };
 
     $scope.hideSubMenus = function hideSubMenus(url){
-        $scope.showContactMenu = false;
         $scope.showSurveyDataMenu = false;
+        $scope.showContactMenu = false;
         $scope.showCreateGroup = false;
         $scope.showContactGroups = false;
+        $scope.showExportSurvey = false;
+        $scope.showExportSurveyData = false;
 
         if(typeof(url) != 'undefined'){
             $window.location.href = url;
@@ -40,6 +44,8 @@ gems.controller('mainController', function($scope, $http, $window){
     $scope.showCreateContact = function showCreateContact(){
         $scope.showContactGroups = false;
         $scope.showCreateGroup = true;
+        $scope.showExportSurvey = false;
+        $scope.showExportSurveyData = false;
         $scope.createGroup = true;
         $scope.filters = [];
     };
@@ -52,6 +58,8 @@ gems.controller('mainController', function($scope, $http, $window){
     $scope.showViewContactGroups = function showViewContactGroups(){
         $scope.showContactGroups = true;
         $scope.showCreateGroup = false;
+        $scope.showExportSurvey = false;
+        $scope.showExportSurveyData = false;
     };
 
     $scope.hideViewContactGroups = function hideViewContactGroups(){
@@ -68,6 +76,35 @@ gems.controller('mainController', function($scope, $http, $window){
             $scope.filters = filters;
         }
         $scope.groupName = name;
+    };
+
+    $scope.showViewExportSurvey = function showViewExportSurvey(){
+        $scope.showContactGroups = false;
+        $scope.showCreateGroup = false;
+        $scope.showExportSurvey = true;
+        $scope.showExportSurveyData = false;
+    };
+
+    $scope.hideViewExportSurvey = function hideViewExportSurvey(){
+        $scope.showExportSurvey = false;
+    };
+
+    $scope.showViewExportSurveyData = function showViewExportSurveyData(){
+        $scope.showContactGroups = false;
+        $scope.showCreateGroup = false;
+        $scope.showExportSurvey = false;
+        $scope.showExportSurveyData = true;
+    };
+
+    $scope.hideViewExportSurveyData = function hideViewExportSurveyData(){
+        $scope.showExportSurveyData = false;
+    };
+
+    $scope.hideViews = function hideViews(){
+        $scope.showContactGroups = false;
+        $scope.showCreateGroup = false;
+        $scope.showExportSurvey = false;
+        $scope.showExportSurveyData = false;
     };
 
     $scope.getGroupName = function getGroupName(){
