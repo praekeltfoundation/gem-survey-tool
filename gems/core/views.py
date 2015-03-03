@@ -438,14 +438,17 @@ def get_unique_keys(request):
 def view_home(request):
     return render(request, 'home.html')
 
+
 def get_contact_groups(request):
     #return HttpResponse("hello")
     contact_groups = ContactGroup.objects.all()
     data = serializers.serialize("json", contact_groups)
     return HttpResponse(json.dump(data), content_type="application/json")
 
+
 def load_contact_groups(request):
     return render(request, 'contact-groups.html')
+
 
 def delete_contactgroup(request):
     if(request.method == 'POST'):
@@ -468,6 +471,25 @@ def delete_contactgroup(request):
         else:
             return HttpResponse('FAILED')
 
+
+def processGroupMember(api, member, group):
+    try:
+        contact = api.get_contact(msisdn=member)
+    except Exception:
+        contact = None
+        logger.info('Contact: %s not found in vumi' % (member))
+
+    if contact:
+        contact['groups'].append(group.group_key)
+        try:
+            api.update_contact(contact['key'], {u'groups': contact['groups']})
+        except Exception as ex:
+            logger.info('Contact: %s update failed' % (member))
+
+    local_contact = Contact.objects.get(msisdn=member)
+    group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=local_contact)
+
+
 def create_contactgroup(request):
     if request.method == 'POST':
         data=json.loads(request.body)
@@ -477,6 +499,7 @@ def create_contactgroup(request):
 
             api = ContactsApiClient(settings.VUMI_TOKEN)
             data_returned = api.create_group({u'name': group_name,})
+            #g = api.get_contact(msisdn='+27829247119')
 
             #check if the group key has been returned (checks if the group has been created on vumi)
             if 'key' in data_returned:
@@ -490,18 +513,25 @@ def create_contactgroup(request):
 
                         date_created = datetime.datetime.now()
 
-                        ContactGroup.objects.create(group_key=group_key,
+                        contact_group = ContactGroup.objects.create(group_key=group_key,
                                                     name=group_name,
                                                     created_by=request.user,
                                                     created_at=date_created,
                                                     filters=group_filters,
                                                     query_words=group_query_words)
 
-                        return HttpResponse("OK")
+                if 'members' in data:
+                    members = data['members']
+
+                    for member in members:
+                        processGroupMember(api, member, contact_group)
+
+                    return HttpResponse("OK")
 
         return HttpResponse("FAILED")
     else:
         return HttpResponse("FAILED.")
+
 
 def update_contactgroup(request):
     if request.method == 'POST':
@@ -510,12 +540,12 @@ def update_contactgroup(request):
         if 'group_key' in data:
             group_key = data['group_key']
             group = ContactGroup.objects.get(group_key=group_key)
+            api = ContactsApiClient(settings.VUMI_TOKEN)
 
             if 'name' in data:
                 group_name = data['name']
 
                 if group_name != group.name:
-                    api = ContactsApiClient(settings.VUMI_TOKEN)
                     api.update_group(group_key, {u'name': group_name})
                     #todo test if it's updated on vumi
 
@@ -530,11 +560,18 @@ def update_contactgroup(request):
                 group.query_words = data['query_words']
                 group.save()
 
+            if 'members' in data:
+                members = data['members']
+
+                for member in members:
+                    processGroupMember(api, member, group)
+
             return HttpResponse("OK")
         else:
             return HttpResponse("FAILED")
     else:
         return HttpResponse("FAILED")
+
 
 def get_surveys(request):
     if request.method == 'POST':
