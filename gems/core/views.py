@@ -296,6 +296,7 @@ def build_query(payload, random=False):
 def export_survey(request):
     if request.method == 'POST':
         #TODO: Add your filter code here
+
         payload = json.loads(request.body)
         qs = build_query(payload)
         return djqscsv.render_to_csv_response(qs)
@@ -588,24 +589,29 @@ def get_surveys(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        surveys = None
+        results = Survey.objects.all()
+
         if 'name' in data:
-            surveys = Survey.objects.filter(name__contains=data['name'])
+            results = results.filter(name__contains=data['name'])
 
         #todo check if dates are valid
         if 'from' in data:
-            if surveys is not None:
-                surveys.exclude(created_on__lte=datetime(data['from']))
-            else:
-                surveys = Survey.objects.filter(created_on__gte=datetime(data['from']))
+            try:
+                date_from = datetime.datetime.strptime(data['from'], "%Y-%m-%d")
+                results = results.filter(created_on__gte=date_from)
+            except ValueError:
+                return HttpResponse("Invalid date.")
 
         if 'to' in data:
-            if surveys is not None:
-                surveys.exclude(created_on__gte=datetime.date(data['to']))
-            else:
-                surveys = Survey.objects.filter(created_on__lte=datetime.date(data['to']))
+            try:
+                date_to = datetime.datetime.strptime(data['to'], "%Y-%m-%d")
+                results = results.filter(created_on__lte=date_to)
+            except ValueError:
+                return HttpResponse("Invalid date.")
 
-        data = serializers.serialize("json", surveys)
-        return HttpResponse(json.dump(data), content_type="application/json")
+        return generate_json_response(
+            serializers.serialize(
+                'json',
+                list(results)))
     else:
         return HttpResponse("FAILED")
