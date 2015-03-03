@@ -7,16 +7,18 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('first_name', 'last_name')
 
+
 class SurveySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Survey
-        fields = { 'survey_id', 'name' }
+        fields = ('survey_id', 'name',)
+
 
 class SurveyResultSerializer(serializers.HyperlinkedModelSerializer):
-    survey_id = serializers.HyperlinkedRelatedField(
+    survey = serializers.HyperlinkedRelatedField(
         many=True,
         read_only=True,
-        view_name='survey_id-detail'
+        view_name='survey-detail'
     )
 
     contact = serializers.HyperlinkedRelatedField(
@@ -27,19 +29,20 @@ class SurveyResultSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = SurveyResult
-        fields = ( 'survey_id', 'contact', 'answer')
+        fields = ( 'survey', 'contact', 'answer')
 
 
 class ContactSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Contact
-        fields = ('msisdn')
+        fields = ('msisdn',)
 
 
 class ContactGroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ContactGroup
         fields = ('group_id', 'name', 'created_at', 'group_key', 'filters', 'query_words')
+
 
 class ContactGroupMemberSerializer(serializers.HyperlinkedModelSerializer):
     group = serializers.HyperlinkedRelatedField(

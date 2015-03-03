@@ -11,7 +11,8 @@ class HStoreModel(models.Model):
 
 
 class Survey(models.Model):
-    name=models.CharField(max_length=200, primary_key=True)
+    survey_id = models.CharField(max_length=200, primary_key=True)
+    name = models.CharField(max_length=200)
 
     def __unicode__(self):
         return  u'%s' % self.name
