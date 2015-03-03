@@ -8,18 +8,6 @@ gems.controller('groupController', function($scope, $http){
     $scope.columns = [];
     $scope.rows = [];
 
-    $scope.cleanFields = function cleanFields(data){
-        if(data && data.length > 0){
-            for(var x = 0; x < data.length; ++x){
-                if( typeof(data[x].name) == 'object'){
-                    data[x].name = data[x].name[0];
-                }
-            }
-        }
-
-        return data;
-    };
-
     $scope.fetchResults = function fetchResults(){
         $scope.rows = [];
         $scope.queryStarted = true;
@@ -47,6 +35,8 @@ gems.controller('groupController', function($scope, $http){
                         fields: []
                     };
 
+                    fields.id = results[x].pk;
+
                     for(var y = 0; y < $scope.columns.length; ++y){
                         var column = $scope.columns[y];
 
@@ -67,7 +57,7 @@ gems.controller('groupController', function($scope, $http){
     $scope.fetchFields = function fetchFields(){
         $http.get('/get_unique_keys/')
             .success(function(data){
-                $scope.fields = $scope.cleanFields(data);
+                $scope.fields = data;
                 $scope.columns = $scope.fields;
             })
     };

@@ -7,20 +7,18 @@
             <span class="sub-heading grey-font">Define the rules for your data export</span>
         </div>
         {% include 'query.html' %}
-        <div class="row query-line">
-            <div>
-                <span class="grey-font sub-heading">Or type in your query here:</span>
-            </div>
-            <div>
-                <input class="query-input" type="text">
-            </div>
-        </div>
         <div class="row button-line">
-            <button class="btn btn-default turquoise-button">Display Results</button>
+            <button class="btn btn-default turquoise-button" ng-click="fetchResults()">{$ queryStarted ? 'Refresh Results' : 'Display Results' $}</button>
         </div>
-        <div ng-if="">
+        <div class="row">
+            &nbsp;
+        </div>
+        <div class="row" ng-if="queryStarted == true && rows.length == 0">
+            <span class="grey-font bold">Sorry. There are no results that match your query. Please adjust your Rules.</span>
+        </div>
+        <div class="row" ng-if="queryStarted == true && rows.length > 0">
             <div class="col-md-2">
-                <span class="">Results ({$ rows.count $})</span>
+                <span>Results ({$ rows.length $})</span>
             </div>
             <div class="col-md-2">
                 <button class="btn grey" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
@@ -44,7 +42,7 @@
         </div>
         <div class="row" ng-if="queryStarted == true && rows.length > 0 && createGroup">
             <div class="col-md-3 col-md-offset-9">
-                <button class="btn btn-primary right pink white-font" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Export Data</button>
+                <button class="btn btn-primary right pink white-font" ng-click="exportCsv()" ng-disabled="!anyRowsSelected()">Export Data</button>
             </div>
         </div>
     </div>

@@ -18,43 +18,6 @@ gems.controller('queryController', function($scope, $http){
 
     $scope.queryWords = '';
 
-    /*
-    $scope.filters = [
-        {
-            "field": {
-                "type": "N",
-                "name": "contact"
-            },
-            "filters": [
-                {
-                    "operator": "lt",
-                    "value": "18"
-                },
-                {
-                    "loperator": "or",
-                    "operator": "gt",
-                    "value": "12"
-                }
-            ]
-        },
-        {
-            "loperator": "or",
-            "field": {
-                "type": "N",
-                "name": "survey"
-            },
-            "filters": [
-                {
-                    "operator": "eq",
-                    "value": "female"
-                }
-            ]
-        }
-    ];
-    */
-
-    //$scope.filters = $scope.groupFilter;
-
     $scope.queryWordOperator = function queryWordOperator(op){
         var retVal = '';
 
@@ -89,7 +52,7 @@ gems.controller('queryController', function($scope, $http){
     $scope.fetchFields = function fetchFields(){
         $http.get('/get_unique_keys/')
             .success(function(data){
-                $scope.fields = $scope.cleanFields(data);
+                $scope.fields = data;
                 $scope.columns = $scope.fields;
                 $scope.processFilters();
             })
@@ -145,7 +108,9 @@ gems.controller('queryController', function($scope, $http){
                 if(y > 0){
                     words += ' ' + filter.filters[y].loperator + ' ';
                 }
-                words += field.name + ' ' + $scope.queryWordOperator(filter.filters[y].operator) + ' ' + filter.filters[y].value;
+                if(field != null && filter.filters[y].value != null){
+                    words += field.name + ' ' + $scope.queryWordOperator(filter.filters[y].operator) + ' ' + filter.filters[y].value;
+                }
             }
 
             if(filter.filters.length > 1){

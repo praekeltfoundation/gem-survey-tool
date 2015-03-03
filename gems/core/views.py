@@ -307,7 +307,11 @@ def export_survey(request):
 def export_survey_results(request):
     if request.method == 'POST':
         payload = json.loads(request.body)
-        qs = build_query(payload)
+
+        if 'rows' in payload:
+            rows = payload['rows']
+
+        qs = SurveyResult.objects.filter(pk__in=rows)
         return djqscsv.render_to_csv_response(qs)
     else:
         return HttpResponse('Bad request method')
@@ -345,7 +349,7 @@ def get_exclusion_list():
     :rtype : Tuple
     :return: a list of fields to be excluded from the results
     """
-    return ('id', 'answer')
+    return ('answer')
 
 
 def get_surveyresult_meta_keys():
@@ -392,6 +396,7 @@ def query(request):
             'json',
             list(results),
             fields=(
+                'id',
                 'survey',
                 'contact',
                 'created_at',
