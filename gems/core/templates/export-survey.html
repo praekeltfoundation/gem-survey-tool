@@ -30,6 +30,7 @@
             <table class="table table-striped">
                 <thead class="table-heading white-font">
                     <tr>
+                        <th></th>
                         <th class="survey-name">Survey Name</th>
                         <th class="survey-date">Start Date</th>
                     </tr>
@@ -37,8 +38,8 @@
                 <tbody class="table-rows">
                     <tr ng-repeat="survey in Surveys">
                         <td><input type="checkbox" ng-model="row.selected"></td>
-                        <td>{$ survey.name $}</td>
-                        <td>{$ survey.created_on $}</td>
+                        <td>{$ survey.pk $}</td>
+                        <td>{$ survey.fields.created_on $}</td>
                     </tr>
                 </tbody>
             </table>
