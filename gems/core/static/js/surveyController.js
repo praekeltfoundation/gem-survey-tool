@@ -8,22 +8,22 @@ gems.controller('surveyController', function($scope, $http){
         from : null,
         to : null
     };
-    $scope.buttonEnabled = false;
 
     $scope.getSurveys = function getSurveys(){
+        $scope.queryStarted = true;
         var payload = {};
 
-        if ($scope.surveySearchForm.name != null && $scope.surveySearchForm.name != "")
+        if (!!$scope.surveySearchForm.name)
         {
             payload.name = $scope.surveySearchForm.name;
         }
 
-        if ($scope.surveySearchForm.from != null && $scope.surveySearchForm.from != "")
+        if (!!$scope.surveySearchForm.from)
         {
             payload.from = $scope.surveySearchForm.from;
         }
 
-        if ($scope.surveySearchForm.to != null && $scope.surveySearchForm.to != "")
+        if (!!$scope.surveySearchForm.to)
         {
             payload.to = $scope.surveySearchForm.to;
         }
@@ -34,7 +34,6 @@ gems.controller('surveyController', function($scope, $http){
                 data: payload
             })
             .success(function(data){
-                alert(data);
                 $scope.Surveys = data;
             })
             .error(function(data){

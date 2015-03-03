@@ -75,6 +75,10 @@ footer {
     color: rgb(121, 121, 121);
 }
 
+.grey-background{
+    background-color: rgb(214, 214, 214);
+}
+
 .white-font{
     color: white;
 }
@@ -167,6 +171,16 @@ footer {
     padding-bottom: 20px;
     font-size: 12px;
     font-weight: bold;
+}
+
+.results-head{
+    font-size: 18px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.results-head > span{
+    margin-right: 40px;
 }
 
 .data-line{
@@ -279,11 +293,18 @@ th.rules{
     width: 30%
 }
 
-
 .table-button{
     height: 31px;
     width: 80px;
     background-color: #D6D6D6;
     color: rgb(66, 66, 66);
     font-size: 10px;
+}
+
+th.survey-name{
+    width: 50%;
+}
+
+th.survey-date{
+    width: 50%;
 }

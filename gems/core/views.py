@@ -556,8 +556,7 @@ def get_surveys(request):
             else:
                 surveys = Survey.objects.filter(created_on__lte=datetime.date(data['to']))
 
-        return HttpResponse(surveys)
-
-        HttpResponse(json.dump(surveys), content_type="application/json")
+        data = serializers.serialize("json", surveys)
+        return HttpResponse(json.dump(data), content_type="application/json")
     else:
         return HttpResponse("FAILED")
