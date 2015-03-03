@@ -293,7 +293,18 @@ def build_query(payload, random=False):
 
 
 @csrf_exempt
-def export(request):
+def export_survey(request):
+    if request.method == 'POST':
+        #TODO: Add your filter code here
+        payload = json.loads(request.body)
+        qs = build_query(payload)
+        return djqscsv.render_to_csv_response(qs)
+    else:
+        return HttpResponse('Bad request method')
+
+
+@csrf_exempt
+def export_survey_results(request):
     if request.method == 'POST':
         payload = json.loads(request.body)
         qs = build_query(payload)
