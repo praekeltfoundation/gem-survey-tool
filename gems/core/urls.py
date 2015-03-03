@@ -48,6 +48,5 @@ urlpatterns = patterns('',
     url(r'^delete_contactgroup/', delete_contactgroup),
     url(r'^create_contactgroup/', create_contactgroup),
     url(r'^update_contactgroup/', update_contactgroup),
-
-    url(r'^/get_surveys/$', get_surveys, name='get_surveys')
+    url(r'^get_surveys/$', get_surveys),
 )

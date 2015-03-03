@@ -537,25 +537,26 @@ def update_contactgroup(request):
 
 def get_surveys(request):
     if request.method == 'POST':
-        data.json.loads(request.body)
+        data = json.loads(request.body)
 
         surveys = None
-
-        if data.has_key('name'):
-            surveys = Survey.objects.filter(name__icontains=data['name'])
+        if 'name' in data:
+            surveys = Survey.objects.filter(name__contains=data['name'])
 
         #todo check if dates are valid
-        if data.has_key('from'):
+        if 'from' in data:
             if surveys is not None:
-                surveys.exclude(created_on__lte=datetime.date(data['from']))
+                surveys.exclude(created_on__lte=datetime(data['from']))
             else:
-                surveys = Survey.objects.filter(created_on__gte=datetime.date(data['from']))
+                surveys = Survey.objects.filter(created_on__gte=datetime(data['from']))
 
-        if data.has_key('to'):
+        if 'to' in data:
             if surveys is not None:
                 surveys.exclude(created_on__gte=datetime.date(data['to']))
             else:
                 surveys = Survey.objects.filter(created_on__lte=datetime.date(data['to']))
+
+        return HttpResponse(surveys)
 
         HttpResponse(json.dump(surveys), content_type="application/json")
     else:

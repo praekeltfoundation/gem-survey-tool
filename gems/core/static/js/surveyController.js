@@ -11,7 +11,7 @@ gems.controller('surveyController', function($scope, $http){
     $scope.buttonEnabled = false;
 
     $scope.getSurveys = function getSurveys(){
-        var payload = [];
+        var payload = {};
 
         if ($scope.surveySearchForm.name != null && $scope.surveySearchForm.name != "")
         {
@@ -28,12 +28,13 @@ gems.controller('surveyController', function($scope, $http){
             payload.to = $scope.surveySearchForm.to;
         }
 
-        $htto({
+        $http({
                 url: '/get_surveys/',
                 method: 'POST',
                 data: payload
             })
             .success(function(data){
+                alert(data);
                 $scope.Surveys = data;
             })
             .error(function(data){
