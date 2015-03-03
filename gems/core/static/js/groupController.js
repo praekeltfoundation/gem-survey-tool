@@ -110,11 +110,11 @@ gems.controller('groupController', function($scope, $http){
         return retVal;
     };
 
-    $scope.getGroup = function getGroup(query_words, filters){
+    $scope.getGroup = function getGroup(filters){
         var group = {
             name: $scope.groupName,
             members: [],
-            query_words: query_words,
+            query_words: $scope.getQueryWords(),
             filters: JSON.stringify( filters )
         };
 
@@ -136,10 +136,10 @@ gems.controller('groupController', function($scope, $http){
         return group;
     };
 
-    $scope.saveGroup = function saveGroup(query_words, filters){
-        var group = $scope.getGroup(query_words, filters);
+    $scope.saveGroup = function saveGroup(filters){
+        var group = $scope.getGroup(filters);
 
-        $http.post('/create_contactgroup/', {group_name : g_name, filters : filters, query_words : query_words}).
+        $http.post('/create_contactgroup/', group).
             success(function(status){
                 alert(status);
             }).
@@ -151,9 +151,11 @@ gems.controller('groupController', function($scope, $http){
     };
 
     //need group_key
-    $scope.updateGroup = function updateGroup(query_words, filters){
-        var group = $scope.getGroup(query_words, filters);
-        $http.post('/update_contactgroup/', {group_key : query_key, filters : filters, query_words : query_words}).
+    $scope.updateGroup = function updateGroup(filters){
+        var group = $scope.getGroup(filters);
+        group.group_key = $scope.groupKey;
+
+        $http.post('/update_contactgroup/', group).
             success(function(status){
                 alert(status);
             }).

@@ -472,8 +472,8 @@ def create_contactgroup(request):
     if request.method == 'POST':
         data=json.loads(request.body)
 
-        if data.has_key('group_name'):
-            group_name = data['group_name']
+        if 'name' in data:
+            group_name = data['name']
 
             api = ContactsApiClient(settings.VUMI_TOKEN)
             data_returned = api.create_group({u'name': group_name,})
@@ -482,17 +482,17 @@ def create_contactgroup(request):
             if 'key' in data_returned:
                 group_key = data_returned['key']
 
-                if data.has_key('filters'):
+                if 'filters' in data:
                     group_filters = data['filters']
 
-                    if data.has_key('query_words'):
+                    if 'query_words' in data:
                         group_query_words = data['query_words']
 
                         date_created = datetime.datetime.now()
 
                         ContactGroup.objects.create(group_key=group_key,
                                                     name=group_name,
-                                                    created_by=user,
+                                                    created_by=request.user,
                                                     created_at=date_created,
                                                     filters=group_filters,
                                                     query_words=group_query_words)
@@ -507,27 +507,28 @@ def update_contactgroup(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        if data.has_key('group_key'):
+        if 'group_key' in data:
             group_key = data['group_key']
             group = ContactGroup.objects.get(group_key=group_key)
 
-            if data.has_key('group_name'):
-                group_name = data['group_name']
+            if 'name' in data:
+                group_name = data['name']
 
-                api = ContactsApiClient(settings.VUMI_TOKEN)
-                api.update_group(group_key, group_name)
-                #todo test if it's updated on vumi
+                if group_name != group.name:
+                    api = ContactsApiClient(settings.VUMI_TOKEN)
+                    api.update_group(group_key, {u'name': group_name})
+                    #todo test if it's updated on vumi
 
-                group.name = group_name
-                group.save(save_fields=['name'])
+                    group.name = group_name
+                    group.save(save_fields=['name'])
 
-            if data.has_key('filters'):
+            if 'filters' in data:
                 group.filters = data['filters']
-                group.save(save_fields=['filters'])
+                group.save()
 
-            if data.has_key['query_words']:
+            if 'query_words' in data:
                 group.query_words = data['query_words']
-                group.save(save_fields=['query_words'])
+                group.save()
 
             return HttpResponse("OK")
         else:
