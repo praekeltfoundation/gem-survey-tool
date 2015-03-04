@@ -120,10 +120,12 @@ footer {
     position: relative;
  }
 
- .menu-text{
-     color: rgb(66, 66, 66);
-     font-size: 14px;
- }
+.menu-text{
+    color: rgb(66, 66, 66);
+    font-size: 14px;
+    padding-left: 20px;
+    text-indent: -20px;
+}
 
  .menu-text:hover, .menu-text:focus{
      color: rgb(80, 80, 80);
@@ -138,6 +140,10 @@ footer {
 .submenu-text{
     color: rgb(255, 255, 255);
     font-size: 14px;
+}
+
+.submenu-links{
+    padding-left: 20px;
 }
 
 .submenu-text:hover, .submenu-text:focus{
