@@ -411,7 +411,6 @@ def query(request):
         serializers.serialize(
             'json',
             list(results),
-            #relations=('survey'),
             use_natural_keys=True,
             fields=(
                 'id',
@@ -493,7 +492,7 @@ def delete_contactgroup(request):
             group_id = data['group_id']
 
             group = ContactGroup.objects.get(group_id=group_id)
-            key = group.key
+            key = group.group_key
             api = ContactsApiClient(settings.VUMI_TOKEN)
             deleted_group = api.delete_group(key)
 
