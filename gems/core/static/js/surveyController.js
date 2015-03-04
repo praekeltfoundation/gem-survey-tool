@@ -175,6 +175,38 @@ gems.controller('surveyController', function($scope, $http){
         window.location.assign(url);
     };
 
+    $scope.getSelectedSurveyRows = function getSelectedRows(){
+        var rows = [];
+
+        var nameIndex = 0;
+
+        for(var x = 0; x < $scope.fields.length; ++x){
+            if($scope.fields[x].name === 'name' ){
+                nameIndex = x;
+                break;
+            }
+        }
+
+        for(var x = 0; x < $scope.rows.length; ++x){
+            if($scope.rows[x].selected){
+                rows.push($scope.rows[x].fields[nameIndex]);
+            }
+        }
+
+        return rows;
+    };
+
+    $scope.exportSurveyCsv = function exportCsv(){
+        var data = $scope.getSelectedSurveyRows();
+
+        var url = '/export_survey/?pk=';
+
+        for(var x = 0; x < data.length; ++x){
+            var tempUrl = url + data[x];
+            window.location.assign(tempUrl);
+        }
+    };
+
     $scope.fetchFields();
 
 });

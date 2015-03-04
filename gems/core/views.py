@@ -296,11 +296,11 @@ def build_query(payload, random=False):
 @csrf_exempt
 def export_survey(request):
     if request.method == 'GET':
-        if 'rows' in request.GET:
-            raw_rows = request.GET['rows']
-            rows = raw_rows.split(',')
-            qs = SurveyResult.objects.filter(survey__name__in=rows)
-            return djqscsv.render_to_csv_response(qs)
+        if 'pk' in request.GET:
+            pk = request.GET['pk']
+            qs = SurveyResult.objects.filter(survey__name=pk)
+            filename = '%s_survey_results.csv' % (pk)
+            return djqscsv.render_to_csv_response(qs, filename=filename)
 
     return HttpResponse('Bad request method')
 
