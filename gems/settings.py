@@ -133,7 +133,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'gems.core',
     'django.contrib.admin',
-    'rest_framework'
+    'rest_framework',
+    'south'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
