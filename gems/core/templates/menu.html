@@ -2,14 +2,16 @@
     <div class="menu-logo-container">
         <img class="menu-logo " src="{{ STATIC_URL }}img/ghelogo.png"/>
     </div>
-    <ul class="nav nav-stacked">
-        <li><a class="menu-text" href="" ng-click="hideSubMenus()"><img src="{{ STATIC_URL }}img/image18.png"/> {{ user.get_username }}</a></li>
-        <li><a class="menu-text" href="" ng-click="hideSubMenus('http://www.vumi.org')"><img src="{{ STATIC_URL }}img/image19.png"/> Survey Builder</a></li>
-        <li><a class="menu-text" href="" ng-click="toggleContactMenu()"><img src="{{ STATIC_URL }}img/image23.png"/> Contact Management</a></li>
-        <li><a class="menu-text" href="" ng-click="hideSubMenus()"><img src="{{ STATIC_URL }}img/image25.png"/> Service Dashboard</a></li>
-        <li><a class="menu-text" href="" ng-click="toggleSurveyDataMenu()"><img src="{{ STATIC_URL }}img/image21.png"/> Survey Data</a></li>
-        <li><a class="menu-text" href="" ng-click="hideSubMenus('{% url 'admin:index' %}')"><img src="{{ STATIC_URL }}img/image20.png"/> Admin..</a></li>
-    </ul>
+    <div class="submenu-links">
+        <ul class="nav nav-stacked">
+            <li><a class="menu-text" href="" ng-click="hideSubMenus()"><img src="{{ STATIC_URL }}img/image18.png"/> {{ user.get_username }}</a></li>
+            <li><a class="menu-text" href="" ng-click="hideSubMenus('http://www.vumi.org')"><img src="{{ STATIC_URL }}img/image19.png"/> Survey Builder</a></li>
+            <li><a class="menu-text" href="" ng-click="toggleContactMenu()"><img src="{{ STATIC_URL }}img/image23.png"/> Contact Management</a></li>
+            <li><a class="menu-text" href="" ng-click="hideSubMenus()"><img src="{{ STATIC_URL }}img/image25.png"/> Service Dashboard</a></li>
+            <li><a class="menu-text" href="" ng-click="toggleSurveyDataMenu()"><img src="{{ STATIC_URL }}img/image21.png"/> Survey Data</a></li>
+            <li><a class="menu-text" href="" ng-click="hideSubMenus('{% url 'admin:index' %}')"><img src="{{ STATIC_URL }}img/image20.png"/> Admin..</a></li>
+        </ul>
+    </div>
 </div>
 
 {% include 'survey-data-submenu.html' %}
