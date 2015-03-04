@@ -15,6 +15,7 @@ from django.shortcuts import render
 from go_http.contacts import ContactsApiClient
 import logging
 import datetime
+import re
 
 logger = logging.getLogger(__name__);
 
@@ -294,14 +295,14 @@ def build_query(payload, random=False):
 
 @csrf_exempt
 def export_survey(request):
-    if request.method == 'POST':
-        #TODO: Add your filter code here
+    if request.method == 'GET':
+        if 'rows' in request.GET:
+            raw_rows = request.GET['rows']
+            rows = raw_rows.split(',')
+            qs = SurveyResult.objects.filter(survey__name__in=rows)
+            return djqscsv.render_to_csv_response(qs)
 
-        payload = json.loads(request.body)
-        qs = build_query(payload)
-        return djqscsv.render_to_csv_response(qs)
-    else:
-        return HttpResponse('Bad request method')
+    return HttpResponse('Bad request method')
 
 
 @csrf_exempt
