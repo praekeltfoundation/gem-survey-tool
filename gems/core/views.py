@@ -88,6 +88,18 @@ class CreateContactGroupsView(TemplateView):
         return context
 
 
+def process_extra(extra):
+    keys = extra.keys()
+    rx = re.compile('-\d+')
+    answers = {}
+
+    for key in keys:
+        new_key = rx.sub('', key)
+        if new_key not in answers:
+            answers[new_key] = extra[new_key]
+
+    return answers
+
 @csrf_exempt
 def save_data(request):
 
@@ -104,31 +116,32 @@ def save_data(request):
         answers = None
         contact_msisdn = None
         conversation_key = None
+        content = None
 
         if 'user' in data:
             user = data['user']
-            if 'answers' in user:
-                answers = user["answers"]
+        if 'answers' in user:
+            answers = user["answers"]
         if 'contact' in data:
             contact = data['contact']
-            if 'msisdn' in contact:
-                contact_msisdn = contact['msisdn']
+        if 'msisdn' in contact:
+            contact_msisdn = contact['msisdn']
         if 'conversation_key' in data:
             conversation_key = data['conversation_key']
+        if 'extra' in contact:
+            extra = contact['extra']
+            answers = process_extra(extra)
 
         # we have data
         if answers and contact_msisdn and conversation_key:
             try:
                 # fetch/create the survey
-                # fix this
-                survey, created = Survey.objects.get_or_create(
-                    survey_id=conversation_key,
-                    defaults={
-                        'survey_id': conversation_key,
-                        'name': 'New Survey - Please update name in Admin '
-                                'console'
-                    })
-                survey.save()
+                try:
+                    survey = Survey.objects.get(survey_id__exact=conversation_key)
+                except Survey.DoesNotExist:
+                    survey = Survey(name = 'New Survey - Please update', survey_id = conversation_key)
+                    survey.save()
+
                 # add the contact
                 contact, created = Contact.objects.get_or_create(
                     msisdn=contact_msisdn)
@@ -141,13 +154,17 @@ def save_data(request):
                 )
                 survey_result.save()
             except Exception:
-                return HttpResponse('FAILED-EX')
+                content = { 'status': 'failed-ex'}
+                return generate_json_response(json.dumps(content))
             else:
-                return HttpResponse('OK')
+                content = { 'status': 'ok'}
+                return generate_json_response(json.dumps(content))
         else:
-            return HttpResponse('FAILED-BAD-DATA')
+            content = {'status': 'Failed-bad-data'}
+            return generate_json_response(json.dumps(content))
     else:
-        return HttpResponse('FAILED')
+        content = {'status': 'Failed'}
+        return generate_json_response(json.dumps(content))
 
 
 class FieldFilter:
