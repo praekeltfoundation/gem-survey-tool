@@ -34,6 +34,10 @@ footer {
   border-radius: 10px;
 }
 
+.nav>li:hover{
+    font-weight: bold;
+}
+
 .sign-up{
     margin: 150px auto;
     width: 300px;
@@ -124,12 +128,12 @@ footer {
     color: rgb(66, 66, 66);
     font-size: 14px;
     padding-left: 20px;
-    text-indent: -20px;
+    text-indent: -30px;
 }
 
  .menu-text:hover, .menu-text:focus{
      color: rgb(80, 80, 80);
-     background-color: rgb(221, 203, 63) !important;
+     background-color: #fee62c !important;
  }
 
 .submenu{
@@ -143,12 +147,16 @@ footer {
 }
 
 .submenu-links{
-    padding-left: 20px;
+    padding-left: 30px;
 }
 
 .submenu-text:hover, .submenu-text:focus{
     color: rgb(221, 221, 221);
-    background-color: rgb(206, 63, 134) !important;
+    background-color: #ec2b8b !important;
+}
+
+.menu-link-icon{
+    margin-right: 12px;
 }
 
 .groups-main-container{
