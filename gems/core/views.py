@@ -315,7 +315,7 @@ def export_survey(request):
     if request.method == 'GET':
         if 'pk' in request.GET:
             pk = request.GET['pk']
-            qs = SurveyResult.objects.filter(survey__name=pk)
+            qs = SurveyResult.objects.filter(survey__survey_id=pk)
             filename = '%s_survey_results.csv' % (pk)
             return djqscsv.render_to_csv_response(qs, filename=filename)
 
@@ -411,6 +411,7 @@ def query(request):
         serializers.serialize(
             'json',
             list(results),
+            use_natural_keys=True,
             fields=(
                 'id',
                 'survey',
@@ -491,7 +492,7 @@ def delete_contactgroup(request):
             group_id = data['group_id']
 
             group = ContactGroup.objects.get(group_id=group_id)
-            key = group.key
+            key = group.group_key
             api = ContactsApiClient(settings.VUMI_TOKEN)
             deleted_group = api.delete_group(key)
 
@@ -609,12 +610,11 @@ def get_surveys(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        results = Survey.objects.all()
+        results = Survey.objects.select_related().all()
 
         if 'name' in data:
             results = results.filter(name__contains=data['name'])
 
-        #todo check if dates are valid
         if 'from' in data:
             try:
                 date_from = datetime.datetime.strptime(data['from'], "%Y-%m-%d")
