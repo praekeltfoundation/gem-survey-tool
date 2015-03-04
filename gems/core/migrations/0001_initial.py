@@ -10,8 +10,8 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding model 'Survey'
         db.create_table(u'core_survey', (
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=200, primary_key=True)),
-            ('survey_id', self.gf('django.db.models.fields.CharField')(unique=True, max_length=200)),
+            ('survey_id', self.gf('django.db.models.fields.CharField')(max_length=200, primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=200, db_index=True)),
             ('created_on', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
         ))
         db.send_create_signal(u'core', ['Survey'])
@@ -133,8 +133,8 @@ class Migration(SchemaMigration):
         u'core.survey': {
             'Meta': {'object_name': 'Survey'},
             'created_on': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '200', 'primary_key': 'True'}),
-            'survey_id': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
+            'survey_id': ('django.db.models.fields.CharField', [], {'max_length': '200', 'primary_key': 'True'})
         },
         u'core.surveyresult': {
             'Meta': {'object_name': 'SurveyResult'},

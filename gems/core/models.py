@@ -11,12 +11,15 @@ class HStoreModel(models.Model):
 
 
 class Survey(models.Model):
-    name = models.CharField(max_length=200, primary_key=True)
-    survey_id = models.CharField(max_length=200, unique=True)
+    survey_id = models.CharField(max_length=200, primary_key=True)
+    name = models.CharField(max_length=200, db_index=True)
     created_on = models.DateField(auto_now_add=True)
 
     def __unicode__(self):
         return  u'%s' % self.name
+
+    def natural_key(self):
+        return (self.name)
 
 
 class Contact(models.Model):

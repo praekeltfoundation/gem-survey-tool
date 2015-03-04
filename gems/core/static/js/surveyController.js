@@ -48,7 +48,8 @@ gems.controller('surveyController', function($scope, $http){
                 for(var x = 0; x < results.length; ++x){
                     var row = {
                         selected: false,
-                        name: results[x].pk,
+                        pk: results[x].pk,
+                        name: results[x].fields.name,
                         created_on: results[x].fields.created_on
                     };
                     $scope.rows.push(row);
@@ -195,7 +196,7 @@ gems.controller('surveyController', function($scope, $http){
 
         for(var x = 0; x < $scope.rows.length; ++x){
             if($scope.rows[x].selected){
-                rows.push($scope.rows[x].name);
+                rows.push($scope.rows[x].pk);
             }
         }
 
