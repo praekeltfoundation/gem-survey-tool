@@ -192,18 +192,9 @@ gems.controller('surveyController', function($scope, $http){
     $scope.getSelectedSurveyRows = function getSelectedRows(){
         var rows = [];
 
-        var nameIndex = 0;
-
-        for(var x = 0; x < $scope.fields.length; ++x){
-            if($scope.fields[x].name === 'name' ){
-                nameIndex = x;
-                break;
-            }
-        }
-
         for(var x = 0; x < $scope.rows.length; ++x){
             if($scope.rows[x].selected){
-                rows.push($scope.rows[x].fields[nameIndex]);
+                rows.push($scope.rows[x].name);
             }
         }
 
