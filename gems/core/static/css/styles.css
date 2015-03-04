@@ -124,7 +124,7 @@ footer {
     color: rgb(66, 66, 66);
     font-size: 14px;
     padding-left: 20px;
-    text-indent: -20px;
+    text-indent: -30px;
 }
 
  .menu-text:hover, .menu-text:focus{
@@ -143,12 +143,16 @@ footer {
 }
 
 .submenu-links{
-    padding-left: 20px;
+    padding-left: 30px;
 }
 
 .submenu-text:hover, .submenu-text:focus{
     color: rgb(221, 221, 221);
     background-color: rgb(206, 63, 134) !important;
+}
+
+.menu-link-icon{
+    margin-right: 12px;
 }
 
 .groups-main-container{
