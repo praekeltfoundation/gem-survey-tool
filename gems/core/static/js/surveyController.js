@@ -38,9 +38,23 @@ gems.controller('surveyController', function($scope, $http){
             })
             .success(function(data){
                 $scope.Surveys = data;
+                results = data;
+                var row = {
+                        selected: false,
+                        fields: []
+                    };
+
+                for(var x = 0; x < results.length; ++x){
+                    var row = {
+                        selected: false,
+                        name: results[x].pk,
+                        created_on: results[x].fields.created_on
+                    };
+                    $scope.rows.push(row);
+                }
             })
             .error(function(data){
-                alert("Failed to retreive the surveys");
+                alert("Failed to retrieve the surveys");
             });
     };
 
