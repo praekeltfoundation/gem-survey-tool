@@ -50,7 +50,10 @@ def user_login(request):
                 return HttpResponseRedirect('/')
             else:
                 # An inactive account was used - no logging in!
-                return HttpResponse("Your GEM account is disabled.")
+                request.session['wrong_password'] = True
+                request.session['error_msg_line1'] = '*Your account has been disabled'
+                request.session['error_msg_line2'] = ''
+                return HttpResponseRedirect('/login/')
         else:
             # Bad login details were provided. So we can't log the user in.
             print "Invalid login details: {0}, {1}".format(username, password)
