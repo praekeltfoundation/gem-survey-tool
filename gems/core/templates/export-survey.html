@@ -30,15 +30,13 @@
             <table class="table table-striped">
                 <thead class="table-heading white-font">
                     <tr>
-                        <th></th>
                         <th class="survey-name">Survey Name</th>
                         <th class="survey-date">Start Date</th>
                     </tr>
                 </thead>
                 <tbody class="table-rows">
                     <tr ng-repeat="row in rows">
-                        <td><input type="checkbox" ng-model="row.selected"></td>
-                        <td>{$ row.name $}</td>
+                        <td><input class="select-box" type="checkbox" ng-model="row.selected"> {$ row.name $}</td>
                         <td>{$ row.created_on $}</td>
                     </tr>
                 </tbody>
