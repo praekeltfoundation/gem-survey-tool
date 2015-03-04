@@ -39,6 +39,7 @@ gems.controller('surveyController', function($scope, $http){
             .success(function(data){
                 $scope.Surveys = data;
                 results = data;
+                $scope.rows = [];
                 var row = {
                         selected: false,
                         fields: []
