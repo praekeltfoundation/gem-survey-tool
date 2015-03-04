@@ -25,6 +25,9 @@ def user_login(request):
 
     # If the request is a HTTP POST, try to pull out the relevant information.
     if request.method == 'POST':
+
+        request.session['wrong_password'] = False
+
         # Gather the username and password provided by the user.
         # This information is obtained from the login form.
         username = request.POST['username']
@@ -51,7 +54,11 @@ def user_login(request):
         else:
             # Bad login details were provided. So we can't log the user in.
             print "Invalid login details: {0}, {1}".format(username, password)
-            return HttpResponse("Invalid login details supplied.")
+            #return HttpResponse("Invalid login details supplied.")
+            request.session['wrong_password'] = True
+            request.session['error_msg_line1'] = '*Username and password combination'
+            request.session['error_msg_line2'] = 'incorrect'
+            return HttpResponseRedirect('/login/')
 
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.

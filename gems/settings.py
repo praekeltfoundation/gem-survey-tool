@@ -2,6 +2,7 @@
 
 import os
 from os.path import join
+from django.conf import global_settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -176,6 +177,14 @@ LOGGING = {
         }
     }
 }
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS +(
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.request',
+)
+
 
 try:
     from local_settings import *
