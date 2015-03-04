@@ -1,12 +1,63 @@
 var gems = angular.module('gems');
 
-gems.controller('groupController', function($scope, $http){
-    $scope.groupName = $scope.getGroupName();
-    $scope.fields = [];
+gems.controller('surveyController', function($scope, $http){
+    $scope.Surveys = {};
     $scope.queryStarted = false;
+    $scope.surveySearchForm = {
+        name : null,
+        from : null,
+        to : null
+    };
     $scope.numberOfRows = 0;
     $scope.columns = [];
     $scope.rows = [];
+
+    $scope.getSurveys = function getSurveys(){
+        $scope.queryStarted = true;
+        var payload = {};
+
+        if (!!$scope.surveySearchForm.name)
+        {
+            payload.name = $scope.surveySearchForm.name;
+        }
+
+        if (!!$scope.surveySearchForm.from)
+        {
+            payload.from = $scope.surveySearchForm.from;
+        }
+
+        if (!!$scope.surveySearchForm.to)
+        {
+            payload.to = $scope.surveySearchForm.to;
+        }
+
+        $http({
+                url: '/get_surveys/',
+                method: 'POST',
+                data: payload
+            })
+            .success(function(data){
+                $scope.Surveys = data;
+                results = data;
+                $scope.rows = [];
+                var row = {
+                        selected: false,
+                        fields: []
+                    };
+
+                for(var x = 0; x < results.length; ++x){
+                    var row = {
+                        selected: false,
+                        name: results[x].pk,
+                        created_on: results[x].fields.created_on
+                    };
+                    $scope.rows.push(row);
+                }
+            })
+            .error(function(data){
+                alert("Failed to retrieve the surveys");
+            });
+    };
 
     $scope.fetchResults = function fetchResults(){
         $scope.rows = [];
@@ -100,65 +151,68 @@ gems.controller('groupController', function($scope, $http){
         return retVal;
     };
 
-    $scope.getGroup = function getGroup(filters){
-        var group = {
-            name: $scope.groupName,
-            members: [],
-            query_words: $scope.getQueryWords(),
-            filters: JSON.stringify( filters )
-        };
+    $scope.getSelectedRows = function getSelectedRows(){
+        var rows = [];
 
-        var contactIndex = 0;
+        var idIndex = 0;
 
         for(var x = 0; x < $scope.fields.length; ++x){
-            if($scope.fields[x].name === 'contact' ){
-                contactIndex = x;
+            if($scope.fields[x].name === 'id' ){
+                idIndex = x;
                 break;
             }
         }
 
         for(var x = 0; x < $scope.rows.length; ++x){
             if($scope.rows[x].selected){
-                group.members.push($scope.rows[x].fields[contactIndex]);
+                rows.push($scope.rows[x].fields[idIndex]);
             }
         }
 
-        return group;
+        return rows;
     };
 
-    $scope.saveGroup = function saveGroup(filters){
-        var group = $scope.getGroup(filters);
+    $scope.exportCsv = function exportCsv(){
+        var data = $scope.getSelectedRows();
 
-        $http.post('/create_contactgroup/', group).
-            success(function(status){
-                alert(status);
-            }).
-            error(function(status){
-                alert("Failed to create contact group." + "\n\n" + status);
-            });
+        var url = '/export_survey_results/?rows=[';
 
-        $scope.cancel();
+        for(var x = 0; x < data.length; ++x){
+            if( x > 0){
+                url += ',';
+            }
+
+            url += data[x];
+        }
+
+        url += ']';
+
+        window.location.assign(url);
     };
 
-    //need group_key
-    $scope.updateGroup = function updateGroup(filters){
-        var group = $scope.getGroup(filters);
-        group.group_key = $scope.groupKey;
+    $scope.getSelectedSurveyRows = function getSelectedRows(){
+        var rows = [];
 
-        $http.post('/update_contactgroup/', group).
-            success(function(status){
-                alert(status);
-            }).
-            error(function(status){
-                alert("Failed to update contact group." + "\n\n" + status);
-            });
+        for(var x = 0; x < $scope.rows.length; ++x){
+            if($scope.rows[x].selected){
+                rows.push($scope.rows[x].name);
+            }
+        }
 
-        $scope.cancel();
+        return rows;
     };
 
-    $scope.cancel = function cancel(){
-        $scope.hideCreateContact();
+    $scope.exportSurveyCsv = function exportCsv(){
+        var data = $scope.getSelectedSurveyRows();
+
+        var url = '/export_survey/?pk=';
+
+        for(var x = 0; x < data.length; ++x){
+            var tempUrl = url + data[x];
+            window.location.assign(tempUrl);
+        }
     };
 
     $scope.fetchFields();
+
 });

@@ -7,17 +7,15 @@ from django.core import serializers
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+from django.conf import settings
 from models import *
 import json
 import djqscsv
 from django.shortcuts import render
-
 from go_http.contacts import ContactsApiClient
-
-#token for vumi authentication
-VUMI_TOKEN = '996CA00F-6184-4734-B28F-0A56FD8367A3'
-
 import logging
+import datetime
+import re
 
 logger = logging.getLogger(__name__);
 
@@ -90,6 +88,18 @@ class CreateContactGroupsView(TemplateView):
         return context
 
 
+def process_extra(extra):
+    keys = extra.keys()
+    rx = re.compile('-\d+')
+    answers = {}
+
+    for key in keys:
+        new_key = rx.sub('', key)
+        if new_key not in answers:
+            answers[new_key] = extra[new_key]
+
+    return answers
+
 @csrf_exempt
 def save_data(request):
 
@@ -106,31 +116,32 @@ def save_data(request):
         answers = None
         contact_msisdn = None
         conversation_key = None
+        content = None
 
         if 'user' in data:
             user = data['user']
-            if 'answers' in user:
-                answers = user["answers"]
+        if 'answers' in user:
+            answers = user["answers"]
         if 'contact' in data:
             contact = data['contact']
-            if 'msisdn' in contact:
-                contact_msisdn = contact['msisdn']
+        if 'msisdn' in contact:
+            contact_msisdn = contact['msisdn']
         if 'conversation_key' in data:
             conversation_key = data['conversation_key']
+        if 'extra' in contact:
+            extra = contact['extra']
+            answers = process_extra(extra)
 
         # we have data
         if answers and contact_msisdn and conversation_key:
             try:
                 # fetch/create the survey
-                # fix this
-                survey, created = Survey.objects.get_or_create(
-                    survey_id=conversation_key,
-                    defaults={
-                        'survey_id': conversation_key,
-                        'name': 'New Survey - Please update name in Admin '
-                                'console'
-                    })
-                survey.save()
+                try:
+                    survey = Survey.objects.get(survey_id__exact=conversation_key)
+                except Survey.DoesNotExist:
+                    survey = Survey(name = 'New Survey - Please update', survey_id = conversation_key)
+                    survey.save()
+
                 # add the contact
                 contact, created = Contact.objects.get_or_create(
                     msisdn=contact_msisdn)
@@ -143,13 +154,17 @@ def save_data(request):
                 )
                 survey_result.save()
             except Exception:
-                return HttpResponse('FAILED-EX')
+                content = { 'status': 'failed-ex'}
+                return generate_json_response(json.dumps(content))
             else:
-                return HttpResponse('OK')
+                content = { 'status': 'ok'}
+                return generate_json_response(json.dumps(content))
         else:
-            return HttpResponse('FAILED-BAD-DATA')
+            content = {'status': 'Failed-bad-data'}
+            return generate_json_response(json.dumps(content))
     else:
-        return HttpResponse('FAILED')
+        content = {'status': 'Failed'}
+        return generate_json_response(json.dumps(content))
 
 
 class FieldFilter:
@@ -296,13 +311,26 @@ def build_query(payload, random=False):
 
 
 @csrf_exempt
-def export(request):
-    if request.method == 'POST':
-        payload = json.loads(request.body)
-        qs = build_query(payload)
-        return djqscsv.render_to_csv_response(qs)
-    else:
-        return HttpResponse('Bad request method')
+def export_survey(request):
+    if request.method == 'GET':
+        if 'pk' in request.GET:
+            pk = request.GET['pk']
+            qs = SurveyResult.objects.filter(survey__name=pk)
+            filename = '%s_survey_results.csv' % (pk)
+            return djqscsv.render_to_csv_response(qs, filename=filename)
+
+    return HttpResponse('Bad request method')
+
+
+@csrf_exempt
+def export_survey_results(request):
+    if request.method == 'GET':
+        if 'rows' in request.GET:
+            rows = json.loads(request.GET['rows'])
+            qs = SurveyResult.objects.filter(pk__in=rows)
+            return djqscsv.render_to_csv_response(qs)
+
+    return HttpResponse('Bad request method')
 
 
 class UIField:
@@ -337,7 +365,7 @@ def get_exclusion_list():
     :rtype : Tuple
     :return: a list of fields to be excluded from the results
     """
-    return ('id', 'answer')
+    return ('answer')
 
 
 def get_surveyresult_meta_keys():
@@ -384,6 +412,7 @@ def query(request):
             'json',
             list(results),
             fields=(
+                'id',
                 'survey',
                 'contact',
                 'created_at',
@@ -437,85 +466,172 @@ def get_unique_keys(request):
     return generate_json_response(serialize_list_to_json(keys, UIFieldEncoder))
 
 
-# for testing menu.html in home.html
+#for testing menu.html in home.html
 def view_home(request):
     return render(request, 'home.html')
 
+
 def get_contact_groups(request):
-    return HttpResponse("hello")
-    #contact_groups = ContactGroup.objects.all()
-    #data = serializers.serialize("json", contact_groups)
-    #return HttpResponse(json.dump(data), content_type="application/json")
+    #return HttpResponse("hello")
+    contact_groups = ContactGroup.objects.all()
+    data = serializers.serialize("json", contact_groups)
+    return HttpResponse(json.dump(data), content_type="application/json")
+
 
 def load_contact_groups(request):
     return render(request, 'contact-groups.html')
 
-def delete_group_contact(request):
+
+def delete_contactgroup(request):
     if(request.method == 'POST'):
-        data=json.loads(request.body)
+        data = json.loads(request.body)
         group_id = None
 
         if data.has_key('group_id'):
-             group_id = data['group_id']
+            group_id = data['group_id']
 
-        ContactGroup.objects.filter(group_id=group_id).delete()
+            group = ContactGroup.objects.get(group_id=group_id)
+            key = group.key
+            api = ContactsApiClient(settings.VUMI_TOKEN)
+            deleted_group = api.delete_group(key)
 
-        key = 'f578cbcb16bc4171a7ccc50d250dca96'
-        api = ContactsApiClient(VUMI_TOKEN)
-        api.delete_group(key)
+            if deleted_group['key'] == key:
+                ContactGroup.objects.filter(group_id=group_id).delete()
+                return HttpResponse('OK')
+            else:
+                return HttpResponse('FAILED')
+        else:
+            return HttpResponse('FAILED')
 
-        return HttpResponse('OK')
-    else:
-        return HttpResponse('FAILED')
 
-def create_groupcontact(request):
+def processGroupMember(api, member, group):
+    try:
+        contact = api.get_contact(msisdn=member)
+    except Exception:
+        contact = None
+        logger.info('Contact: %s not found in vumi' % (member))
+
+    if contact:
+        contact['groups'].append(group.group_key)
+        try:
+            api.update_contact(contact['key'], {u'groups': contact['groups']})
+        except Exception as ex:
+            logger.info('Contact: %s update failed' % (member))
+
+    local_contact = Contact.objects.get(msisdn=member)
+    group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=local_contact)
+
+
+def create_contactgroup(request):
     if request.method == 'POST':
         data=json.loads(request.body)
 
-        if data.has_key('group_name'):
-            group_data = {u'name': data['group_name'],}
+        if 'name' in data:
+            group_name = data['name']
 
-        api = ContactsApiClient(VUMI_TOKEN)
-        group = api.create_group(group_data)
-        return HttpResponse(group[u'key'])
+            api = ContactsApiClient(settings.VUMI_TOKEN)
+            data_returned = api.create_group({u'name': group_name,})
+            #g = api.get_contact(msisdn='+27829247119')
+
+            #check if the group key has been returned (checks if the group has been created on vumi)
+            if 'key' in data_returned:
+                group_key = data_returned['key']
+
+                if 'filters' in data:
+                    group_filters = data['filters']
+
+                    if 'query_words' in data:
+                        group_query_words = data['query_words']
+
+                        date_created = datetime.datetime.now()
+
+                        contact_group = ContactGroup.objects.create(group_key=group_key,
+                                                    name=group_name,
+                                                    created_by=request.user,
+                                                    created_at=date_created,
+                                                    filters=group_filters,
+                                                    query_words=group_query_words)
+
+                if 'members' in data:
+                    members = data['members']
+
+                    for member in members:
+                        processGroupMember(api, member, contact_group)
+
+                    return HttpResponse("OK")
+
+        return HttpResponse("FAILED")
     else:
-        return HttpResponse("Failed to create group.")
+        return HttpResponse("FAILED.")
 
-def update_groupcontact(request):
+
+def update_contactgroup(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        if data.has_key('group_key'):
-            group_key = {u'key': data['group_key'],}
+        if 'group_key' in data:
+            group_key = data['group_key']
+            group = ContactGroup.objects.get(group_key=group_key)
+            api = ContactsApiClient(settings.VUMI_TOKEN)
 
-        if data.has_key('group_name'):
-            group_name = {u'name': data['group_name'],}
+            if 'name' in data:
+                group_name = data['name']
 
-        api = ContactsApiClient(VUMI_TOKEN)
-        api.update_group(group_key, group_name)
+                if group_name != group.name:
+                    api.update_group(group_key, {u'name': group_name})
+                    #todo test if it's updated on vumi
 
+                    group.name = group_name
+                    group.save(save_fields=['name'])
 
+            if 'filters' in data:
+                group.filters = data['filters']
+                group.save()
 
-def create_contact(request):
-    if request.method == 'POST':
-        data=json.loads(request._body)
+            if 'query_words' in data:
+                group.query_words = data['query_words']
+                group.save()
 
-        if data.has_key(''):
-            data =  0
+            if 'members' in data:
+                members = data['members']
 
-        api = ContactsApiClient(VUMI_TOKEN)
-        api.create_contact()
-        return HttpResponse()
+                for member in members:
+                    processGroupMember(api, member, group)
+
+            return HttpResponse("OK")
+        else:
+            return HttpResponse("FAILED")
     else:
-        return HttpResponse()
+        return HttpResponse("FAILED")
 
-def update_contact(request):
-    api = ContactsApiClient(VUMI_TOKEN)
-    api.update_contact()
-    return HttpResponse()
 
-def delete_contact(request):
+def get_surveys(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
 
-    api = ContactsApiClient(VUMI_TOKEN)
-    api.delete_contact()
-    return HttpResponse()
+        results = Survey.objects.all()
+
+        if 'name' in data:
+            results = results.filter(name__contains=data['name'])
+
+        #todo check if dates are valid
+        if 'from' in data:
+            try:
+                date_from = datetime.datetime.strptime(data['from'], "%Y-%m-%d")
+                results = results.filter(created_on__gte=date_from)
+            except ValueError:
+                return HttpResponse("Invalid date.")
+
+        if 'to' in data:
+            try:
+                date_to = datetime.datetime.strptime(data['to'], "%Y-%m-%d")
+                results = results.filter(created_on__lte=date_to)
+            except ValueError:
+                return HttpResponse("Invalid date.")
+
+        return generate_json_response(
+            serializers.serialize(
+                'json',
+                list(results)))
+    else:
+        return HttpResponse("FAILED")

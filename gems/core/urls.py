@@ -37,14 +37,17 @@ urlpatterns = patterns('',
 
     url(r'^save_data/', save_data, name='save_data'),
 
-    url(r'^export/', export, name='export'),
+    url(r'^export_survey/', export_survey, name='export_survey'),
+    url(r'^export_survey_results/$', export_survey_results, name='export_survey_results'),
 
     url(r'^query/', query, name='query'),
 
     url(r'^get_unique_keys/', get_unique_keys, name='get_unique_keys'),
     url(r'^home/$', view_home, name='home'),
 
-    url(r'^contact_groups/$', load_contact_groups),
-    url(r'^delete_contactgroup/', delete_group_contact),
-    url(r'^create_contactgroup/', create_groupcontact),
+    url(r'^contactgroup/$', load_contact_groups),
+    url(r'^delete_contactgroup/', delete_contactgroup),
+    url(r'^create_contactgroup/', create_contactgroup),
+    url(r'^update_contactgroup/', update_contactgroup),
+    url(r'^get_surveys/$', get_surveys),
 )

@@ -38,16 +38,16 @@
                         <a ng-click="removeFilter($parent.$parent.$parent.$index)"><img width="16" height="16" src="{{ STATIC_URL }}img/red_cross.png"></a>
                     </div>
                     <div class="col-md-10">
-                        <a ng-click="addFieldFilter($parent.$parent.$index)" href="">Add new condition+</a>
+                        <a class="grey-font" ng-click="addFieldFilter($parent.$parent.$index)" href="">Add new condition+</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row row-breath">
-        <a ng-click="addFilter()" href="">Add new data field+</a>
+        <a class="grey-font" ng-click="addFilter()" href="">Add new data field+</a>
     </div>
     <div class="row">
-        <h4 class="blue-front">{$queryWords$}</h4>
+        <span class="blue-font bold">{$queryWords$}</span>
     </div>
 </div>

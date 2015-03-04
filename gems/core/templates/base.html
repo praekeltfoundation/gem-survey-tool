@@ -21,6 +21,7 @@
         <script src="{{ STATIC_URL }}js/mainController.js"></script>
         <script src="{{ STATIC_URL }}js/groupController.js"></script>
         <script src="{{ STATIC_URL }}js/queryController.js"></script>
+        <script src="{{ STATIC_URL }}js/surveyController.js"></script>
 	</head>
 
 <body ng-app="gems">
@@ -33,6 +34,10 @@
             {% include 'createcontactgroup.html' %}
 
             {% include 'contact-groups.html' %}
+
+            {% include 'export-survey.html' %}
+
+            {% include 'export-survey-data.html' %}
 
             {% block content %}
             {% endblock %}

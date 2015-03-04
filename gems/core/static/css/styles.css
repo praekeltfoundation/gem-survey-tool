@@ -1,3 +1,7 @@
+body{
+    font-family: "Helvetica Neue";
+}
+
 .navbar-static-top {
   margin-bottom:20px;
 }
@@ -33,50 +37,67 @@ footer {
 .sign-up{
     margin: 150px auto;
     width: 300px;
-}​
+}
 
- .yellow{
+.yellow{
     background-color: #fee62c;
- }
+}
 
- .yellow{
+.yellow{
     background-color: #fee62c;
- }
+}
 
- .pink{
-     background-color: #ec2b8b;
- }
+.pink{
+    background-color: #ec2b8b;
+}
 
- .green{
-     background-color: #00b9ad;
- }
+.green{
+    background-color: #00b9ad;
+}
 
- .red{
-     background-color: #d81f23;
- }
+.red{
+    background-color: #d81f23;
+}
 
- .orange{
-     background-color: #f79c1a;
- }
+.orange{
+    background-color: #f79c1a;
+}
 
- .right{
-     float:right;
- }
+.right{
+    float:right;
+}
 
- .white-front{
-     color: white;
- }
+.blue-font{
+    color: rgb(36, 113, 186);
+}
 
- .no-width{
-     width: inherit;
- }
+.grey-font{
+    color: rgb(121, 121, 121);
+}
 
- .login-logo{
-     width: 300px;
-     margin-bottom: 30px;
-     padding-left: 40px;
-     padding-right: 40px;
- }
+.grey-background{
+    background-color: rgb(214, 214, 214);
+}
+
+.white-font{
+    color: white;
+}
+
+.no-width{
+    width: inherit;
+}
+
+.turquoise-button{
+    background-color: rgb(41, 183, 171);
+    color: #ffffff;
+}
+
+.login-logo{
+    width: 300px;
+    margin-bottom: 30px;
+    padding-left: 40px;
+    padding-right: 40px;
+}
 
 .left{
     position: absolute;
@@ -101,6 +122,7 @@ footer {
 
  .menu-text{
      color: rgb(66, 66, 66);
+     font-size: 14px;
  }
 
  .menu-text:hover, .menu-text:focus{
@@ -115,11 +137,99 @@ footer {
 
 .submenu-text{
     color: rgb(255, 255, 255);
+    font-size: 14px;
 }
 
 .submenu-text:hover, .submenu-text:focus{
     color: rgb(221, 221, 221);
     background-color: rgb(206, 63, 134) !important;
+}
+
+.groups-main-container{
+    margin: 100px 20px 30px;
+}
+
+.main-container{
+    margin-top: 40px;
+    margin-left: 100px;
+}
+
+.container-head{
+    padding-bottom: 20px;
+}
+
+.groups-main-container .container-head{
+    padding-left: 20px;
+    padding-bottom: 40px;
+}
+
+.container-heading{
+    font-size: 18px;
+}
+
+.sub-head{
+    padding-bottom: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.results-head{
+    font-size: 18px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.results-head > span{
+    margin-right: 40px;
+}
+
+.data-line{
+    padding-bottom: 10px;
+}
+
+.query-line{
+    padding-top: 100px;
+}
+
+input.query-input{
+    width: 500px;
+    margin-top: 10px;
+}
+
+input.search-checkbox{
+    transform: scale(2);
+    margin-right: 10px;
+}
+
+input.num-rows{
+    width: 150px;
+}
+
+.label-size{
+    width: 200px;
+}
+
+.input-size{
+    width: 300px;
+}
+
+.from-label-size{
+    width:50px;
+}
+
+.to-label-size{
+    width:40px;
+    text-align: right;
+}
+.date-input-size{
+    width: 100px;
+}
+
+.bold{
+    font-weight: bold;
+}
+.button-line{
+    padding-top: 20px;
 }
 
 .top{
@@ -133,4 +243,68 @@ footer {
 
 .modal-dialog-center{
     top: 25%;
+}
+
+.table-heading{
+    font-weight: bold;
+    font-size: 10px;
+    background-color: rgb(41, 183, 171);
+}
+
+.table-striped > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   background-color: rgb(241, 241, 241);
+}
+
+.table-rows{
+    font-weight: normal;
+    font-size: 10px;
+}
+
+th{
+    border-left: 2px solid rgb(51, 186, 175);
+    border-right: 2px solid rgb(51, 186, 175);
+}
+
+table tr th:first-child{
+    border-left: 0;
+}
+
+table tr th:last-child{
+    border-right: 0;
+}
+
+table{
+    width: 100%;
+}
+
+th.name{
+    width: 15%;
+}
+
+th.created-by, th.created-at{
+    width: 15%;
+}
+
+th.buttons{
+    width: 25%;
+}
+
+th.rules{
+    width: 30%
+}
+
+.table-button{
+    height: 31px;
+    width: 80px;
+    background-color: #D6D6D6;
+    color: rgb(66, 66, 66);
+    font-size: 10px;
+}
+
+th.survey-name{
+    width: 50%;
+}
+
+th.survey-date{
+    width: 50%;
 }
