@@ -1,23 +1,55 @@
 <div ng-controller="contentController" class="col-md-8" ng-if="showContactGroups">
     <div class="groups-main-container">
         <div class="container-head">
-            <span class="container-heading ">Contact Groups ({$ rows.count $})</span>
-            <input class="right" type="text" placeholder="Search">
+            <span class="container-heading ">Contact Groups ({$ filteredContactGroups.length $})</span>
+            <input class="right" type="text" ng-model="searchText" placeholder="Search">
             <input class="right search-checkbox" type="checkbox">
         </div>
         <div>
             <table class="table table-striped">
                 <thead class="table-heading white-font">
                     <tr>
-                        <th class="name">Name</th>
-                        <th class="created-by">Created By</th>
-                        <th class="created-on">Created On</th>
-                        <th class="rules">Rules</th>
+                        <th class="name">
+                            <a href="#" ng-click="orderByField='name'; reverseSort = !reverseSort">
+                                Name
+                                <span ng-show="orderByField == 'name'">
+                                    <span class="glyphicon glyphicon-triangle-top right white-font" aria-hidden="true" ng-show="!reverseSort"></span>
+                                    <span class="glyphicon glyphicon-triangle-bottom right white-font" aria-hidden="true" ng-show="reverseSort"></span>
+                                </span>
+                            </a>
+                        </th>
+                        <th class="created-by">
+                            <a href="#" ng-click="orderByField='created_by'; reverseSort = !reverseSort">
+                                Created By
+                                <span ng-show="orderByField == 'created_by'">
+                                    <span class="glyphicon glyphicon-triangle-top right white-font" aria-hidden="true" ng-show="!reverseSort"></span>
+                                    <span class="glyphicon glyphicon-triangle-bottom right white-font" aria-hidden="true" ng-show="reverseSort"></span>
+                                </span>
+                            </a>
+                        </th>
+                        <th class="created-on">
+                            <a href="#" ng-click="orderByField='created_at'; reverseSort = !reverseSort">
+                                Created On
+                                <span ng-show="orderByField == 'created_at'">
+                                    <span class="glyphicon glyphicon-triangle-top right white-font" aria-hidden="true" ng-show="!reverseSort"></span>
+                                    <span class="glyphicon glyphicon-triangle-bottom right white-font" aria-hidden="true" ng-show="reverseSort"></span>
+                                </span>
+                            </a>
+                        </th>
+                        <th class="rules">
+                            <a href="#" ng-click="orderByField='filters'; reverseSort = !reverseSort">
+                                Rules
+                                <span ng-show="orderByField == 'filters'">
+                                    <span class="glyphicon glyphicon-triangle-top right white-font" aria-hidden="true" ng-show="!reverseSort"></span>
+                                    <span class="glyphicon glyphicon-triangle-bottom right white-font" aria-hidden="true" ng-show="reverseSort"></span>
+                                </span>
+                            </a>
+                        </th>
                         <th class="buttons"></th>
                     </tr>
                 </thead>
                 <tbody class="table-rows">
-                    <tr ng-repeat="(key, data) in ContactGroups">
+                    <tr ng-repeat="(key, data) in filteredContactGroups = (ContactGroups | filter:searchText | orderBy:orderByField:reverseSort)">
                         <td>{$ data.name $}</td>
                         <td>{$ data.created_by $}</td>
                         <td>{$ data.created_at | date:'MM-dd-yyyy'$}</td>
