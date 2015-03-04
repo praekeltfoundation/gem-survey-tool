@@ -11,18 +11,16 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class SurveySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Survey
-        fields = ('survey_id', 'name',)
+        fields = ('survey_id', 'name')
 
 
 class SurveyResultSerializer(serializers.HyperlinkedModelSerializer):
     survey = serializers.HyperlinkedRelatedField(
-        many=True,
         read_only=True,
         view_name='survey-detail'
     )
 
     contact = serializers.HyperlinkedRelatedField(
-        many=True,
         read_only=True,
         view_name='contact-detail'
     )

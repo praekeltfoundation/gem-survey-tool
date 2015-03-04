@@ -3,7 +3,7 @@ from models import Survey, Contact, SurveyResult, ContactGroup, ContactGroupMemb
 
 
 class SurveyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'survey_id')
+    list_display = ('name', 'survey_id', 'created_on')
 
 
 class ContactAdmin(admin.ModelAdmin):
