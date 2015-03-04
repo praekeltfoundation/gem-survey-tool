@@ -158,17 +158,21 @@ gems.controller('surveyController', function($scope, $http){
     };
 
     $scope.exportCsv = function exportCsv(){
-        var data = { rows: $scope.getSelectedRows() };
+        var data = $scope.getSelectedRows();
 
-        var url = '/exoprt_survey_resulsts/?rows=[]=1'
+        var url = '/export_survey_results/?rows=[';
+
+        for(var x = 0; x < data.length; ++x){
+            if( x > 0){
+                url += ',';
+            }
+
+            url += data[x];
+        }
+
+        url += ']';
 
         window.location.assign(url);
-        /*$http.post('/export_survey_results/', JSON.stringify(data))
-            .success(function(data){
-                var body = angular.element("body");
-                body.append('<iframe src="' + data.url + '" style="display: none;" ></iframe>');
-            });*/
-
     };
 
     $scope.fetchFields();

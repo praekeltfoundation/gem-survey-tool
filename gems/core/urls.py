@@ -38,7 +38,7 @@ urlpatterns = patterns('',
     url(r'^save_data/', save_data, name='save_data'),
 
     url(r'^export_survey/', export_survey, name='export_survey'),
-    url(r'^export_survey_results/', export_survey_results, name='export_survey_results'),
+    url(r'^export_survey_results/$', export_survey_results, name='export_survey_results'),
 
     url(r'^query/', query, name='query'),
 

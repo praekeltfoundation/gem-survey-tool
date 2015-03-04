@@ -306,16 +306,13 @@ def export_survey(request):
 
 @csrf_exempt
 def export_survey_results(request):
-    if request.method == 'POST':
-        payload = json.loads(request.body)
+    if request.method == 'GET':
+        if 'rows' in request.GET:
+            rows = json.loads(request.GET['rows'])
+            qs = SurveyResult.objects.filter(pk__in=rows)
+            return djqscsv.render_to_csv_response(qs)
 
-        if 'rows' in payload:
-            rows = payload['rows']
-
-        qs = SurveyResult.objects.filter(pk__in=rows)
-        return djqscsv.render_to_csv_response(qs)
-    else:
-        return HttpResponse('Bad request method')
+    return HttpResponse('Bad request method')
 
 
 class UIField:
