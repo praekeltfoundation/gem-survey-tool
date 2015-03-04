@@ -322,3 +322,11 @@ th.survey-name{
 th.survey-date{
     width: 50%;
 }
+
+.red-front{
+    color: #d81f23;
+}
+
+.error-msg-indent{
+    padding-left: 20px;
+}
