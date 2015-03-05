@@ -330,3 +330,7 @@ th.survey-date{
 .error-msg-indent{
     padding-left: 20px;
 }
+
+.container-left{
+    margin-left: 0;
+}
