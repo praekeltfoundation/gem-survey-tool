@@ -115,9 +115,6 @@ def save_data(request):
 
     if(request.method == 'POST'):
         msg = 'save_data - POST - Body[ %s ]' %(request.body);
-        #f = open('/tmp/debug.log', 'a')
-        #f.write('%s\n' % (msg))
-        #f.close()
         logger.info(msg);
         data=json.loads(request.body)
         if type(data) is unicode:
@@ -138,9 +135,6 @@ def save_data(request):
             contact_msisdn = contact['msisdn']
         if 'conversation_key' in data:
             conversation_key = data['conversation_key']
-        if 'extra' in contact:
-            extra = contact['extra']
-            answers = process_extra(extra)
 
         # we have data
         if answers and contact_msisdn and conversation_key:
@@ -320,7 +314,6 @@ def build_query(payload, random=False):
         return rs
 
 
-@csrf_exempt
 def export_survey(request):
     if request.method == 'GET':
         if 'pk' in request.GET:
@@ -332,7 +325,6 @@ def export_survey(request):
     return HttpResponse('Bad request method')
 
 
-@csrf_exempt
 def export_survey_results(request):
     if request.method == 'GET':
         if 'rows' in request.GET:
@@ -407,7 +399,6 @@ def serialize_list_to_json(data, encoder):
     return json.dumps(data, cls=encoder)
 
 
-@csrf_exempt
 def query(request):
     """
 
