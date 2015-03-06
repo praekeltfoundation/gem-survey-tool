@@ -55,15 +55,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="row in rows">
-                        <td>
-                            <div>
-                                <input type="checkbox" id="checkbox" ng-model="row.selected" class='pseudo-checkbox sr-only'>
-                                <label for='checkbox' class='fancy-checkbox-label'></label>
-                            </div>
-                        </td>
-                        <td ng-repeat="field in row.fields track by $index">{$ field $}</td>
-                    </tr>
+                        <tr ng-repeat="row in rows">
+                            <td>
+                                <input type="checkbox" ng-model="row.selected">
+                            </td>
+                            <td ng-repeat="field in row.fields track by $index">{$ field $}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

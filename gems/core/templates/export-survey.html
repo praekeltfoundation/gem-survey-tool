@@ -40,18 +40,15 @@
             <table class="table table-striped">
                 <thead class="table-heading white-font">
                     <tr>
+                        <th></th>
                         <th class="survey-name">Survey Name</th>
                         <th class="survey-date">Start Date</th>
                     </tr>
                 </thead>
                 <tbody class="table-rows">
                     <tr ng-repeat="row in rows">
-                        <td>
-                            <div>
-                                <input type="checkbox" id="checkbox" ng-model="row.selected" class='pseudo-checkbox sr-only'>{$ row.name $}
-                                <label for='checkbox' class='fancy-checkbox-label'></label>
-                            </div>
-                        </td>
+                        <td><input type="checkbox" ng-model="row.selected"></td>
+                        <td>{$ row.name $}</td>
                         <td>{$ row.created_on $}</td>
                     </tr>
                 </tbody>
