@@ -1,6 +1,13 @@
 var gems = angular.module('gems');
 
 gems.controller('mainController', function($scope, $http, $window){
+    $scope.userMenuItem = false;
+    $scope.builderMenuItem = false;
+    $scope.contactsMenuItem = false;
+    $scope.serviceMenuItem = false;
+    $scope.dataMenuItem = false;
+    $scope.adminMenuItem = false;
+
     $scope.showSurveyDataMenu = false;
     $scope.showContactMenu = false;
     $scope.showCreateGroup = false;
@@ -125,4 +132,14 @@ gems.controller('mainController', function($scope, $http, $window){
     $scope.getQueryWords = function getQueryWords(){
         return $scope.topQueryWords;
     };
+
+    $scope.unboldMenuItems = function unboldMenuItems()
+    {
+        $scope.userMenuItem = false;
+        $scope.builderMenuItem = false;
+        $scope.contactsMenuItem = false;
+        $scope.serviceMenuItem = false;
+        $scope.dataMenuItem = false;
+        $scope.adminMenuItem = false;
+    }
 });
