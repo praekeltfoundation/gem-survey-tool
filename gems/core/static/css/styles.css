@@ -34,10 +34,6 @@ footer {
   border-radius: 10px;
 }
 
-.nav>li:hover{
-    font-weight: bold;
-}
-
 .sign-up{
     margin: 150px auto;
     width: 300px;
@@ -124,38 +120,45 @@ footer {
     position: relative;
  }
 
-.menu-text{
-    color: rgb(66, 66, 66);
-    font-size: 14px;
+.menu-links{
+    padding-left: 30px;
+}
+
+.main-menu-item{
     padding-left: 20px;
     text-indent: -30px;
 }
 
- .menu-text:hover, .menu-text:focus{
-     color: rgb(80, 80, 80);
-     background-color: #fee62c !important;
- }
+.menu-item{
+    font-size: 14px;
+    color: #8d8d8d;
+}
+
+.main-menu-item:hover, .main-menu-item:focus{
+    color: #c1c1c1;
+    background-color: #fee62c !important;
+}
+
+.sub-menu-item:hover, .sub-menu-item:focus{
+    color: #c1c1c1;
+    background-color: #ec2b8b !important;
+}
+
+.menu-item:active{
+    color: #ffffff;
+}
+
+a.menu-item:focus,
+a.menu-item{
+    outline: none;
+}
 
 .submenu{
     height: 100%;
     min-height: 800px;
 }
 
-.submenu-text{
-    color: rgb(255, 255, 255);
-    font-size: 14px;
-}
-
-.submenu-links{
-    padding-left: 30px;
-}
-
-.submenu-text:hover, .submenu-text:focus{
-    color: rgb(221, 221, 221);
-    background-color: #ec2b8b !important;
-}
-
-.menu-link-icon{
+.menu-item-icon{
     margin-right: 12px;
 }
 
