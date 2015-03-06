@@ -326,16 +326,16 @@ th.created-by, th.created-at{
 }
 
 th.buttons{
-    width: 25%;
+    width: 20%;
 }
 
 th.rules{
-    width: 30%
+    width: 35%
 }
 
 .table-button{
     height: 31px;
-    width: 70px;
+    width: 60px;
     background-color: #D6D6D6;
     color: rgb(66, 66, 66);
     font-size: 10px;
@@ -355,6 +355,20 @@ th.survey-date{
 
 .error-msg-indent{
     padding-left: 20px;
+}
+
+div.paging{
+    text-align: center;
+}
+
+li.paging-item{
+    display: inline-block;
+    margin-right: 5px;
+}
+
+li.paging-item > a{
+    color: rgb(66, 66, 66);
+    font-size: 10px;
 }
 
 input[type="text"], input[type="password"] {
