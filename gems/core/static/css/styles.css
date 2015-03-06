@@ -330,3 +330,17 @@ th.survey-date{
 .error-msg-indent{
     padding-left: 20px;
 }
+
+div.paging{
+    text-align: center;
+}
+
+li.paging-item{
+    display: inline-block;
+    margin-right: 5px;
+}
+
+li.paging-item > a{
+    color: rgb(66, 66, 66);
+    font-size: 10px;
+}
