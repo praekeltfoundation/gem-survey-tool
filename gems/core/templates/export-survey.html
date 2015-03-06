@@ -29,13 +29,12 @@
                 </div>
             </div>
         </div>
-        {$surveySearchForm$}
         <div class="row button-line">
             <button class="turquoise-back white-front" ng-click="getSurveys()" ng-disabled="!(!!surveySearchForm.name || !!surveySearchForm.from  || !!surveySearchForm.to)">Display Results</button>
         </div>
         <div class="results-head" ng-if="queryStarted">
             <span class="grey-font">Results ({$ rows.length $})</span>
-            <button class="btn grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
+            <button class="grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
         </div>
         <div class="row" ng-if="queryStarted == true"> <!-- && rows.length > 0 -->
             <table class="table table-striped">
@@ -57,7 +56,7 @@
         </div>
         <div class="row" ng-if="queryStarted == true && rows.length > 0">
             <div class="col-md-3 col-md-offset-9">
-                <button class="btn btn-primary right pink white-font" ng-disabled="!anyRowsSelected()" ng-click="exportSurveyCsv()">Export Data</button>
+                <button class="right pink white-font" ng-disabled="!anyRowsSelected()" ng-click="exportSurveyCsv()">Export Data</button>
             </div>
         </div>
     </div>
