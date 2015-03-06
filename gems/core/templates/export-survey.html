@@ -46,7 +46,12 @@
                 </thead>
                 <tbody class="table-rows">
                     <tr ng-repeat="row in rows">
-                        <td><input class="select-box" type="checkbox" ng-model="row.selected"> {$ row.name $}</td>
+                        <td>
+                            <div>
+                                <input type="checkbox" id="checkbox" ng-model="row.selected" class='pseudo-checkbox sr-only'>{$ row.name $}
+                                <label for='checkbox' class='fancy-checkbox-label'></label>
+                            </div>
+                        </td>
                         <td>{$ row.created_on $}</td>
                     </tr>
                 </tbody>
