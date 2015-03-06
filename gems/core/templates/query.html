@@ -50,6 +50,6 @@
         <a class="grey-font" ng-click="addFilter()" href="">Add new data field+</a>
     </div>
     <div class="row">
-        <span class="blue-font bold">{$queryWords$}</span>
+        <span class="blue-font bold" ng-if="queryWords != ''">Query: {$queryWords$}</span>
     </div>
 </div>
