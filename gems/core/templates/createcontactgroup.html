@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="row">
-                <button class="btn btn-default green white-font" ng-click="fetchResults()">{$ queryStarted ? 'Refresh Results' : 'Display Results' $}</button>
+                <button class="green white-font" ng-click="fetchResults()">{$ queryStarted ? 'Refresh Results' : 'Display Results' $}</button>
             </div>
             <div class="row">
                 &nbsp;
@@ -39,9 +39,12 @@
                 <div class="col-md-2">
                     <span>Results ({$ rows.length $})</span>
                 </div>
-                <div class="col-md-2">
-                    <button class="btn grey" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
+                <div class="col-md-4">
+                    <button class="grey" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
                 </div>
+            </div>
+            <div class="row">
+                &nbsp;
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0">
                 <table class="table table-striped">
@@ -61,15 +64,15 @@
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0 && createGroup">
                 <div class="col-md-3 col-md-offset-9">
-                    <button class="btn btn-primary right pink white-font" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
+                    <button class="right pink white-font" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
                 </div>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0 && !createGroup">
                 <div class="col-md-2 col-md-offset-8">
-                    <button class="btn orange white-font">Cancel</button>
+                    <button class="orange white-font">Cancel</button>
                 </div>
                 <div class="col-md-2">
-                    <button class="btn pink white-font" ng-click="updateGroup(filters)">Save Changes</button>
+                    <button class="pink white-font" ng-click="updateGroup(filters)">Save Changes</button>
                 </div>
             </div>
             <!--
@@ -81,19 +84,19 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="myModalLabel">Group Name</h4>
                         </div>
                         <div class="modal-body">
                             <h4>Please enter the name of your group:</h4>
                             <p>The name of the group should be as descriptive as possible so that you can find it in future. The name must be unique.</p>
-                            <div class="input-wrapper-active full-width">
+                            <div class="input-wrapper-active full-width no-left-padding no-left-margin">
                                 <input id="group_name" type="text" ng-model="groupName" placeholder="Group Name">
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary pink white-font" data-dismiss="modal" ng-click="saveGroup(filters)">Save</button>
+                            <button class="" data-dismiss="modal">Cancel</button>
+                            <button class="pink white-font" data-dismiss="modal" ng-click="saveGroup(filters)">Save</button>
                         </div>
                     </div>
                 </div>
