@@ -8,7 +8,7 @@
         </div>
         {% include 'query.html' %}
         <div class="row button-line">
-            <button class="btn btn-default turquoise-button" ng-click="fetchResults()">{$ queryStarted ? 'Refresh Results' : 'Display Results' $}</button>
+            <button class="green white-font" ng-click="fetchResults()">{$ queryStarted ? 'Refresh Results' : 'Display Results' $}</button>
         </div>
         <div class="row">
             &nbsp;
@@ -20,9 +20,12 @@
             <div class="col-md-2">
                 <span>Results ({$ rows.length $})</span>
             </div>
-            <div class="col-md-2">
-                <button class="btn grey" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
+            <div class="col-md-4">
+                <button class="grey" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
             </div>
+        </div>
+        <div class="row">
+            &nbsp;
         </div>
         <div class="row" ng-if="queryStarted == true && rows.length > 0">
             <table class="table table-striped">
@@ -42,7 +45,7 @@
         </div>
         <div class="row" ng-if="queryStarted == true && rows.length > 0 && createGroup">
             <div class="col-md-3 col-md-offset-9">
-                <button class="btn btn-primary right pink white-font" ng-click="exportCsv()" ng-disabled="!anyRowsSelected()">Export Data</button>
+                <button class="right pink white-font" ng-click="exportCsv()" ng-disabled="!anyRowsSelected()">Export Data</button>
             </div>
         </div>
     </div>

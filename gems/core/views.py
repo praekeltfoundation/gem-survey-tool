@@ -185,6 +185,10 @@ class FieldFilter:
         self.q = None
 
         if field.type == 'N':
+
+            if field.name == 'survey':
+                field.name = 'survey__name'
+
             # These are the normal fields
             if operator == 'eq' or operator == 'ex':
                 kwargs = {
@@ -217,7 +221,9 @@ class FieldFilter:
         else:
             # These are the hstore fields
             if operator == 'eq' or operator == 'ex':
-                self.q = Q(answer={field.name: value})
+                # the sql generator for equals seems to be buggy
+                # so this is a work around
+                self.q = Q(answer__gte={field.name: value}) & Q(answer__lte={field.name: value})
             elif operator == 'gt':
                 self.q = Q(answer__gt={field.name: value})
             elif operator == 'gte':
@@ -618,16 +624,16 @@ def get_surveys(request):
 
         if 'from' in data:
             try:
-                date_from = datetime.datetime.strptime(data['from'], "%Y-%m-%d")
+                date_from = datetime.datetime.strptime(data['from'], "%Y/%m/%d")
                 results = results.filter(created_on__gte=date_from)
             except ValueError:
                 return HttpResponse("Invalid date.")
 
         if 'to' in data:
             try:
-                date_to = datetime.datetime.strptime(data['to'], "%Y-%m-%d")
+                date_to = datetime.datetime.strptime(data['to'], "%Y/%m/%d")
                 results = results.filter(created_on__lte=date_to)
-            except ValueError:
+            except ValueError as ex:
                 return HttpResponse("Invalid date.")
 
         return generate_json_response(

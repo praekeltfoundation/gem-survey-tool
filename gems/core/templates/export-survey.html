@@ -8,23 +8,33 @@
         </div>
         <div class="row">
             <div class="form-inline data-line">
-                <label class="grey-font label-size">Survey Name:</label>
-                <input class="input-size" type="text" placeholder="Name" ng-model="surveySearchForm.name">
+                <label class="grey-font text-left label-padding">Survey Name:</label>
+                <div class="input-wrapper-active three-quarter-width right">
+                    <input id="name" type="text" ng-model="surveySearchForm.name" placeholder="Name">
+                </div>
             </div>
+        </div>
+        <div class="row">
             <div class="form-inline data-line">
-                <label class="label-size grey-font">Date Range:</label>
-                <label class="date-label-size grey-font">From:</label>
-                <input class="date-input-size" type="text" ng-model="surveySearchForm.from" id="datepicker">
-                <label class="to-label-size grey-font">To:</label>
-                <input class="date-input-size" type="text" ng-model="surveySearchForm.to" id="datepicker">
+                <label class="grey-font one-fith-width">Date Range:</label>
+                <label class="grey-font text-right label-padding one-tenth-width">From:</label>
+                <div class="input-wrapper-active one-fith-width">
+                    <input id="datepicker_from" type="text" ng-model="surveySearchForm.from" placeholder="From Date" readonly>
+                    <i class="glyphicon glyphicon-calendar"></i>
+                </div>
+                <label class="grey-font text-right label-padding one-tenth-width">To:</label>
+                <div class="input-wrapper-active one-fith-width">
+                    <input id="datepicker_to" type="text" ng-model="surveySearchForm.to" placeholder="To Date" readonly>
+                    <i class="glyphicon glyphicon-calendar"></i>
+                </div>
             </div>
         </div>
         <div class="row button-line">
-            <button class="btn btn-default turquoise-button " ng-click="getSurveys()" ng-disabled="!(!!surveySearchForm.name || !!surveySearchForm.from  || !!surveySearchForm.to)">Display Results</button>
+            <button class="turquoise-back white-front" ng-click="getSurveys()" ng-disabled="!(!!surveySearchForm.name || !!surveySearchForm.from  || !!surveySearchForm.to)">Display Results</button>
         </div>
         <div class="results-head" ng-if="queryStarted">
             <span class="grey-font">Results ({$ rows.length $})</span>
-            <button class="btn grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
+            <button class="grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
         </div>
         <div class="row" ng-if="queryStarted == true"> <!-- && rows.length > 0 -->
             <table class="table table-striped">
@@ -44,7 +54,7 @@
         </div>
         <div class="row" ng-if="queryStarted == true && rows.length > 0">
             <div class="col-md-3 col-md-offset-9">
-                <button class="btn btn-primary right pink white-font" ng-disabled="!anyRowsSelected()" ng-click="exportSurveyCsv()">Export Data</button>
+                <button class="right pink white-font" ng-disabled="!anyRowsSelected()" ng-click="exportSurveyCsv()">Export Data</button>
             </div>
         </div>
     </div>
