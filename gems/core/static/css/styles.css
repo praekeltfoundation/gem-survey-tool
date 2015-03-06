@@ -429,3 +429,9 @@ input[type="text"]:focus, input[type="password"]:focus {
 .container-left{
     margin-left: 0;
 }
+
+.input-wrapper-active > .glyphicon{
+    position: absolute;
+    right: 0;
+    padding: 8px 5px;
+}

@@ -19,14 +19,17 @@
                 <label class="grey-font one-fith-width">Date Range:</label>
                 <label class="grey-font text-right label-padding one-tenth-width">From:</label>
                 <div class="input-wrapper-active one-fith-width">
-                    <input id="datepicker_from" type="text" ng-model="surveySearchForm.from" placeholder="From Date">
+                    <input id="datepicker_from" type="text" ng-model="surveySearchForm.from" placeholder="From Date" readonly>
+                    <i class="glyphicon glyphicon-calendar"></i>
                 </div>
                 <label class="grey-font text-right label-padding one-tenth-width">To:</label>
                 <div class="input-wrapper-active one-fith-width">
-                    <input id="datepicker_to" type="text" ng-model="surveySearchForm.from" placeholder="To Date">
+                    <input id="datepicker_to" type="text" ng-model="surveySearchForm.to" placeholder="To Date" readonly>
+                    <i class="glyphicon glyphicon-calendar"></i>
                 </div>
             </div>
         </div>
+        {$surveySearchForm$}
         <div class="row button-line">
             <button class="turquoise-back white-front" ng-click="getSurveys()" ng-disabled="!(!!surveySearchForm.name || !!surveySearchForm.from  || !!surveySearchForm.to)">Display Results</button>
         </div>
