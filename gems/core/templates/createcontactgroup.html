@@ -35,8 +35,8 @@
             <div class="row" ng-if="queryStarted == true && rows.length == 0">
                 <span class="grey-font bold">Sorry. There are no results that match your query. Please adjust your Rules.</span>
             </div>
-            <div class="row" ng-if="queryStarted == true && rows.length > 0">
-                <div class="col-md-2">
+            <div class="row results-head" ng-if="queryStarted == true && rows.length > 0">
+                <div class="col-md-3">
                     <span>Results ({$ rows.length $})</span>
                 </div>
                 <div class="col-md-4">
@@ -47,7 +47,7 @@
                 &nbsp;
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0">
-                <table class="table table-striped">
+                <table class="table table-striped contact-groups">
                     <thead>
                         <tr>
                             <th></th>
@@ -77,6 +77,19 @@
                 <div class="col-md-2">
                     <button class="pink white-font" ng-click="updateGroup(filters)">Save Changes</button>
                 </div>
+            </div>
+            <div class="paging" ng-if="queryStarted == true && rows.length > 0 && createGroup">
+                <ul>
+                    <li class="paging-item" ng-class="{disabled: currentPage == 0} ">
+                        <a href ng-click="prevPage()">Prev</a>
+                    </li>
+                    <li class="paging-item" ng-repeat="n in range(pagedGroups.length)" ng-class="{active: n == currentPage}" ng-click="setPage()">
+                        <a href ng-bind="n + 1">1</a>
+                    </li>
+                    <li class="paging-item" ng-class="{disabled: currentPage == pagedGroups.length - 1}">
+                        <a href ng-click="nextPage()">Next</a>
+                    </li>
+                </ul>
             </div>
             <!--
 

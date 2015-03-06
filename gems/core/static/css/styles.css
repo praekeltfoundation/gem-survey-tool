@@ -313,6 +313,19 @@ table tr th:last-child{
     border-right: 0;
 }
 
+table.contact-groups>thead:first-child>tr>th{
+    border-top: 0;
+    border-bottom: 0;
+}
+
+table.contact-groups>tbody:first-child>tr>td{
+    border-top: 0;
+}
+
+.table>tbody>tr>td{
+    border-top: 0;
+}
+
 table{
     width: 100%;
 }
