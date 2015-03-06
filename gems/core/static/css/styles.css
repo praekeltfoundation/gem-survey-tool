@@ -358,6 +358,12 @@ th.survey-name{
     width: 50%;
 }
 
+input[type=checkbox].select-box{
+    margin-left: -30px;
+    margin-right: 15px;
+    transform: scale(1.5);
+}
+
 th.survey-date{
     width: 50%;
 }
@@ -496,3 +502,26 @@ button:disabled {
 .gems-button-primary{
     color: #8d8d8d;
 }
+
+/*----------CHECKBOX----------*/
+input[type='checkbox'].pseudo-checkbox + label:before,
+input[type='checkbox'].pseudo-checkbox + label:after{
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+input[type='checkbox'].pseudo-checkbox + label:before{/*unchecked icon*/
+    content: "\e157";
+}
+input[type='checkbox']:checked.pseudo-checkbox + label:before{/*checked icon*/
+    content: "\e067";
+}
+
+/*---------------------------*/
