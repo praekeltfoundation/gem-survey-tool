@@ -2,7 +2,9 @@
     <div class="groups-main-container">
         <div class="container-head">
             <span class="container-heading ">Contact Groups ({$ filteredContactGroups.length $})</span>
-            <input class="right" type="text" ng-model="query" ng-change="search()" placeholder="Search">
+            <div class="input-wrapper-active quarter-width right">
+                <input type="text" ng-model="query" ng-change="search()" placeholder="Search">
+            </div>
             <input class="right search-checkbox" type="checkbox">
         </div>
         <div>

@@ -618,16 +618,16 @@ def get_surveys(request):
 
         if 'from' in data:
             try:
-                date_from = datetime.datetime.strptime(data['from'], "%Y-%m-%d")
+                date_from = datetime.datetime.strptime(data['from'], "%Y/%m/%d")
                 results = results.filter(created_on__gte=date_from)
             except ValueError:
                 return HttpResponse("Invalid date.")
 
         if 'to' in data:
             try:
-                date_to = datetime.datetime.strptime(data['to'], "%Y-%m-%d")
+                date_to = datetime.datetime.strptime(data['to'], "%Y/%m/%d")
                 results = results.filter(created_on__lte=date_to)
-            except ValueError:
+            except ValueError as ex:
                 return HttpResponse("Invalid date.")
 
         return generate_json_response(

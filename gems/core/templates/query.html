@@ -20,7 +20,9 @@
                 <select class="form-control" ng-model="fieldFilter.operator" ng-options="op.operator as op.name for op in operators"></select>
             </div>
             <div class="col-md-3" ng-model="filter.value">
-                <input class="form-control" placeholder="Value" ng-model="fieldFilter.value">
+                <div class="input-wrapper-active">
+                    <input type="text" ng-model="fieldFilter.value" placeholder="Value">
+                </div>
             </div>
             <div class="col-md-3" ng-if="$index != 0">
                 <div class="row">

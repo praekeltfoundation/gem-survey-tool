@@ -40,11 +40,11 @@ footer {
 }
 
 .yellow{
-    background-color: #fee62c;
+    background-color: #fee62c !important;
 }
 
-.yellow{
-    background-color: #fee62c;
+.yellow-back{
+    background-color: #fee62c !important;
 }
 
 .pink{
@@ -87,9 +87,24 @@ footer {
     width: inherit;
 }
 
-.turquoise-button{
+.turquoise-back{
     background-color: rgb(41, 183, 171);
-    color: #ffffff;
+}
+
+.turquoise-front{
+    color: rgb(41, 183, 171);
+}
+
+.black-back{
+    background-color: #000000;
+}
+
+.black-front{
+    color: #000000;
+}
+
+.white-back{
+    background-color: #ffffff;
 }
 
 .login-logo{
@@ -181,7 +196,7 @@ a.menu-item{
 }
 
 .container-heading{
-    font-size: 18px;
+    font-size: 18px !important;
 }
 
 .sub-head{
@@ -243,7 +258,7 @@ input.num-rows{
 }
 
 .bold{
-    font-weight: bold;
+    font-weight: bold !important;
 }
 .button-line{
     padding-top: 20px;
@@ -334,6 +349,7 @@ th.survey-date{
     padding-left: 20px;
 }
 
+<<<<<<< HEAD
 div.paging{
     text-align: center;
 }
@@ -348,6 +364,89 @@ li.paging-item > a{
     font-size: 10px;
 }
 
+input[type="text"], input[type="password"] {
+    font-family: "Helvetica Neue";
+    font-weight: 300;
+    width: 100%;
+    border-radius: 0px;
+    border: none;
+    padding-left: 7px;
+    height: 34px;
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 5px;
+    background-color: transparent !important;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    color: #000000 !important;
+    outline: none;
+    box-shadow: none;
+}
+
+.input-wrapper-active {
+    display: inline-block;
+    position: relative;
+    margin-left: 20px;
+}
+
+.input-wrapper-active:after {
+    position: absolute;
+    border: 1px solid #000000;
+    border-top: none;
+    height: 5px;
+    width: 100%;
+    bottom: 6px;
+    left: 0;
+    content: "";
+}
+
+.half-width{
+    width: 50%;
+}
+
+.full-width{
+    width: 100%;
+}
+
+.three-quarter-width{
+    width: 75%;
+}
+
+.quarter-width{
+    width: 25%;
+}
+
+.one-fith-width{
+    width: 20%;
+}
+
+.two-third-width{
+    width: 66%;
+}
+
+.one-tenth-width{
+    width: 10%;
+}
+
+.text-left{
+    text-align: left !important;
+}
+
+.text-right{
+    text-align: right !important;
+}
+
+.label-padding{
+    padding-top: 7px;
+}
+
 .container-left{
     margin-left: 0;
+}
+
+.input-wrapper-active > .glyphicon{
+    position: absolute;
+    right: 0;
+    padding: 8px 5px;
 }
