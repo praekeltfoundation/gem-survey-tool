@@ -19,8 +19,7 @@
                 {% csrf_token %}
                 <img class="login-logo" src="{{ STATIC_URL }}img/ghelogo.png">
                 {% if request.session.wrong_password %}
-                    <p class="red-front error-msg-indent">{{ request.session.error_msg_line1 }}</p>
-                    <p class="red-front error-msg-indent">{{ request.session.error_msg_line2 }}</p>
+                    <p class="red-front error-msg-indent">{{ request.session.error_msg_line }}</p>
                 {% endif %}
 				<div class="form-group">
 				    <label for="username" class="col-sm-2 control-label">Username:</label>

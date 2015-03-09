@@ -37,7 +37,7 @@ footer {
 
 .sign-up{
     margin: 150px auto;
-    width: 300px;
+    width: 350px;
 }
 
 .yellow{
@@ -117,7 +117,7 @@ footer {
 }
 
 .login-logo{
-    width: 300px;
+    width: 350px;
     margin-bottom: 30px;
     padding-left: 40px;
     padding-right: 40px;
@@ -367,7 +367,7 @@ th.survey-date{
 }
 
 .red-front{
-    color: #d81f23;
+    color: #d42020;
 }
 
 .error-msg-indent{
