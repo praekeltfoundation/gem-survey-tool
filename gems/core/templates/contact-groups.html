@@ -9,7 +9,7 @@
         </div>
         <div class="row">
             <table class="table contact-groups">
-                <thead class="table-heading white-font">
+                <thead class="table-heading ">
                     <tr>
                         <th class="name">
                             <a href="#" ng-click="sortingOrder='name'; reverseSort = !reverseSort">
@@ -66,14 +66,8 @@
         </div>
         <div class="row paging">
             <ul>
-                <li class="paging-item" ng-class="{disabled: currentPage == 0} ">
-                    <a href ng-click="prevPage()">Prev</a>
-                </li>
                 <li class="paging-item" ng-repeat="n in range(pagedGroups.length)" ng-class="{active: n == currentPage}" ng-click="setPage()">
-                    <a href ng-bind="n + 1">1</a>
-                </li>
-                <li class="paging-item" ng-class="{disabled: currentPage == pagedGroups.length - 1}">
-                    <a href ng-click="nextPage()">Next</a>
+                    <a href ng-bind="n + 1" ng-class="n == currentPage ? 'current-page' : 'not-current-page'">1</a>
                 </li>
             </ul>
         </div>

@@ -284,13 +284,18 @@ input.num-rows{
 
 .table-heading{
     font-weight: bold;
-    font-size: 10px;
+    font-size: 10pt;
     background-color: rgb(41, 183, 171);
+    color: black;
+}
+
+thead.table-heading>tr>th>a{
+    color:black;
 }
 
 .table-rows{
     font-weight: normal;
-    font-size: 10px;
+    font-size: 10pt;
 }
 
 th{
@@ -384,8 +389,17 @@ li.paging-item{
 }
 
 li.paging-item > a{
-    color: rgb(66, 66, 66);
-    font-size: 10px;
+    font-size: 14pt;
+
+}
+
+.current-page{
+    color: black;
+    font-weight: bold;
+}
+
+.not-current-page{
+    color: rgb(189, 189, 189);
 }
 
 input[type="text"], input[type="password"] {

@@ -11,7 +11,7 @@ gems.controller('groupController', function($scope, $http){
     $scope.filteredGroups = [];
     $scope.pagedGroups = [];
     $scope.currentPage = 1;
-    $scope.itemsPerPage = 20;
+    $scope.itemsPerPage = 10;
     $scope.maxSize = 6;
 
     $scope.fetchResults = function fetchResults(){
