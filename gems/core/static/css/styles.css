@@ -1,5 +1,6 @@
 body{
-    font-family: "Helvetica Neue Bold";
+    font-family: 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 14px;
 }
 
 .navbar-static-top {
@@ -491,6 +492,7 @@ button, button:hover, button:focus {
     border-color: transparent !important;
     padding-left: 10px !important;
     padding-right: 10px !important;
+    text-align: center;
 }
 
 button:disabled {
@@ -503,6 +505,7 @@ button:disabled {
     padding-right: 10px !important;
     color: #CCCCCC;
     background-color: #9b9b9b;
+    text-align: center;
 }
 
 .gems-button-primary{
