@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -70,6 +70,10 @@ def user_login(request):
         # blank dictionary object...
         return render_to_response('login.html', {}, context)
 
+
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect('/login')
 
 class ContactGroupsView(TemplateView):
 
