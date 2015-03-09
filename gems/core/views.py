@@ -59,8 +59,7 @@ def user_login(request):
             print "Invalid login details: {0}, {1}".format(username, password)
             #return HttpResponse("Invalid login details supplied.")
             request.session['wrong_password'] = True
-            request.session['error_msg_line1'] = '*Username and password combination'
-            request.session['error_msg_line2'] = 'incorrect'
+            request.session['error_msg_line'] = '*Username and password combination incorrect'
             return HttpResponseRedirect('/login/')
 
     # The request is not a HTTP POST, so display the login form.
