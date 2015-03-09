@@ -4,12 +4,30 @@
     </div>
     <div class="menu-links">
         <ul class="nav nav-stacked menuItems">
-            <li><a class="main-menu-item menu-item" ng-class="{ 'bold' : userMenuItem }" href="" ng-click="hideSubMenus(); unboldMenuItems(); userMenuItem=true"><img  class="menu-item-icon" src="{{ STATIC_URL }}img/image18.png"/> {{ user.get_username }}</a></li>
-            <li><a class="main-menu-item menu-item" ng-class="{ 'bold' : builderMenuItem }" href="" ng-click="hideSubMenus('http://www.vumi.org'); unboldMenuItems(); builderMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image19.png"/> Survey Builder</a></li>
-            <li><a class="main-menu-item menu-item" ng-class="{ 'bold' : contactsMenuItem }" href="" ng-click="toggleContactMenu();unboldMenuItems();contactsMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image23.png"/> Contact Management</a></li>
-            <li><a class="main-menu-item menu-item" ng-class="{ 'bold' : serviceMenuItem }" href="" ng-click="hideSubMenus();unboldMenuItems(); serviceMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image25.png"/> Service Dashboard</a></li>
-            <li><a class="main-menu-item menu-item" ng-class="{ 'bold' : dataMenuItem }" href="" ng-click="toggleSurveyDataMenu();unboldMenuItems(); dataMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image21.png"/> Survey Data</a></li>
-            <li><a class="main-menu-item menu-item" ng-class="{ 'bold' : adminMenuItem }" href="" ng-click="hideSubMenus('{% url 'admin:index' %}');unboldMenuItems(); adminMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image20.png"/> Admin..</a></li>
+            <li>
+                <div class="dropdown popup-menu-container">
+                    <a class="main-menu-item-popup menu-item" ng-class="{ 'bold' : userMenuItem }" href="" ng-click="hideSubMenus(); unboldMenuItems(); userMenuItem=true"><img  class="menu-item-icon" src="{{ STATIC_URL }}img/image18.png"/> {{ user.get_username }}</a>
+                    <a class="dropdown-toggle"  data-toggle="dropdown" href="#"><img class="menu-item-icon menu-icon-right right dropdown-toggle" width="16" height="16" src="{{ STATIC_URL }}img/image3.png"/></a>
+                    <ul class="dropdown-menu pink" role="menu" aria-labelledby="dropdownMenu">
+                        <li><a class="text-right menu-item sub-menu-item" tabindex="-1" href="/logout">Sign Out</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <a class="main-menu-item menu-item" ng-class="{ 'bold' : builderMenuItem }" href="" ng-click="hideSubMenus('http://www.vumi.org'); unboldMenuItems(); builderMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image19.png"/> Survey Builder</a>
+            </li>
+            <li>
+                <a class="main-menu-item menu-item" ng-class="{ 'bold' : contactsMenuItem }" href="" ng-click="toggleContactMenu();unboldMenuItems();contactsMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image23.png"/> Contact Management</a>
+            </li>
+            <li>
+                <a class="main-menu-item menu-item" ng-class="{ 'bold' : serviceMenuItem }" href="" ng-click="hideSubMenus();unboldMenuItems(); serviceMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image25.png"/> Service Dashboard</a>
+            </li>
+            <li>
+                <a class="main-menu-item menu-item" ng-class="{ 'bold' : dataMenuItem }" href="" ng-click="toggleSurveyDataMenu();unboldMenuItems(); dataMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image21.png"/> Survey Data</a>
+            </li>
+            <li>
+                <a class="main-menu-item menu-item" ng-class="{ 'bold' : adminMenuItem }" href="" ng-click="hideSubMenus('{% url 'admin:index' %}');unboldMenuItems(); adminMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image20.png"/> Admin..</a>
+            </li>
         </ul>
     </div>
 </div>

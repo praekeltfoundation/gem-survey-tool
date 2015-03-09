@@ -154,10 +154,15 @@ footer {
 
 .menu-item{
     font-size: 14px;
-    color: #8d8d8d;
+    color: #8d8d8d !important;
 }
 
 .main-menu-item:hover, .main-menu-item:focus{
+    color: #c1c1c1;
+    background-color: #fee62c !important;
+}
+
+.main-menu-item-popup:hover, .main-menu-item-popup:focus{
     color: #c1c1c1;
     background-color: #fee62c !important;
 }
@@ -174,6 +179,7 @@ footer {
 a.menu-item:focus,
 a.menu-item{
     outline: none;
+    text-decoration: none;
 }
 
 .submenu{
@@ -525,3 +531,26 @@ input[type='checkbox']:checked.pseudo-checkbox + label:before{/*checked icon*/
 }
 
 /*---------------------------*/
+
+.menu-icon-right{
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.open>a{
+    background-color: inherit !important;
+    border-color: inherit !important;
+}
+
+.open>a:focus{
+    background-color: inherit !important;
+    border-color: inherit !important;
+}
+
+.popup-menu-container {
+    display: block;
+    padding: 10px 15px;
+    text-indent: -30px;
+}
