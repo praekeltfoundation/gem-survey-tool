@@ -398,20 +398,23 @@ li.paging-item > a{
 }
 
 input[type="text"], input[type="password"] {
-    font-family: "Helvetica Neue";
-    font-weight: 300;
+    font-family: 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-weight: bold;
+    font-size: 13px;
     width: 100%;
     border-radius: 0px;
     border: none;
     padding-left: 7px;
     height: 34px;
-    font-size: 14px;
     color: #666666;
     margin-bottom: 5px;
     background-color: transparent !important;
 }
 
 input[type="text"]:focus, input[type="password"]:focus {
+    font-family: 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-weight: bold;
+    font-size: 13px;
     color: #000000 !important;
     outline: none;
     box-shadow: none;
@@ -485,6 +488,9 @@ input[type="text"]:focus, input[type="password"]:focus {
 }
 
 button, button:hover, button:focus {
+    font-family: 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 14px;
+    font-weight: bold;
     border-radius: 30px !important;
     -moz-border-radius: 30px !important;
     height: 31px !important;
@@ -496,6 +502,9 @@ button, button:hover, button:focus {
 }
 
 button:disabled {
+    font-family: 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 14px;
+    font-weight: bold;
     border-radius: 30px !important;
     -moz-border-radius: 30px !important;
     height: 31px !important;
