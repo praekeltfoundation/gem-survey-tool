@@ -191,22 +191,12 @@ a.menu-item{
     margin-right: 12px;
 }
 
-.groups-main-container{
-    margin: 100px 20px 30px;
-}
-
 .main-container{
-    margin-top: 40px;
-    margin-left: 100px;
+    margin: 100px 40px 30px;
 }
 
 .container-head{
     padding-bottom: 20px;
-}
-
-.groups-main-container .container-head{
-    padding-left: 20px;
-    padding-bottom: 40px;
 }
 
 .container-heading{
@@ -297,10 +287,6 @@ input.num-rows{
     background-color: rgb(41, 183, 171);
 }
 
-.table-striped > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
-   background-color: rgb(241, 241, 241);
-}
-
 .table-rows{
     font-weight: normal;
     font-size: 10px;
@@ -383,7 +369,12 @@ th.survey-date{
 }
 
 div.paging{
-    text-align: center;
+    text-align: left;
+}
+
+.paging ul{
+    margin: 0;
+    padding: 0;
 }
 
 li.paging-item{

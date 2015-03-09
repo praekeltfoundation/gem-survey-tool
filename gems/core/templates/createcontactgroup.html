@@ -2,7 +2,7 @@
     <div class="main-container">
         <form ng-submit="">
             <div class="row container-head" ng-if="createGroup">
-                <span class="container-heading bold">Create Group</span>
+                <span class="container-heading">Create Group</span>
             </div>
             <div class="row form-horizontal" ng-if="!createGroup">
                 <div class="form-group">
@@ -78,7 +78,7 @@
                     <button class="pink white-font" ng-click="updateGroup(filters)">Save Changes</button>
                 </div>
             </div>
-            <div class="paging" ng-if="queryStarted == true && rows.length > 0 && createGroup">
+            <div class="row paging" ng-if="queryStarted == true && rows.length > 0 && createGroup">
                 <ul>
                     <li class="paging-item" ng-class="{disabled: currentPage == 0} ">
                         <a href ng-click="prevPage()">Prev</a>
