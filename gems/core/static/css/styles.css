@@ -1,6 +1,15 @@
+@font-face {
+  font-family: 'TwCenMT-Regular';
+  src: url('/static/fonts/TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),  url('/static/fonts/TwCenMT-Regular.woff') format('woff'), url('/static/fonts/TwCenMT-Regular.ttf')  format('truetype'), url('/static/fonts/TwCenMT-Regular.svg#TwCenMT-Regular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body{
-    font-family: 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
-    font-size: 14px;
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 15pt;
+    font-weight: bold;
+    color: #000000;
 }
 
 .navbar-static-top {
@@ -8,7 +17,7 @@ body{
 }
 
 i {
-  font-size:18px;
+  font-size:18pt;
 }
   
 footer {
@@ -22,7 +31,7 @@ footer {
   position: absolute;
   top: 10%;
   right: 25%;
-  font-size: 10px;
+  font-size: 10pt;
   font-weight: normal;
   background: rgba(41,200,41,0.75);
   color: rgb(255,255,255);
@@ -69,11 +78,11 @@ footer {
 }
 
 .blue-font{
-    color: rgb(36, 113, 186);
+    color: rgb(36, 113, 186) !important;
 }
 
 .grey-font{
-    color: rgb(121, 121, 121);
+    color: rgb(121, 121, 121) !important;
 }
 
 .grey-background{
@@ -154,22 +163,37 @@ footer {
 }
 
 .menu-item{
-    font-size: 14px;
-    color: #8d8d8d !important;
+    font-size: 14pt;
+    color: #000000 !important;
 }
 
-.main-menu-item:hover, .main-menu-item:focus{
-    color: #c1c1c1;
+.main-menu-item:hover{
+    color: #c1c1c1 !important;
     background-color: #fee62c !important;
 }
 
-.main-menu-item-popup:hover, .main-menu-item-popup:focus{
-    color: #c1c1c1;
+.main-menu-item:focus{
+    color: #ffffff !important;
     background-color: #fee62c !important;
 }
 
-.sub-menu-item:hover, .sub-menu-item:focus{
-    color: #c1c1c1;
+.main-menu-item-popup:hover{
+    color: #c1c1c1 !important;
+    background-color: #fee62c !important;
+}
+
+.main-menu-item-popup:focus{
+    color: #ffffff !important;
+    background-color: #fee62c !important;
+}
+
+.sub-menu-item:hover{
+    color: #c1c1c1 !important;
+    background-color: #ec2b8b !important;
+}
+
+.sub-menu-item:focus{
+    color: #ffffff !important;
     background-color: #ec2b8b !important;
 }
 
@@ -177,8 +201,7 @@ footer {
     color: #ffffff;
 }
 
-a.menu-item:focus,
-a.menu-item{
+a.menu-item:focus, a.menu-item{
     outline: none;
     text-decoration: none;
 }
@@ -211,17 +234,17 @@ a.menu-item{
 }
 
 .container-heading{
-    font-size: 18px !important;
+    font-size: 24pt !important;
 }
 
 .sub-head{
     padding-bottom: 20px;
-    font-size: 12px;
+    font-size: 12pt;
     font-weight: bold;
 }
 
 .results-head{
-    font-size: 18px;
+    font-size: 18pt;
     padding-top: 20px;
     padding-bottom: 10px;
 }
@@ -260,6 +283,10 @@ input.num-rows{
     width: 300px;
 }
 
+.input-font-large{
+    font-size: 15pt !important;
+}
+
 .from-label-size{
     width:50px;
 }
@@ -294,7 +321,7 @@ input.num-rows{
 
 .table-heading{
     font-weight: bold;
-    font-size: 10px;
+    font-size: 10pt;
     background-color: rgb(41, 183, 171);
 }
 
@@ -304,7 +331,7 @@ input.num-rows{
 
 .table-rows{
     font-weight: normal;
-    font-size: 10px;
+    font-size: 10pt;
 }
 
 th{
@@ -358,7 +385,7 @@ th.rules{
     width: 60px;
     background-color: #D6D6D6;
     color: rgb(66, 66, 66);
-    font-size: 10px;
+    font-size: 10pt;
 }
 
 th.survey-name{
@@ -394,13 +421,13 @@ li.paging-item{
 
 li.paging-item > a{
     color: rgb(66, 66, 66);
-    font-size: 10px;
+    font-size: 10pt;
 }
 
 input[type="text"], input[type="password"] {
-    font-family: 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 13pt;
     width: 100%;
     border-radius: 0px;
     border: none;
@@ -412,9 +439,9 @@ input[type="text"], input[type="password"] {
 }
 
 input[type="text"]:focus, input[type="password"]:focus {
-    font-family: 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 13pt;
     color: #000000 !important;
     outline: none;
     box-shadow: none;
@@ -488,8 +515,8 @@ input[type="text"]:focus, input[type="password"]:focus {
 }
 
 button, button:hover, button:focus {
-    font-family: 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
-    font-size: 14px;
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 14pt;
     font-weight: bold;
     border-radius: 30px !important;
     -moz-border-radius: 30px !important;
@@ -499,11 +526,12 @@ button, button:hover, button:focus {
     padding-left: 10px !important;
     padding-right: 10px !important;
     text-align: center;
+    line-height: 20px;
 }
 
 button:disabled {
-    font-family: 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
-    font-size: 14px;
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 14pt;
     font-weight: bold;
     border-radius: 30px !important;
     -moz-border-radius: 30px !important;
@@ -515,6 +543,7 @@ button:disabled {
     color: #CCCCCC;
     background-color: #9b9b9b;
     text-align: center;
+    line-height: 20px;
 }
 
 .gems-button-primary{
@@ -565,4 +594,82 @@ input[type='checkbox']:checked.pseudo-checkbox + label:before{/*checked icon*/
     display: block;
     padding: 10px 15px;
     text-indent: -30px;
+}
+
+h1 {
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 40pt !important;
+    font-weight: bold;
+    color: black;
+}
+
+h2 {
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 24pt;
+    font-weight: bold;
+    color: black;
+}
+
+p {
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 15pt;
+    font-weight: bold;
+    color: black;
+}
+
+.h1-text{
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 40pt !important;
+    font-weight: bold;
+    color: black;
+}
+
+.h2-text{
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 24pt;
+    font-weight: bold;
+    color: black;
+}
+
+.p-text {
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 15pt;
+    font-weight: bold;
+    color: black;
+}
+
+.p-text-small {
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 13pt;
+    font-weight: normal;
+    color: black;
+}
+
+.caption-text{
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 13pt;
+    font-weight: normal;
+    color: black;
+}
+
+.caption-text-size{
+    font-size: 13pt;
+}
+
+.input-text{
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 13pt !important;
+    font-weight: normal !important;
+    color: black !important;
+}
+
+.input-text-large{
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 15pt !important;
+    font-weight: normal !important;
+    color: black !important;
+}
+
+.input-align-big-label{
+    padding-top: 30px;
 }

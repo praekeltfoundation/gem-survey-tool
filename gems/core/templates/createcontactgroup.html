@@ -2,28 +2,28 @@
     <div class="main-container">
         <form ng-submit="">
             <div class="row container-head" ng-if="createGroup">
-                <span class="container-heading bold">Create Group</span>
+                <span class="h1-text">Create Group</span>
             </div>
             <div class="row form-horizontal" ng-if="!createGroup">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label container-heading bold text-left quarter-width">Edit Group:</label>
-                    <div class="input-wrapper-active two-third-width right">
-                        <input id="group_name" type="text" ng-model="groupName" placeholder="Group Name" class="container-heading bold">
+                    <label class="col-sm-2 control-label h1-text text-left half-width">Edit Group:</label>
+                    <div class="input-wrapper-active half-width right input-align-big-label no-left-margin">
+                        <input id="group_name" type="text" ng-model="groupName" placeholder="Group Name" class="input-text-large">
                     </div>
                 </div>
             </div>
             <div class="row sub-head">
-                <span class="grey-font bold">Define the rules of your contact group:</span>
+                <span class="p-text">Define the rules of your contact group:</span>
             </div>
             {% include 'query.html' %}
             <div class="row">
                 <div class="form-inline form-group">
-                    <span class="grey-font" ng-if="createGroup">Max number of results:</span>
-                    <span class="grey-font" ng-if="!createGroup">Limit random results to:</span>
-                    <span>&nbsp;</span>
-                    <input class="num-rows form-control" type="number" ng-model="numberOfRows">
-                    <span>&nbsp;</span>
-                    <span class="grey-font">(leave blank for no limit)</span>
+                    <span class="caption-text" ng-if="createGroup">Max number of results:</span>
+                    <span class="caption-text" ng-if="!createGroup">Limit random results to:</span>
+                    <span class="caption-text">&nbsp;</span>
+                    <input class="num-rows form-control input-text" type="number" ng-model="numberOfRows">
+                    <span class="caption-text">&nbsp;</span>
+                    <span class="caption-text">(leave blank for no limit)</span>
                 </div>
             </div>
             <div class="row">
@@ -33,11 +33,11 @@
                 &nbsp;
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length == 0">
-                <span class="grey-font bold">Sorry. There are no results that match your query. Please adjust your Rules.</span>
+                <span class="grey-font caption-text">Sorry. There are no results that match your query. Please adjust your Rules.</span>
             </div>
             <div class="row results-head" ng-if="queryStarted == true && rows.length > 0">
                 <div class="col-md-3">
-                    <span>Results ({$ rows.length $})</span>
+                    <span class="caption-text">Results ({$ rows.length $})</span>
                 </div>
                 <div class="col-md-4">
                     <button class="grey" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
@@ -66,7 +66,7 @@
                 </table>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0 && createGroup">
-                <div class="col-md-3 col-md-offset-9">
+                <div class="col-md-4 col-md-offset-9">
                     <button class="right pink white-font" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
                 </div>
             </div>
@@ -101,17 +101,17 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">Group Name</h4>
+                            <h2 class="modal-title" id="myModalLabel">Group Name</h2>
                         </div>
                         <div class="modal-body">
-                            <h4>Please enter the name of your group:</h4>
-                            <p>The name of the group should be as descriptive as possible so that you can find it in future. The name must be unique.</p>
+                            <p>Please enter the name of your group:</p>
+                            <p class="p-text-small">The name of the group should be as descriptive as possible so that you can find it in future. The name must be unique.</p>
                             <div class="input-wrapper-active full-width no-left-padding no-left-margin">
                                 <input id="group_name" type="text" ng-model="groupName" placeholder="Group Name">
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="" data-dismiss="modal">Cancel</button>
+                            <button class="orange white-font" data-dismiss="modal">Cancel</button>
                             <button class="pink white-font" data-dismiss="modal" ng-click="saveGroup(filters)">Save</button>
                         </div>
                     </div>
