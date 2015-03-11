@@ -310,8 +310,8 @@ input.num-rows{
 }
 
 .table-heading{
-    font-weight: bold;
-    font-size: 10pt;
+    font-weight: bold !important;
+    font-size: 10pt !important;
     background-color: rgb(41, 183, 171);
     color: black;
 }
@@ -372,11 +372,11 @@ th.rules{
 }
 
 .table-button{
-    height: 31px;
-    width: 60px;
-    background-color: #D6D6D6;
-    color: rgb(66, 66, 66);
-    font-size: 10pt;
+    /*height: 31px;
+    width: 60px;*/
+    background-color: #D6D6D6 !important;
+    /*color: rgb(66, 66, 66);
+    font-size: 10pt;*/
 }
 
 th.survey-name{
@@ -521,7 +521,7 @@ input[type="text"]:focus, input[type="password"]:focus {
 
 button, button:hover, button:focus {
     font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
-    font-size: 14pt;
+    font-size: 13pt !important;
     font-weight: bold;
     border-radius: 30px !important;
     -moz-border-radius: 30px !important;
@@ -686,4 +686,8 @@ p {
 
 .input-align-big-label{
     padding-top: 30px;
+}
+
+.i-align-big-label{
+    padding-top: 36px !important;
 }
