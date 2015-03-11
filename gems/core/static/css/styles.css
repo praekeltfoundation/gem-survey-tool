@@ -343,6 +343,10 @@ table.contact-groups>thead:first-child>tr>th{
     border-bottom: 0;
 }
 
+th.checkbox-table-header{
+    background-color: white;
+}
+
 table.contact-groups>tbody:first-child>tr>td{
     border-top: 0;
 }

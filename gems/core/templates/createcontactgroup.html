@@ -47,24 +47,26 @@
                 &nbsp;
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0">
-                <table class="table table-striped contact-groups">
-                    <thead>
+                <table class="table contact-groups">
+                    <thead class="table-heading">
                         <tr>
-                            <th></th>
-                            <th class="green white-font" ng-repeat="column in columns">{$ column.name $}</th>
+                            <th class="checkbox-table-header"></th>
+                            <th class="green" ng-repeat="column in columns">{$ column.name $}</th>
                         </tr>
                     </thead>
-                    <tr ng-repeat="row in rows">
-                        <td>
-                            <div>
-                                <input type="checkbox" id="checkbox" ng-model="row.selected" class='pseudo-checkbox sr-only'>
-                                <div class="fancy-checkbox-div">
-                                    <label for='checkbox' class='fancy-checkbox-label glyphicon' ng-class="{'glyphicon-ok' : row.selected}">&nbsp;</label>
+                    <tbody class="table-rows">
+                        <tr ng-repeat="row in rows">
+                            <td>
+                                <div>
+                                    <input type="checkbox" id="checkbox" ng-model="row.selected" class='pseudo-checkbox sr-only'>
+                                    <div class="fancy-checkbox-div">
+                                        <label for='checkbox' class='fancy-checkbox-label glyphicon' ng-class="{'glyphicon-ok' : row.selected}">&nbsp;</label>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td ng-repeat="field in row.fields track by $index">{$ field $}</td>
-                    </tr>
+                            </td>
+                            <td ng-repeat="field in row.fields track by $index">{$ field $}</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0 && createGroup">
