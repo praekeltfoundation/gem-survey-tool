@@ -1,10 +1,10 @@
 <div ng-controller="contentController" class="col-md-8" ng-if="showContactGroups">
     <div class="main-container">
         <div class="row container-head">
-            <span class="container-heading ">Contact Groups ({$ filteredGroups.length $})</span>
-            <div class="input-wrapper-active quarter-width right">
+            <span class="h1-text">Contact Groups ({$ filteredGroups.length $})</span>
+            <div class="input-wrapper-active quarter-width right input-align-big-label">
                 <i class="glyphicon glyphicon-search"></i>
-                <input type="text" ng-model="query" ng-change="search()" placeholder="Search">
+                <input type="text" class="input-text-large" ng-model="query" ng-change="search()" placeholder="Search">
             </div>
         </div>
         <div class="row">

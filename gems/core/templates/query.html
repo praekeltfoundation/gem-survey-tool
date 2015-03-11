@@ -7,7 +7,7 @@
         </div>
         <div class="row" ng-repeat="fieldFilter in filter.filters">
             <div class="col-md-3" ng-if="$index == 0">
-                <select class="form-control" ng-model="filter.field" ng-options="field.name for field in fields"></select>
+                <select class="form-control input-text" ng-model="filter.field" ng-options="field.name for field in fields"></select>
             </div>
             <div class="row row-breath" ng-if="$index != 0">
                 <div class="col-md-3 col-md-offset-5">
@@ -17,7 +17,7 @@
             <div class="col-md-3" ng-if="$index != 0">
             </div>
             <div class="col-md-3">
-                <select class="form-control" ng-model="fieldFilter.operator" ng-options="op.operator as op.name for op in operators"></select>
+                <select class="form-control input-text" ng-model="fieldFilter.operator" ng-options="op.operator as op.name for op in operators"></select>
             </div>
             <div class="col-md-3" ng-model="filter.value">
                 <div class="input-wrapper-active">
@@ -27,29 +27,29 @@
             <div class="col-md-3" ng-if="$index != 0">
                 <div class="row">
                     <div class="col-md-2">
-                        <a ng-click="removeFieldFilter($parent.$parent.$index, $index)"><img width="16" height="16" src="{{ STATIC_URL }}img/red_cross.png"></a>
+                        <a class="caption-text" ng-click="removeFieldFilter($parent.$parent.$index, $index)"><img width="16" height="16" src="{{ STATIC_URL }}img/red_cross.png"></a>
                     </div>
                     <div class="col-md-10">
-                        <a ng-click="addFieldFilter($parent.$parent.$index)" href="">Add new condition+</a>
+                        <a class="caption-text" ng-click="addFieldFilter($parent.$parent.$index)" href="">Add new condition+</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-3" ng-if="filter.filters.length == 1">
                 <div class="row">
                     <div class="col-md-2" ng-if="$parent.$parent.$index != 0">
-                        <a ng-click="removeFilter($parent.$parent.$parent.$index)"><img width="16" height="16" src="{{ STATIC_URL }}img/red_cross.png"></a>
+                        <a class="caption-text" ng-click="removeFilter($parent.$parent.$parent.$index)"><img width="16" height="16" src="{{ STATIC_URL }}img/red_cross.png"></a>
                     </div>
                     <div class="col-md-10">
-                        <a class="grey-font" ng-click="addFieldFilter($parent.$parent.$index)" href="">Add new condition+</a>
+                        <a class="caption-text" ng-click="addFieldFilter($parent.$parent.$index)" href="">Add new condition+</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row row-breath">
-        <a class="grey-font" ng-click="addFilter()" href="">Add new data field+</a>
+        <a class="caption-text" ng-click="addFilter()" href="">Add new data field+</a>
     </div>
     <div class="row">
-        <span class="blue-font bold" ng-if="queryWords != ''">Query: {$queryWords$}</span>
+        <span class="caption-text blue-font" ng-if="queryWords != ''">Query: {$queryWords$}</span>
     </div>
 </div>
