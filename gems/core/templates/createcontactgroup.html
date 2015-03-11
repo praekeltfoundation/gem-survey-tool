@@ -26,28 +26,18 @@
                     <span class="caption-text">(leave blank for no limit)</span>
                 </div>
             </div>
-            <div class="row">
-                <button class="green white-font" ng-click="fetchResults()">{$ queryStarted ? 'Refresh Results' : 'Display Results' $}</button>
-            </div>
-            <div class="row">
-                &nbsp;
+            <div class="row button-line">
+                <button class="turquoise-back white-front" ng-click="fetchResults()">{$ queryStarted ? 'Refresh Results' : 'Display Results' $}</button>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length == 0">
                 <span class="grey-font caption-text">Sorry. There are no results that match your query. Please adjust your Rules.</span>
             </div>
-            <div class="row results-head" ng-if="queryStarted == true && rows.length > 0">
-                <div class="col-md-3">
-                    <span class="caption-text">Results ({$ rows.length $})</span>
-                </div>
-                <div class="col-md-4">
-                    <button class="grey" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
-                </div>
-            </div>
-            <div class="row">
-                &nbsp;
+            <div class="results-head" ng-if="queryStarted == true && rows.length > 0">
+                <span class="p-text">Results ({$ rows.length $})</span>
+                <button class="grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0">
-                <table class="table contact-groups">
+                <table class="table contact-groups shift-left">
                     <thead class="table-heading">
                         <tr>
                             <th class="checkbox-table-header"></th>
@@ -59,7 +49,7 @@
                             <td>
                                 <div>
                                     <input type="checkbox" id="checkbox" ng-model="row.selected" class='pseudo-checkbox sr-only'>
-                                    <div class="fancy-checkbox-div">
+                                    <div class="fancy-checkbox-div right">
                                         <label for='checkbox' class='fancy-checkbox-label glyphicon' ng-class="{'glyphicon-ok' : row.selected}">&nbsp;</label>
                                     </div>
                                 </div>
@@ -70,16 +60,16 @@
                 </table>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0 && createGroup">
-                <div class="col-md-4 col-md-offset-9">
-                    <button class="right pink white-font" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
+                <div class="col-md-3 col-md-offset-9">
+                    <button class="right pink white-front" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
                 </div>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0 && !createGroup">
                 <div class="col-md-2 col-md-offset-8">
-                    <button class="orange white-font">Cancel</button>
+                    <button class="orange white-front">Cancel</button>
                 </div>
                 <div class="col-md-2">
-                    <button class="pink white-font" ng-click="updateGroup(filters)">Save Changes</button>
+                    <button class="pink white-front" ng-click="updateGroup(filters)">Save Changes</button>
                 </div>
             </div>
             <div class="row paging" ng-if="queryStarted == true && rows.length > 0 && createGroup">
@@ -109,8 +99,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="orange white-font" data-dismiss="modal">Cancel</button>
-                            <button class="pink white-font" data-dismiss="modal" ng-click="saveGroup(filters)">Save</button>
+                            <button class="orange white-front" data-dismiss="modal">Cancel</button>
+                            <button class="pink white-front" data-dismiss="modal" ng-click="saveGroup(filters)">Save</button>
                         </div>
                     </div>
                 </div>

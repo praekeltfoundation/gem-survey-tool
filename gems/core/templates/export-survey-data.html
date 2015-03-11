@@ -8,47 +8,41 @@
         </div>
         {% include 'query.html' %}
         <div class="row button-line">
-            <button class="green white-font" ng-click="fetchResults()">{$ queryStarted ? 'Refresh Results' : 'Display Results' $}</button>
-        </div>
-        <div class="row">
-            &nbsp;
+            <button class="green white-front" ng-click="fetchResults()">{$ queryStarted ? 'Refresh Results' : 'Display Results' $}</button>
         </div>
         <div class="row" ng-if="queryStarted == true && rows.length == 0">
             <span class="caption-text">Sorry. There are no results that match your query. Please adjust your Rules.</span>
         </div>
-        <div class="row" ng-if="queryStarted == true && rows.length > 0">
-            <div class="col-md-2">
-                <span class="p-text">Results ({$ rows.length $})</span>
-            </div>
-            <div class="col-md-4">
-                <button class="grey" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
-            </div>
-        </div>
-        <div class="row">
-            &nbsp;
+        <div class="results-head" ng-if="queryStarted && rows.length > 0"">
+            <span class="p-text">Results ({$ rows.length $})</span>
+            <button class="grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
         </div>
         <div class="row" ng-if="queryStarted == true && rows.length > 0">
-            <table class="table table-striped">
-                <thead>
+            <table class="table contact-groups shift-left">
+                <thead class="table-heading">
                     <tr>
-                        <th></th>
-                        <th class="green white-font" ng-repeat="column in columns">{$ column.name $}</th>
+                        <th class="checkbox-table-header"></th>
+                        <th class="green" ng-repeat="column in columns">{$ column.name $}</th>
                     </tr>
                 </thead>
-                <tr ng-repeat="row in rows">
-                    <td>
-                        <div>
-                            <input type="checkbox" id="checkbox" ng-model="row.selected" class='pseudo-checkbox sr-only'>
-                            <label for='checkbox' class='fancy-checkbox-label'></label>
-                        </div>
-                    </td>
-                    <td ng-repeat="field in row.fields track by $index">{$ field $}</td>
-                </tr>
+                <tbody class="table-rows">
+                    <tr ng-repeat="row in rows">
+                        <td>
+                           <div>
+                                <input type="checkbox" id="checkbox" ng-model="row.selected" class='pseudo-checkbox sr-only'>
+                                <div class="fancy-checkbox-div right">
+                                    <label for='checkbox' class='fancy-checkbox-label glyphicon' ng-class="{'glyphicon-ok' : row.selected}">&nbsp;</label>
+                                </div>
+                            </div>
+                        </td>
+                        <td ng-repeat="field in row.fields track by $index">{$ field $}</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
         <div class="row" ng-if="queryStarted == true && rows.length > 0 && createGroup">
             <div class="col-md-3 col-md-offset-9">
-                <button class="right pink white-font" ng-click="exportCsv()" ng-disabled="!anyRowsSelected()">Export Data</button>
+                <button class="right pink white-front" ng-click="exportCsv()" ng-disabled="!anyRowsSelected()">Export Data</button>
             </div>
         </div>
     </div>

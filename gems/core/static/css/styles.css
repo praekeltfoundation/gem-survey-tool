@@ -89,7 +89,7 @@ footer {
     background-color: rgb(214, 214, 214);
 }
 
-.white-font{
+.white-front{
     color: white;
 }
 
@@ -724,4 +724,8 @@ p {
     outline: none;
     border-color: transparent !important;
     width: 30px;
+}
+
+.shift-left {
+    margin-left: -20px;
 }
