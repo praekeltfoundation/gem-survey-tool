@@ -691,3 +691,33 @@ p {
 .i-align-big-label{
     padding-top: 36px !important;
 }
+
+.toggle-container{
+}
+
+.toggle-container>.toggle{
+    border-radius: 50px !important;
+    -moz-border-radius: 50px !important;
+    outline: none;
+    border-color: transparent !important;
+}
+
+.toggle-container>div>div>.btn-primary{
+    background-color: white !important;
+    color: #000000 !important;
+}
+
+.toggle-container>div>div>.btn-default{
+    background-color: #08a158 !important;
+    color: #000000 !important;
+}
+
+.toggle-container>div>div>.toggle-handle{
+    background-color: #08a158 !important;
+    border-radius: 50px !important;
+    -moz-border-radius: 50px !important;
+    height: 30px !important;
+    outline: none;
+    border-color: transparent !important;
+    width: 30px;
+}

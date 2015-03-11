@@ -1,7 +1,7 @@
 <div ng-controller="queryController">
     <div class="row" ng-repeat="filter in filters">
         <div class="row row-breath" ng-if="$index != 0">
-            <div class="col-md-3">
+            <div class="col-md-3 toggle-container">
                 <input toggle-checkbox class="form-control" data-on="and" data-off="or" ng-true-value="'and'" ng-false-value="'or'" ng-model="filter.loperator" type="checkbox">
             </div>
         </div>
@@ -10,7 +10,7 @@
                 <select class="form-control input-text" ng-model="filter.field" ng-options="field.name for field in fields"></select>
             </div>
             <div class="row row-breath" ng-if="$index != 0">
-                <div class="col-md-3 col-md-offset-5">
+                <div class="col-md-3 col-md-offset-5 toggle-container">
                     <input toggle-checkbox class="form-control" data-on="and" data-off="or" ng-true-value="'and'" ng-false-value="'or'" ng-model="fieldFilter.loperator" type="checkbox">
                 </div>
             </div>
