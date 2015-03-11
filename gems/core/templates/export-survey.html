@@ -49,9 +49,9 @@
                     <tr ng-repeat="row in rows">
                         <td>
                             <div>
-                                <input type="checkbox" id="checkbox" ng-model="row.selected" class='pseudo-checkbox sr-only'>
+                                <input type="checkbox" id="checkbox_{$ $index $}" ng-model="row.selected" class='pseudo-checkbox sr-only'>
                                 <div class="fancy-checkbox-div right">
-                                    <label for='checkbox' class='fancy-checkbox-label glyphicon' ng-class="{'glyphicon-ok' : row.selected}">&nbsp;</label>
+                                    <label for='checkbox_{$ $index $}' class='fancy-checkbox-label glyphicon' ng-class="{'glyphicon-ok' : row.selected}">&nbsp;</label>
                                 </div>
                             </div>
                         </td>
