@@ -527,8 +527,16 @@ button:disabled {
 }
 
 /*----------CHECKBOX----------*/
-input[type='checkbox'].pseudo-checkbox + label:before,
-input[type='checkbox'].pseudo-checkbox + label:after{
+div.fancy-checkbox-div{
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    text-align: center;
+    padding: 2px;
+}
+
+input[type='checkbox'].pseudo-checkbox + div:before,
+input[type='checkbox'].pseudo-checkbox + div:after{
     position: relative;
     top: 1px;
     display: inline-block;
@@ -540,11 +548,12 @@ input[type='checkbox'].pseudo-checkbox + label:after{
     -moz-osx-font-smoothing: grayscale;
 }
 
-input[type='checkbox'].pseudo-checkbox + label:before{/*unchecked icon*/
-    content: "\e157";
+input[type='checkbox'].pseudo-checkbox + div{
+    border: 1px solid black;
 }
-input[type='checkbox']:checked.pseudo-checkbox + label:before{/*checked icon*/
-    content: "\e067";
+
+input[type='checkbox']:checked.pseudo-checkbox + div{
+    border: 1px solid rgb(221, 221, 221);
 }
 
 /*---------------------------*/
