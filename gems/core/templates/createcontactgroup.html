@@ -1,93 +1,81 @@
-<div class="col-md-8" ng-controller="groupController" ng-if="showCreateGroup">
+<div class="col-md-8" ng-controller="groupController" ng-if="showCreateGroup && showContactMenu">
     <div class="main-container">
         <form ng-submit="">
             <div class="row container-head" ng-if="createGroup">
-                <span class="container-heading bold">Create Group</span>
+                <span class="h1-text">Create Group</span>
             </div>
             <div class="row form-horizontal" ng-if="!createGroup">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label container-heading bold text-left quarter-width">Edit Group:</label>
-                    <div class="input-wrapper-active two-third-width right">
-                        <input id="group_name" type="text" ng-model="groupName" placeholder="Group Name" class="container-heading bold">
+                    <label class="col-sm-2 control-label h1-text text-left half-width">Edit Group:</label>
+                    <div class="input-wrapper-active half-width right input-align-big-label no-left-margin">
+                        <input id="group_name" type="text" ng-model="groupName" placeholder="Group Name" class="input-text-large">
                     </div>
                 </div>
             </div>
             <div class="row sub-head">
-                <span class="grey-font bold">Define the rules of your contact group:</span>
+                <span class="p-text">Define the rules of your contact group:</span>
             </div>
             {% include 'query.html' %}
             <div class="row">
                 <div class="form-inline form-group">
-                    <span class="grey-font" ng-if="createGroup">Max number of results:</span>
-                    <span class="grey-font" ng-if="!createGroup">Limit random results to:</span>
-                    <span>&nbsp;</span>
-                    <input class="num-rows form-control" type="number" ng-model="numberOfRows">
-                    <span>&nbsp;</span>
-                    <span class="grey-font">(leave blank for no limit)</span>
+                    <span class="caption-text" ng-if="createGroup">Max number of results:</span>
+                    <span class="caption-text" ng-if="!createGroup">Limit random results to:</span>
+                    <span class="caption-text">&nbsp;</span>
+                    <input class="num-rows form-control input-text" type="number" ng-model="numberOfRows">
+                    <span class="caption-text">&nbsp;</span>
+                    <span class="caption-text">(leave blank for no limit)</span>
                 </div>
             </div>
-            <div class="row">
-                <button class="green white-font" ng-click="fetchResults()">{$ queryStarted ? 'Refresh Results' : 'Display Results' $}</button>
-            </div>
-            <div class="row">
-                &nbsp;
+            <div class="row button-line">
+                <button class="turquoise-back white-front" ng-click="fetchResults()">{$ queryStarted ? 'Refresh Results' : 'Display Results' $}</button>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length == 0">
-                <span class="grey-font bold">Sorry. There are no results that match your query. Please adjust your Rules.</span>
+                <span class="grey-font caption-text">Sorry. There are no results that match your query. Please adjust your Rules.</span>
             </div>
-            <div class="row results-head" ng-if="queryStarted == true && rows.length > 0">
-                <div class="col-md-3">
-                    <span>Results ({$ rows.length $})</span>
-                </div>
-                <div class="col-md-4">
-                    <button class="grey" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
-                </div>
-            </div>
-            <div class="row">
-                &nbsp;
+            <div class="results-head" ng-if="queryStarted == true && rows.length > 0">
+                <span class="p-text">Results ({$ rows.length $})</span>
+                <button class="grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0">
-                <table class="table table-striped contact-groups">
-                    <thead>
+                <table class="table contact-groups shift-left">
+                    <thead class="table-heading">
                         <tr>
-                            <th></th>
-                            <th class="green white-font" ng-repeat="column in columns">{$ column.name $}</th>
+                            <th class="checkbox-table-header"></th>
+                            <th class="green" ng-repeat="column in columns">{$ column.name $}</th>
                         </tr>
                     </thead>
-                    <tr ng-repeat="row in rows">
-                        <td>
-                            <div>
-                                <input type="checkbox" id="checkbox" ng-model="row.selected" class='pseudo-checkbox sr-only'>
-                                <label for='checkbox' class='fancy-checkbox-label'></label>
-                            </div>
-                        </td>
-                        <td ng-repeat="field in row.fields track by $index">{$ field $}</td>
-                    </tr>
+                    <tbody class="table-rows">
+                        <tr ng-repeat="row in rows">
+                            <td>
+                                <div>
+                                    <input type="checkbox" id="checkbox_{$ $index $}" ng-model="row.selected" class='pseudo-checkbox sr-only'>
+                                    <div class="fancy-checkbox-div right">
+                                        <label for='checkbox_{$ $index $}' class='fancy-checkbox-label glyphicon' ng-class="{'glyphicon-ok' : row.selected}">&nbsp;</label>
+                                    </div>
+                                </div>
+                            </td>
+                            <td ng-repeat="field in row.fields track by $index">{$ field $}</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0 && createGroup">
                 <div class="col-md-3 col-md-offset-9">
-                    <button class="right pink white-font" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
+                    <button class="right pink white-front" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
                 </div>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0 && !createGroup">
                 <div class="col-md-2 col-md-offset-8">
-                    <button class="orange white-font">Cancel</button>
+                    <button class="orange white-front">Cancel</button>
                 </div>
                 <div class="col-md-2">
-                    <button class="pink white-font" ng-click="updateGroup(filters)">Save Changes</button>
+                    <button class="pink white-front" ng-click="updateGroup(filters)">Save Changes</button>
                 </div>
             </div>
-            <div class="paging" ng-if="queryStarted == true && rows.length > 0 && createGroup">
+            <div class="row paging" ng-if="queryStarted == true && rows.length > 0 && createGroup">
                 <ul>
-                    <li class="paging-item" ng-class="{disabled: currentPage == 0} ">
-                        <a href ng-click="prevPage()">Prev</a>
-                    </li>
                     <li class="paging-item" ng-repeat="n in range(pagedGroups.length)" ng-class="{active: n == currentPage}" ng-click="setPage()">
-                        <a href ng-bind="n + 1">1</a>
-                    </li>
-                    <li class="paging-item" ng-class="{disabled: currentPage == pagedGroups.length - 1}">
-                        <a href ng-click="nextPage()">Next</a>
+                        <a href ng-bind="n + 1" ng-class="n == currentPage ? 'current-page' : 'not-current-page'">1</a>
                     </li>
                 </ul>
             </div>
@@ -101,18 +89,18 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">Group Name</h4>
+                            <h2 class="modal-title" id="myModalLabel">Group Name</h2>
                         </div>
                         <div class="modal-body">
-                            <h4>Please enter the name of your group:</h4>
-                            <p>The name of the group should be as descriptive as possible so that you can find it in future. The name must be unique.</p>
+                            <p>Please enter the name of your group:</p>
+                            <p class="p-text-small">The name of the group should be as descriptive as possible so that you can find it in future. The name must be unique.</p>
                             <div class="input-wrapper-active full-width no-left-padding no-left-margin">
                                 <input id="group_name" type="text" ng-model="groupName" placeholder="Group Name">
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="" data-dismiss="modal">Cancel</button>
-                            <button class="pink white-font" data-dismiss="modal" ng-click="saveGroup(filters)">Save</button>
+                            <button class="orange white-front" data-dismiss="modal">Cancel</button>
+                            <button class="pink white-front" data-dismiss="modal" ng-click="saveGroup(filters)">Save</button>
                         </div>
                     </div>
                 </div>

@@ -1,14 +1,14 @@
-<div class="col-md-8" ng-controller="surveyController" ng-if="showExportSurvey">
+<div class="col-md-8" ng-controller="surveyController" ng-if="showExportSurvey && showSurveyDataMenu">
     <div class="main-container">
         <div class="row container-head">
-            <span class="container-heading bold">Export Survey</span>
+            <span class="h1-text">Export Survey</span>
         </div>
         <div class="row sub-head">
-            <span class="grey-font">Search for your survey:</span>
+            <span class="p-text">Search for your survey:</span>
         </div>
         <div class="row">
             <div class="form-inline data-line">
-                <label class="grey-font text-left label-padding">Survey Name:</label>
+                <label class="text-left label-padding caption-text">Survey Name:</label>
                 <div class="input-wrapper-active three-quarter-width right">
                     <input id="name" type="text" ng-model="surveySearchForm.name" placeholder="Name">
                 </div>
@@ -16,16 +16,16 @@
         </div>
         <div class="row">
             <div class="form-inline data-line">
-                <label class="grey-font one-fith-width">Date Range:</label>
-                <label class="grey-font text-right label-padding one-tenth-width">From:</label>
+                <label class="caption-text one-fith-width">Date Range:</label>
+                <label class="caption-text text-right label-padding one-tenth-width">From:</label>
                 <div class="input-wrapper-active one-fith-width">
                     <input id="datepicker_from" type="text" ng-model="surveySearchForm.from" placeholder="From Date" readonly>
-                    <i class="glyphicon glyphicon-calendar"></i>
+                    <i class="glyphicon glyphicon-calendar caption-text-size"></i>
                 </div>
-                <label class="grey-font text-right label-padding one-tenth-width">To:</label>
+                <label class="caption-text text-right label-padding one-tenth-width">To:</label>
                 <div class="input-wrapper-active one-fith-width">
                     <input id="datepicker_to" type="text" ng-model="surveySearchForm.to" placeholder="To Date" readonly>
-                    <i class="glyphicon glyphicon-calendar"></i>
+                    <i class="glyphicon glyphicon-calendar caption-text-size"></i>
                 </div>
             </div>
         </div>
@@ -33,13 +33,14 @@
             <button class="turquoise-back white-front" ng-click="getSurveys()" ng-disabled="!(!!surveySearchForm.name || !!surveySearchForm.from  || !!surveySearchForm.to)">Display Results</button>
         </div>
         <div class="results-head" ng-if="queryStarted">
-            <span class="grey-font">Results ({$ rows.length $})</span>
+            <span class="p-text">Results ({$ rows.length $})</span>
             <button class="grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
         </div>
-        <div class="row" ng-if="queryStarted == true"> <!-- && rows.length > 0 -->
-            <table class="table table-striped">
-                <thead class="table-heading white-font">
+        <div class="row" ng-if="queryStarted == true">
+            <table class="table contact-groups">
+                <thead class="table-heading">
                     <tr>
+                        <th class="checkbox-table-header"></th>
                         <th class="survey-name">Survey Name</th>
                         <th class="survey-date">Start Date</th>
                     </tr>
@@ -48,10 +49,13 @@
                     <tr ng-repeat="row in rows">
                         <td>
                             <div>
-                                <input type="checkbox" id="checkbox" ng-model="row.selected" class='pseudo-checkbox sr-only'>{$ row.name $}
-                                <label for='checkbox' class='fancy-checkbox-label'></label>
+                                <input type="checkbox" id="checkbox_{$ $index $}" ng-model="row.selected" class='pseudo-checkbox sr-only'>
+                                <div class="fancy-checkbox-div right">
+                                    <label for='checkbox_{$ $index $}' class='fancy-checkbox-label glyphicon' ng-class="{'glyphicon-ok' : row.selected}">&nbsp;</label>
+                                </div>
                             </div>
                         </td>
+                        <td>{$ row.name $}</td>
                         <td>{$ row.created_on $}</td>
                     </tr>
                 </tbody>
@@ -59,7 +63,7 @@
         </div>
         <div class="row" ng-if="queryStarted == true && rows.length > 0">
             <div class="col-md-3 col-md-offset-9">
-                <button class="right pink white-font" ng-disabled="!anyRowsSelected()" ng-click="exportSurveyCsv()">Export Data</button>
+                <button class="right pink white-front" ng-disabled="!anyRowsSelected()" ng-click="exportSurveyCsv()">Export Data</button>
             </div>
         </div>
     </div>
