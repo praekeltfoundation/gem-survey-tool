@@ -211,5 +211,11 @@ gems.controller('groupController', function($scope, $http){
         $scope.hideCreateContact();
     };
 
+    $scope.$watch('$parent.createGroup', function(newValue, oldValue){
+        if(newValue){
+            $scope.groupName = $scope.getGroupName();
+        }
+    })
+
     $scope.fetchFields();
 });

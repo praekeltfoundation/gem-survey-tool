@@ -14,7 +14,7 @@ gems.controller('mainController', function($scope, $http, $window){
     $scope.showContactGroups = false;
     $scope.showExportSurvey = false;
     $scope.showExportSurveyData = false;
-    $scope.groupName = '';
+    $scope.groupNameMain = '';
     $scope.topQueryWords = '';
     $scope.groupKey = '';
 
@@ -57,6 +57,7 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.showExportSurveyData = false;
         $scope.createGroup = true;
         $scope.filters = [];
+        $scope.setGroupName('');
     };
 
     $scope.hideCreateContact = function hideCreateContact(){
@@ -84,7 +85,7 @@ gems.controller('mainController', function($scope, $http, $window){
         } else {
             $scope.filters = filters;
         }
-        $scope.groupName = name;
+        $scope.setGroupName(name);
         $scope.groupKey = group_key;
     };
 
@@ -118,11 +119,11 @@ gems.controller('mainController', function($scope, $http, $window){
     };
 
     $scope.getGroupName = function getGroupName(){
-        return $scope.groupName;
+        return $scope.groupNameMain;
     };
 
-    $scope.setGroupname = function setGroupName(name){
-        return $scope.groupName = name;
+    $scope.setGroupName = function setGroupName(name){
+        $scope.groupNameMain = name;
     };
 
     $scope.setQueryWords = function setQueryWords(qw){
