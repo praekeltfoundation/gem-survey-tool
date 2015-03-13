@@ -215,6 +215,18 @@ a.menu-item:focus, a.menu-item{
     margin-right: 12px;
 }
 
+.signout-item{
+    left: inherit;
+    right: -140px;
+    top: 0px;
+    text-align: center;
+}
+
+.cog{
+    position: relative;
+    top: 7px;
+}
+
 .main-container{
     margin: 100px 40px 30px;
 }
