@@ -613,7 +613,7 @@ def update_contactgroup(request):
                     #todo test if it's updated on vumi
 
                     group.name = group_name
-                    group.save(save_fields=['name'])
+                    group.save(update_fields=['name'])
 
             if 'filters' in data:
                 group.filters = data['filters']
