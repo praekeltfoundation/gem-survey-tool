@@ -533,6 +533,26 @@ def processGroupMember(api, member, group):
     group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=local_contact)
 
 
+def removeGroupMember(api, member, group):
+    try:
+        contact = api.get_contact(msisdn=member)
+    except Exception:
+        contact = None
+        logger.info('Contact: %s not found in vumi' % (member))
+
+    if contact:
+        if group.group_key in contact['groups']:
+            updated_groups = contact['groups'].remove(group.group_key)
+
+            try:
+                api.update_contact(contact['key'], {u'groups': updated_groups})
+            except Exception as ex:
+                logger.info('Contact: %s update failed' % (member))
+
+    local_contact = Contact.objects.get(msisdn=member)
+    ContactGroupMember.objects.filter(group=group, contact=local_contact).delete()
+
+
 def create_contactgroup(request):
     if request.method == 'POST':
         data=json.loads(request.body)
@@ -593,7 +613,7 @@ def update_contactgroup(request):
                     #todo test if it's updated on vumi
 
                     group.name = group_name
-                    group.save(save_fields=['name'])
+                    group.save(update_fields=['name'])
 
             if 'filters' in data:
                 group.filters = data['filters']
@@ -606,8 +626,34 @@ def update_contactgroup(request):
             if 'members' in data:
                 members = data['members']
 
-                for member in members:
-                    processGroupMember(api, member, group)
+                CGM = ContactGroupMember.objects.filter(group=group)
+                old_list = []
+                for c in CGM:
+                    old_list.append(Contact.objects.get(msisdn=c.contact))
+
+                new_list = []
+                for c in members:
+                    new_list.append(Contact.objects.get(msisdn=c))
+
+                o = set(old_list)
+                add_list = [x for x in new_list if x not in o]
+
+                n = set(new_list)
+                remove_list = [x for x in old_list if x not in n]
+
+                if add_list:
+                    print "Adding:"
+                    for member in add_list:
+                        print member
+                        print type(member) is Contact
+                        processGroupMember(api, member, group)
+
+                if remove_list:
+                    print "Removing:"
+                    for member in remove_list:
+                        print member
+                        print type(member) is Contact
+                        removeGroupMember(api, member, group)
 
             return HttpResponse("OK")
         else:
