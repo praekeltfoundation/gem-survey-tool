@@ -69,6 +69,10 @@ footer {
     background-color: #d81f23;
 }
 
+.red-front{
+    color: #d42020;
+}
+
 .orange{
     background-color: #f79c1a;
 }
@@ -209,6 +213,7 @@ a.menu-item:focus, a.menu-item{
 .submenu{
     height: 100%;
     min-height: 800px;
+    height: 100vh;
 }
 
 .menu-item-icon{
@@ -321,33 +326,14 @@ input.num-rows{
     top: 25%;
 }
 
-.table-heading{
-    font-weight: bold !important;
-    font-size: 10pt !important;
-    background-color: rgb(41, 183, 171);
-    color: black;
+/* TABLES */
+
+table {
+    width: 100%;
 }
 
-thead.table-heading>tr>th>a{
-    color:black;
-}
-
-.table-rows{
-    font-weight: normal;
-    font-size: 10pt;
-}
-
-th{
-    border-left: 2px solid rgb(51, 186, 175);
-    border-right: 2px solid rgb(51, 186, 175);
-}
-
-table tr th:first-child{
-    border-left: 0;
-}
-
-table tr th:last-child{
-    border-right: 0;
+.table>tbody>tr>td {
+    border-top: 0;
 }
 
 table.contact-groups>thead:first-child>tr>th{
@@ -355,39 +341,69 @@ table.contact-groups>thead:first-child>tr>th{
     border-bottom: 0;
 }
 
-th.checkbox-table-header{
-    background-color: white;
-}
-
 table.contact-groups>tbody:first-child>tr>td{
     border-top: 0;
 }
 
-.table>tbody>tr>td{
-    border-top: 0;
+table.has-checkbox-column {
+    margin-left: -15px;
 }
 
-table{
-    width: 100%;
+th {
+    border-left: 2px solid rgb(51, 186, 175);
+    border-right: 2px solid rgb(51, 186, 175);
 }
 
-th.name{
+table tr th:first-child {
+    border-left: 0;
+}
+
+table tr th:last-child {
+    border-right: 0;
+}
+
+.table-heading{
+    font-weight: bold !important;
+    font-size: 10pt !important;
+    background-color: rgb(41, 183, 171);
+    color: black;
+    white-space:nowrap;
+}
+
+thead.table-heading>tr>th>a{
+    color:black;
+}
+
+.table-rows {
+    font-weight: normal;
+    font-size: 10pt;
+}
+
+th.name {
     width: 15%;
 }
 
-th.created-by, th.created-at{
+th.created-by, th.created-at {
     width: 15%;
 }
 
-th.buttons{
+th.buttons {
     width: 20%;
 }
 
-th.rules{
+th.rules {
     width: 35%
 }
 
-.table-button{
+th.survey-name {
+    width: 50%;
+}
+
+th.survey-date {
+    width: 50%;
+}
+
+.table-button {
     /*height: 31px;
     width: 60px;*/
     background-color: #D6D6D6 !important;
@@ -395,23 +411,56 @@ th.rules{
     font-size: 10pt;*/
 }
 
-th.survey-name{
-    width: 50%;
+th.checkbox-table-header {
+    background-color: white;
 }
 
-input[type=checkbox].select-box{
+td.checkbox-table-column {
+    position: absolute;
+    left: 8px;
+    top: auto;
+    border-right: 0px none black;
+    border-top-width: 3px; /*only relevant for first row*/
+    margin-top: -1px; /*compensate for top border*/
+}
+
+input[type=checkbox].select-box {
     margin-left: -30px;
     margin-right: 15px;
     transform: scale(1.5);
 }
 
-th.survey-date{
-    width: 50%;
+/*----------CHECKBOX----------*/
+div.fancy-checkbox-div{
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    text-align: center;
+    padding: 2px;
 }
 
-.red-front{
-    color: #d42020;
+input[type='checkbox'].pseudo-checkbox + div:before,
+input[type='checkbox'].pseudo-checkbox + div:after{
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
+
+input[type='checkbox'].pseudo-checkbox + div{
+    border: 1px solid black;
+}
+
+input[type='checkbox']:checked.pseudo-checkbox + div{
+    border: 1px solid rgb(221, 221, 221);
+}
+
+/*---------------------------*/
 
 .error-msg-indent{
     padding-left: 20px;
@@ -571,38 +620,6 @@ button:disabled {
     color: #8d8d8d;
 }
 
-/*----------CHECKBOX----------*/
-div.fancy-checkbox-div{
-    width: 20px;
-    height: 20px;
-    font-size: 12px;
-    text-align: center;
-    padding: 2px;
-}
-
-input[type='checkbox'].pseudo-checkbox + div:before,
-input[type='checkbox'].pseudo-checkbox + div:after{
-    position: relative;
-    top: 1px;
-    display: inline-block;
-    font-family: 'Glyphicons Halflings';
-    font-style: normal;
-    font-weight: 400;
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-input[type='checkbox'].pseudo-checkbox + div{
-    border: 1px solid black;
-}
-
-input[type='checkbox']:checked.pseudo-checkbox + div{
-    border: 1px solid rgb(221, 221, 221);
-}
-
-/*---------------------------*/
-
 .menu-icon-right{
     margin-left: 0 !important;
     margin-right: 0 !important;
@@ -738,6 +755,6 @@ p {
     width: 30px;
 }
 
-.shift-left {
-    margin-left: -20px;
+div.spaced {
+    padding-top: 10px;
 }

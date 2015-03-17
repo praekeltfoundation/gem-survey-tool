@@ -36,8 +36,8 @@
                 <span class="p-text">Results ({$ rows.length $})</span>
                 <button class="grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
             </div>
-            <div class="row" ng-if="queryStarted == true && rows.length > 0">
-                <table class="table contact-groups shift-left">
+            <div class="row" ng-if="queryStarted == true && rows.length > 0" style="overflow: auto;">
+                <table class="table contact-groups has-checkbox-column">
                     <thead class="table-heading">
                         <tr>
                             <th class="checkbox-table-header"></th>
@@ -46,7 +46,7 @@
                     </thead>
                     <tbody class="table-rows">
                         <tr ng-repeat="row in rows">
-                            <td>
+                            <td class="checkbox-table-column">
                                 <div>
                                     <input type="checkbox" id="checkbox_{$ $index $}" ng-model="row.selected" class='pseudo-checkbox sr-only'>
                                     <div class="fancy-checkbox-div right">
@@ -59,10 +59,8 @@
                     </tbody>
                 </table>
             </div>
-            <div class="row" ng-if="queryStarted == true && rows.length > 0 && createGroup">
-                <div class="col-md-3 col-md-offset-9">
-                    <button class="right pink white-front" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
-                </div>
+            <div class="row spaced" ng-if="queryStarted == true && rows.length > 0 && createGroup">
+                <button class="right pink white-front" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0 && !createGroup">
                 <div class="col-md-2 col-md-offset-8">
