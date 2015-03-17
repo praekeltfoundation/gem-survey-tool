@@ -17,6 +17,7 @@ gems.controller('mainController', function($scope, $http, $window){
     $scope.groupNameMain = '';
     $scope.topQueryWords = '';
     $scope.groupKey = '';
+    $scope.queryValid = false;
 
     $scope.filters = [];
     $scope.createGroup = true;
@@ -142,5 +143,13 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.serviceMenuItem = false;
         $scope.dataMenuItem = false;
         $scope.adminMenuItem = false;
+    }
+
+    $scope.setQueryValid = function setQueryValid(valid){
+        $scope.queryValid = valid;
+    }
+
+    $scope.getQueryValid = function getQueryValid(){
+        return $scope.queryValid;
     }
 });

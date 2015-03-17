@@ -243,6 +243,10 @@ gems.controller('surveyController', function($scope, $http){
         }
     };
 
+    $scope.queryValid = function queryValid(){
+        return $scope.getQueryValid();
+    };
+
     $scope.fetchFields();
     $scope.initDTP();
 });
