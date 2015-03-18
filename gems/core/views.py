@@ -14,6 +14,7 @@ from go_http.contacts import ContactsApiClient
 import logging
 import datetime
 import re
+from gems.core.tasks import export_data
 
 
 logger = logging.getLogger(__name__)
@@ -549,3 +550,9 @@ def get_surveys(request):
                 list(results)))
     else:
         return HttpResponse("FAILED")
+
+
+def test_task(request):
+    export_data()
+
+    return HttpResponse('OK')

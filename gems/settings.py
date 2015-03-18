@@ -185,10 +185,14 @@ TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS +(
 )
 
 CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
-
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+CELERY_ALWAYS_EAGER = True
 
-
+RJ_METRICS_URL = 'https://connect.rjmetrics.com/v2/client/'
+RJ_METRICS_CID = ''
+RJ_METRICS_END_POINT = ''
+RJ_METRICS_API_KEY = ''
+RJ_METRICS_TABLE = ''
 
 try:
     from local_settings import *
