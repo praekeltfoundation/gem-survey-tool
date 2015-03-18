@@ -143,4 +143,15 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.dataMenuItem = false;
         $scope.adminMenuItem = false;
     }
+
+    $scope.formatDate = function formatDate(value){
+        if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}\w/.test(value))
+        {
+            return value.substr(0, 10);
+        }
+        else
+        {
+            return value;
+        }
+    };
 });

@@ -215,7 +215,7 @@ gems.controller('groupController', function($scope, $http){
         if(newValue){
             $scope.groupName = $scope.getGroupName();
         }
-    })
+    });
 
     $scope.fetchFields();
 });

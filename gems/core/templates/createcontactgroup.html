@@ -54,7 +54,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td ng-repeat="field in row.fields track by $index">{$ field $}</td>
+                            <td ng-repeat="field in row.fields track by $index">{$ formatDate(field) $}</td>
                         </tr>
                     </tbody>
                 </table>
