@@ -36,6 +36,7 @@ class SurveyResult(HStoreModel):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     answer = hstore.DictionaryField()
+    sent = models.BooleanField(default=False)
 
 
 class ContactGroup(HStoreModel):
