@@ -241,6 +241,14 @@ gems.controller('surveyController', function($scope, $http){
                     }
             });
         }
+
+        angular.element('.trigger_to').click(function() {
+            angular.element('#datepicker_to').datepicker("show");
+        });
+
+        angular.element('.trigger_from').click(function() {
+            angular.element('#datepicker_from').datepicker("show");
+        });
     };
 
     $scope.queryValid = function queryValid(){
