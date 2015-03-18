@@ -24,6 +24,7 @@ class Survey(models.Model):
 
 class Contact(models.Model):
     msisdn = models.CharField(max_length=15, primary_key=True)
+    vkey = models.CharField(max_length=32, blank=True, default='')
 
     def __unicode__(self):
         return self.msisdn
