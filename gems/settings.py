@@ -135,9 +135,8 @@ INSTALLED_APPS = (
     'gems.core',
     'django.contrib.admin',
     'rest_framework',
-    'south'
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'south',
+    'djcelery'
 )
 
 LOGIN_URL = 'login/'
@@ -184,6 +183,11 @@ TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS +(
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.request',
 )
+
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
 
 
 try:
