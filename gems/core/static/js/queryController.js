@@ -13,7 +13,7 @@ gems.controller('queryController', function($scope, $http){
         {name: 'Text contains', operator: 'co'},
         {name: 'Not equal to', operator: 'neq'},
         {name: 'Text does not contain', operator: 'nco'},
-        {name: 'Text is exactly', operator: 'ex'},
+        {name: 'Text is exactly', operator: 'ex'}
     ];
 
     $scope.queryWords = '';
@@ -23,27 +23,22 @@ gems.controller('queryController', function($scope, $http){
 
         if(op == 'lt'){
             retVal = '<';
-        }
-        else if(op == 'lte'){
+        } else if(op == 'lte'){
             retVal = '<=';
-        }
-        else if(op == 'gt'){
+        } else if(op == 'gt'){
             retVal = '>';
-        }
-        else if(op == 'gte'){
+        } else if(op == 'gte'){
             retVal = '>=';
-        }
-        else if(op == 'eq' || op == 'ex'){
+        } else if(op == 'eq' || op == 'ex'){
             retVal = 'equals';
-        }
-        else if(op == 'co'){
+        } else if(op == 'co'){
             retVal = 'contains';
-        }
-        else if(op == 'neq'){
+        } else if(op == 'neq'){
             retVal = 'not equals';
-        }
-        else if(op == 'nco'){
+        } else if(op == 'nco'){
             retVal = 'not contains';
+        } else {
+            retVal = 'None Selected';
         }
 
         return retVal;
@@ -123,10 +118,43 @@ gems.controller('queryController', function($scope, $http){
         $scope.setQueryWords($scope.queryWords);
     };
 
+    $scope.validateFilter = function validateFilter(){
+        var valid = true;
+
+        if($scope.filters == null || $scope.filters.length == 0){
+            valid = false;
+        } else {
+            for(var x = 0; x < $scope.filters.length; ++x){
+                var filter = $scope.filters[x];
+                var field = filter.field;
+
+                if(field == null){
+                    valid = false;
+                    break;
+                }
+
+                for(var y = 0; y < filter.filters.length; ++y){
+                    if(y > 0 && filter.filters[y].loperator == null){
+                        valid = false;
+                        break;
+                    }
+
+                    if(filter.filters[y].value == null || filter.filters[y].operator == null){
+                        valid = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return valid;
+    };
+
     $scope.fetchFields();
     $scope.makeQueryWords();
 
     $scope.$watch('filters', function(){
-       $scope.makeQueryWords();
+        $scope.makeQueryWords();
+        $scope.setQueryValid($scope.validateFilter());
     }, true);
 });

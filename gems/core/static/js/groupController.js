@@ -217,5 +217,9 @@ gems.controller('groupController', function($scope, $http){
         }
     });
 
+    $scope.queryValid = function queryValid(){
+        return $scope.getQueryValid();
+    }
+
     $scope.fetchFields();
 });
