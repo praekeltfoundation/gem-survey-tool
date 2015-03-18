@@ -346,7 +346,11 @@ table.contact-groups>tbody:first-child>tr>td{
 }
 
 table.has-checkbox-column {
-    margin-left: -15px;
+    margin-left: -20px;
+}
+
+button.table-aligned{
+    margin-right: 20px;
 }
 
 th {
@@ -396,11 +400,11 @@ th.rules {
 }
 
 th.survey-name {
-    width: 50%;
+    width: 49%;
 }
 
 th.survey-date {
-    width: 50%;
+    width: 49%;
 }
 
 .table-button {
@@ -413,6 +417,7 @@ th.survey-date {
 
 th.checkbox-table-header {
     background-color: white;
+    width:0%;
 }
 
 td.checkbox-table-column {

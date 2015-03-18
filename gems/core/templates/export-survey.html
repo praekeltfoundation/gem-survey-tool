@@ -62,9 +62,7 @@
             </table>
         </div>
         <div class="row" ng-if="queryStarted == true && rows.length > 0">
-            <div class="col-md-3 col-md-offset-9">
-                <button class="right pink white-front" ng-disabled="!anyRowsSelected()" ng-click="exportSurveyCsv()">Export Data</button>
-            </div>
+            <button class="right pink white-front table-aligned" ng-disabled="!anyRowsSelected()" ng-click="exportSurveyCsv()">Export Data</button>
         </div>
     </div>
 </div>
