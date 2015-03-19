@@ -1,12 +1,28 @@
 from __future__ import absolute_import
 from celery import task
-from gems.core.models import SurveyResult
+from gems.core.models import SurveyResult, ExportTypeMapping
 from django.conf import settings
 import logging
 import json
 import requests
 
 logger = logging.getLogger(__name__)
+
+
+def perform_casting(name, value):
+    result = ExportTypeMapping.objects.filter(field__exact=name).first()
+
+    if result:
+
+        if result.cast == 1:
+            # cast to int
+            return int(value)
+
+        elif result.cast == 2:
+            # cast to float
+            return float(value)
+
+    return value
 
 
 def process_results(result_set):
@@ -23,7 +39,7 @@ def process_results(result_set):
         }
 
         for key in sr.answer.keys():
-            result[key] = sr.answer[key]
+            result[key] = perform_casting(name=key, value=sr.answer[key])
 
         results.append(result)
 
@@ -49,29 +65,47 @@ def fetch_results():
 def submit_results(sendable_results, raw_results):
 
     payload = json.dumps(sendable_results)
-    url = settings.RJ_METRICS_URL + settings.RJ_METRICS_CID + '/table/' + settings.RJ_METRICS_TABLE + '/data?apikey=' + settings.RJ_METRICS_API_KEY
-    headers = {'Content-type': 'application/json'}
 
-    result = requests.post(url, headers=headers, data=payload)
+    url = settings.RJ_METRICS_URL + \
+        settings.RJ_METRICS_CID + \
+        '/table/' + \
+        settings.RJ_METRICS_TABLE + \
+        '/data'
+    headers = {'Content-Type': 'application/json'}
+    params = {'apikey': settings.RJ_METRICS_API_KEY}
+
+    result = requests.post(
+        url,
+        headers=headers,
+        params=params,
+        data=payload
+    )
 
     if result.status_code == 201:
         try:
             update_results(raw_results)
         except Exception as ex:
-            logger.error('export_data[Task]->submit_results->update_results failed: %s' % ex.message)
+            logger.error(
+                'export_data[Task]->submit_results->update_results failed: %s'
+                % ex.message
+            )
             raise
     else:
-        logger.error('export_data[Task]->submit_results failed: message: %s' % result.content)
+        logger.error(
+            'export_data[Task]->submit_results failed: message: %s'
+            % result.content
+        )
+        if result.status_code != 200:
+            result.raise_for_status()
 
 
 def update_results(results):
     SurveyResult.objects.filter(pk__in=results).update(sent=True)
 
 
-#@task(bind=True)
+@task(bind=True)
 def export_data():
 
-    SurveyResult.objects.all().update(sent=False)
     logger.info('export_data[Task] :: Started')
 
     try:
