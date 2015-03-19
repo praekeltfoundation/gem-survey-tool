@@ -1,7 +1,10 @@
 from __future__ import absolute_import
 from celery import task
 from gems.core.models import SurveyResult
+from django.conf import settings
 import logging
+import json
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -15,8 +18,8 @@ def process_results(result_set):
             'id': sr.id,
             'survey': sr.survey.name,
             'contact': sr.contact.vkey,
-            'created_at': str(sr.created_at),
-            'updated_at': str(sr.updated_at)
+            'created_at': sr.created_at.isoformat(),
+            'updated_at': sr.updated_at.isoformat()
         }
 
         for key in sr.answer.keys():
@@ -44,15 +47,21 @@ def fetch_results():
 
 
 def submit_results(sendable_results, raw_results):
-    # todo: send the data to rj metrics
-    result = 201
 
-    if result == 201:
+    payload = json.dumps(sendable_results)
+    url = settings.RJ_METRICS_URL + settings.RJ_METRICS_CID + '/table/' + settings.RJ_METRICS_TABLE + '/data?apikey=' + settings.RJ_METRICS_API_KEY
+    headers = {'Content-type': 'application/json'}
+
+    result = requests.post(url, headers=headers, data=payload)
+
+    if result.status_code == 201:
         try:
             update_results(raw_results)
         except Exception as ex:
             logger.error('export_data[Task]->submit_results->update_results failed: %s' % ex.message)
             raise
+    else:
+        logger.error('export_data[Task]->submit_results failed: message: %s' % result.content)
 
 
 def update_results(results):
@@ -62,6 +71,7 @@ def update_results(results):
 #@task(bind=True)
 def export_data():
 
+    SurveyResult.objects.all().update(sent=False)
     logger.info('export_data[Task] :: Started')
 
     try:
