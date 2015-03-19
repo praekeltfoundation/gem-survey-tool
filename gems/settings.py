@@ -186,13 +186,11 @@ TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS +(
 
 CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-CELERY_ALWAYS_EAGER = True
 
 RJ_METRICS_URL = 'https://connect.rjmetrics.com/v2/client/'
-RJ_METRICS_CID = ''
-RJ_METRICS_END_POINT = ''
-RJ_METRICS_API_KEY = ''
-RJ_METRICS_TABLE = ''
+RJ_METRICS_CID = '2879'
+RJ_METRICS_API_KEY = 'ffa225cc86f06e0eeec62c19eda1a33f'
+RJ_METRICS_TABLE = 'SurveyData'
 
 try:
     from local_settings import *
