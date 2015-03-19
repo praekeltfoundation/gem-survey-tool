@@ -52,5 +52,4 @@ urlpatterns = patterns('',
     url(r'^create_contactgroup/', create_contactgroup),
     url(r'^update_contactgroup/', update_contactgroup),
     url(r'^get_surveys/$', get_surveys),
-    url(r'^tt/$', test_task)
 )

@@ -550,9 +550,3 @@ def get_surveys(request):
                 list(results)))
     else:
         return HttpResponse("FAILED")
-
-
-def test_task(request):
-    export_data()
-
-    return HttpResponse('OK')
