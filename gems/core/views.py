@@ -234,7 +234,7 @@ def get_exclusion_list():
     :rtype : Tuple
     :return: a list of fields to be excluded from the results
     """
-    return 'answer',
+    return 'answer', 'sent'
 
 
 def get_surveyresult_meta_keys():
