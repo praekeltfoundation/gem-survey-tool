@@ -9,24 +9,36 @@ class RESTTestCase(TestCase):
     def test_save_data(self):
         c = Client()
         j = {
-            'user': {
-                'answers': {
-                    'choice-1': 'value-4'
-                }
-            },
-            'contact': {
-                'extra': {
-                    'message-1': 'value-4',
-                    'message-1-1': 'value-4'
+                'user':{
+                    'answers':{'age':'14'}
                 },
-            'groups': [],
-            'subscription': {},
-            'msisdn': '+27123',
-            'created_at': '2015-02-14 10:42:15.381',
-            'user_account': 'ea689884-7867-48ee-17f0-ef3fb5f88127',
-            'key': '7ee8c10c-8cba-4e6f-92c1-d3399f858f43',
-            },
-            'conversation_key': '1203491039401932804'
+                'contact':{
+                    'extra':{
+                        'age-1':'21',
+                        'age':'xx',
+                        'age-12':'rr',
+                        'age-2':'21',
+                        'age-3':'21',
+                    },
+                    'groups':[],
+                    'subscription':{},
+                    'key':'61a036aa272341c78c0d34b74092885e',
+                    'surname': None,
+                    'user_account':'8a410f412f0b4010ab88e1362518994f',
+                    'bbm_pin': None,
+                    'mxit_id': None,
+                    'twitter_handle': None,
+                    'wechat_id': None,
+                    'email_address':None,
+                    'facebook_id': None,
+                    'msisdn':'+27822247336',
+                    'gtalk_id': None,
+                    'name': None,
+                    'dob':None,
+                    'created_at':'2015-02-25 07:19:39.505567',
+                    '$VERSION':2
+                },
+                'conversation_key':'dbb13e9a55874a8d84165bde05c0ad52'
         }
         result = c.post('/save_data/', content_type='application/json', data=json.dumps(j))
         self.assertEquals(Survey.objects.count(), 1)
