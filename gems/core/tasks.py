@@ -16,11 +16,17 @@ def perform_casting(name, value):
 
         if result.cast == 1:
             # cast to int
-            return int(value)
+            try:
+                return int(value)
+            except:
+                pass
 
         elif result.cast == 2:
             # cast to float
-            return float(value)
+            try:
+                return float(value)
+            except:
+                pass
 
     return value
 
