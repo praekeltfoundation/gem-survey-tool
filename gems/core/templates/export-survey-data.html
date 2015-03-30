@@ -22,12 +22,12 @@
                 <thead class="table-heading">
                     <tr>
                         <th class="checkbox-table-header"></th>
-                        <th class="green" ng-repeat="column in columns">{$ column.name $}</th>
+                        <th class="green general" ng-repeat="column in columns">{$ column.name $}</th>
                     </tr>
                 </thead>
                 <tbody class="table-rows">
                     <tr ng-repeat="row in rows">
-                        <td class="checkbox-table-column">
+                        <td class="export-checkbox-table-column"">
                            <div>
                                 <input type="checkbox" id="checkbox_{$ $index $}" ng-model="row.selected" class='pseudo-checkbox sr-only'>
                                 <div class="fancy-checkbox-div right">
