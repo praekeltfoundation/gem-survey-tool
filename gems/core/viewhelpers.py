@@ -81,9 +81,6 @@ class FieldFilter:
         else:
             # These are the hstore fields
             if operator == 'eq' or operator == 'ex':
-                # the sql generator for equals seems to be buggy
-                # so this is a work around
-                #self.q = Q(answer__gte={field.name: value}) & Q(answer__lte={field.name: value})
                 self.q = Q(answer__exact={field.name: value})
             elif operator == 'gt':
                 self.q = Q(answer__gt={field.name: value})
