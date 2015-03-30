@@ -52,7 +52,7 @@ class FieldFilter:
             # These are the normal fields
             if operator == 'eq' or operator == 'ex':
                 kwargs = {
-                    '{0}'.format(field.name): value
+                    '{0}__iexact'.format(field.name): value
                 }
                 self.q = Q(**kwargs)
             elif operator == 'gt' \
@@ -65,7 +65,7 @@ class FieldFilter:
                 self.q = Q(**kwargs)
             elif operator == 'co':
                 kwargs = {
-                    '{0}__contains'.format(field.name): value
+                    '{0}__icontains'.format(field.name): value
                 }
                 self.q = Q(**kwargs)
             elif operator == 'neq':
@@ -75,7 +75,7 @@ class FieldFilter:
                 self.q = ~Q(**kwargs)
             elif operator == 'nco':
                 kwargs = {
-                    '{0}__contains'.format(field.name): value
+                    '{0}__icontains'.format(field.name): value
                 }
                 self.q = ~Q(**kwargs)
         else:
@@ -83,7 +83,8 @@ class FieldFilter:
             if operator == 'eq' or operator == 'ex':
                 # the sql generator for equals seems to be buggy
                 # so this is a work around
-                self.q = Q(answer__gte={field.name: value}) & Q(answer__lte={field.name: value})
+                #self.q = Q(answer__gte={field.name: value}) & Q(answer__lte={field.name: value})
+                self.q = Q(answer__exact={field.name: value})
             elif operator == 'gt':
                 self.q = Q(answer__gt={field.name: value})
             elif operator == 'gte':
@@ -93,11 +94,11 @@ class FieldFilter:
             elif operator == 'lte':
                 self.q = Q(answer__lte={field.name: value})
             elif operator == 'co':
-                self.q = Q(answer__contains={field.name: value})
+                self.q = Q(answer__icontains={field.name: value})
             elif operator == 'neq':
-                self.q = ~Q(answer={field.name: value})
+                self.q = ~Q(answer__exact={field.name: value})
             elif operator == 'nco':
-                self.q = ~Q(answer__contains={field.name: value})
+                self.q = ~Q(answer__icontains={field.name: value})
 
     @staticmethod
     def decode(payload, field):
