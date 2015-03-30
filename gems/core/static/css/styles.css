@@ -349,6 +349,10 @@ table.has-checkbox-column {
     margin-left: -21px;
 }
 
+table.export-survey-has-checkbox-column {
+    margin-left: -16px;
+}
+
 button.table-aligned{
     margin-right: 20px;
 }
@@ -423,18 +427,9 @@ th.checkbox-table-header {
     width:0%;
 }
 
-td.contact-checkbox-table-column{
+td.checkbox-table-column{
     position: absolute;
-    left: 11px;
-    top: auto;
-    border-right: 0px none black;
-    border-top-width: 3px; /*only relevant for first row*/
-    margin-top: -1px; /*compensate for top border*/
-}
-
-td.export-checkbox-table-column{
-    position: absolute;
-    left: 7px;
+    left: 12px;
     top: auto;
     border-right: 0px none black;
     border-top-width: 3px; /*only relevant for first row*/
