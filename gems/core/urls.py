@@ -3,7 +3,7 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
 from views import *
 from django.contrib import admin
-from rest_framework import routers, serializers, viewsets
+from rest_framework import routers
 from gems.core.viewsets import *
 
 admin.autodiscover()
@@ -11,7 +11,7 @@ admin.autodiscover()
 router = routers.DefaultRouter()
 router.register(r'surveyresult', SurveyResultViewSet)
 router.register(r'contact', ContactViewSet)
-router.register(r'survey', ContactViewSet)
+router.register(r'survey', SurveyViewSet)
 router.register(r'contactgroup', ContactGroupViewSet)
 router.register(r'contactgroupmember', ContactGroupMemberViewSet)
 
@@ -35,8 +35,6 @@ urlpatterns = patterns('',
 
     url(r'^', include(router.urls)),
 
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-
     url(r'^save_data/', save_data, name='save_data'),
 
     url(r'^export_survey/', export_survey, name='export_survey'),
@@ -52,4 +50,6 @@ urlpatterns = patterns('',
     url(r'^create_contactgroup/', create_contactgroup),
     url(r'^update_contactgroup/', update_contactgroup),
     url(r'^get_surveys/$', get_surveys),
+
+    #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 )
