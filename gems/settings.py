@@ -192,6 +192,14 @@ RJ_METRICS_CID = '2879'
 RJ_METRICS_API_KEY = 'ffa225cc86f06e0eeec62c19eda1a33f'
 RJ_METRICS_TABLE = 'SurveyData'
 
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+
 try:
     from local_settings import *
 except ImportError:

@@ -1,59 +1,37 @@
 from gems.core.models import SurveyResult, Contact, ContactGroup, Survey, ContactGroupMember
-from rest_framework import routers, serializers, viewsets
-from django.contrib.auth.models import User
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ('first_name', 'last_name')
+from rest_framework import serializers
 
 
-class SurveySerializer(serializers.HyperlinkedModelSerializer):
+class SurveySerializer(serializers.ModelSerializer):
     class Meta:
         model = Survey
-        fields = ('survey_id', 'name')
+        fields = ('survey_id', 'name', 'created_on')
 
 
-class SurveyResultSerializer(serializers.HyperlinkedModelSerializer):
-    survey = serializers.HyperlinkedRelatedField(
-        read_only=True,
-        view_name='survey-detail'
-    )
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = ('vkey',)
 
-    contact = serializers.HyperlinkedRelatedField(
-        read_only=True,
-        view_name='contact-detail'
-    )
+
+class SurveyResultSerializer(serializers.ModelSerializer):
+    survey = SurveySerializer(read_only=True)
+    contact = ContactSerializer(read_only=True)
 
     class Meta:
         model = SurveyResult
-        fields = ( 'survey', 'contact', 'answer')
+        fields = ( 'survey', 'contact', 'answer', 'created_at')
 
 
-class ContactSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Contact
-        fields = ('msisdn',)
-
-
-class ContactGroupSerializer(serializers.HyperlinkedModelSerializer):
+class ContactGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactGroup
         fields = ('group_id', 'name', 'created_at', 'group_key', 'filters', 'query_words')
 
 
-class ContactGroupMemberSerializer(serializers.HyperlinkedModelSerializer):
-    group = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name='contactgroup-detail'
-    )
-
-    contact = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name='contact-detail'
-    )
+class ContactGroupMemberSerializer(serializers.ModelSerializer):
+    group = ContactGroupSerializer(read_only=True)
+    contact = ContactSerializer(read_only=True)
 
     class Meta:
         model = ContactGroupMember
