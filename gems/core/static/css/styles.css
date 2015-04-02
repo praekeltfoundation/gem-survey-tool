@@ -46,7 +46,7 @@ footer {
 
 .sign-up{
     margin: 150px auto;
-    width: 350px;
+    width: 400px;
 }
 
 .yellow{
@@ -130,7 +130,7 @@ footer {
 }
 
 .login-logo{
-    width: 350px;
+    width: 400px;
     margin-bottom: 30px;
     padding-left: 40px;
     padding-right: 40px;
@@ -346,7 +346,11 @@ table.contact-groups>tbody:first-child>tr>td{
 }
 
 table.has-checkbox-column {
-    margin-left: -20px;
+    margin-left: -21px;
+}
+
+table.export-survey-has-checkbox-column {
+    margin-left: -16px;
 }
 
 button.table-aligned{
@@ -368,10 +372,9 @@ table tr th:last-child {
 
 .table-heading{
     font-weight: bold !important;
-    font-size: 10pt !important;
+    font-size: 13pt !important;
     background-color: rgb(41, 183, 171);
     color: black;
-    white-space:nowrap;
 }
 
 thead.table-heading>tr>th>a{
@@ -400,11 +403,15 @@ th.rules {
 }
 
 th.survey-name {
-    width: 49%;
+    width: 50%;
 }
 
 th.survey-date {
-    width: 49%;
+    width: 50%;
+}
+
+th.general{
+    width:15%;
 }
 
 .table-button {
@@ -420,9 +427,9 @@ th.checkbox-table-header {
     width:0%;
 }
 
-td.checkbox-table-column {
+td.checkbox-table-column{
     position: absolute;
-    left: 8px;
+    left: 12px;
     top: auto;
     border-right: 0px none black;
     border-top-width: 3px; /*only relevant for first row*/
