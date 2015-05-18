@@ -47,7 +47,7 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.showExportSurveyData = false;
 
         if(typeof(url) != 'undefined'){
-            $window.location.href = url;
+            $window.open(url, "_blank");
         }
     };
 
