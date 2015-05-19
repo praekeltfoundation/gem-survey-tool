@@ -157,79 +157,157 @@ footer {
     position: relative;
  }
 
-.menu-links{
-    padding-left: 30px;
-}
-
-.main-menu-item{
-    padding-left: 20px;
-    text-indent: -30px;
-}
-
-.menu-item{
-    font-size: 14pt;
-    color: #000000 !important;
-}
-
-.main-menu-item:hover{
-    color: #c1c1c1 !important;
-    background-color: #fee62c !important;
-}
-
-.main-menu-item:focus{
-    color: #ffffff !important;
-    background-color: #fee62c !important;
-}
-
-.main-menu-item-popup:hover{
-    color: #c1c1c1 !important;
-    background-color: #fee62c !important;
-}
-
-.main-menu-item-popup:focus{
-    color: #ffffff !important;
-    background-color: #fee62c !important;
-}
-
-.sub-menu-item:hover{
-    color: #c1c1c1 !important;
-    background-color: #ec2b8b !important;
-}
-
-.sub-menu-item:focus{
-    color: #ffffff !important;
-    background-color: #ec2b8b !important;
-}
-
-.menu-item:active{
-    color: #ffffff;
-}
-
-a.menu-item:focus, a.menu-item{
-    outline: none;
-    text-decoration: none;
-}
-
 .submenu{
     height: 100%;
     min-height: 800px;
     height: 100vh;
+    padding: 0px 20px;
 }
 
-.menu-item-icon{
-    margin-right: 12px;
+/*MENU*/
+
+.menu {
+    margin-left: 0px;
+    margin-top: 20px;
+}
+
+.menu a {
+    text-decoration: none;
+    outline: none;
+}
+
+.menu a :focus{
+    color: #ffffff !important;
+    background-color: #fee62c !important;
+}
+
+.menu .item, .menu .sub-item{
+	width: 100%;
+	text-align: left;
+    padding: 15px 0px;
+    display: inline-flex;
+}
+
+.menu a .item span {
+    display: block;
+    color: #000000;
+    font-size: 14pt;
+    margin-left: 10px;
+    margin-top: 0px;
+}
+
+.menu a:hover .item span {
+    color: #ffffff !important;
+    background-color: #fee62c !important;
+}
+
+.menu a:focus .item span {
+    color: #ffffff !important;
+    background-color: #fee62c !important;
+}
+
+.menu a .sub-item span {
+    display: block;
+    color: #000000;
+    margin-left: 10px;
+    margin-top: 0px;
+}
+
+.menu a:hover .sub-item span {
+    color: #ffffff !important;
+    background-color: #ec2b8b !important;
+}
+
+.menu a:focus .sub-item span {
+    color: #ffffff !important;
+    background-color: #ec2b8b !important;
+}
+
+li.icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+	background-repeat: no-repeat;
+    background-position: 0% 100%;
+    list-style: none;
+    margin-top: 5px;
+    padding-right: 20px;
+}
+
+li.user {
+    background-image: url("../img/icn_user.png");
+}
+
+.item:hover li.user {
+    background-image: url("../img/icn_user_white.png");
+}
+
+li.survey {
+    background-image: url("../img/icn_survey_builder.png");
+}
+
+.item:hover li.survey {
+    background-image: url("../img/icn_survey_builder_white.png");
+}
+
+li.contact-management {
+    background-image: url("../img/icn_contact_management.png");
+}
+
+.item:hover li.contact-management {
+    background-image: url("../img/icn_contact_management_white.png");
+}
+
+li.data-vis {
+    background-image: url("../img/icn_data_visualisation.png");
+}
+
+.item:hover li.data-vis {
+    background-image: url("../img/icn_data_visualisation_white.png");
+}
+
+li.data-export {
+    background-image: url("../img/icn_data_export.png");
+}
+
+.item:hover li.data-export {
+    background-image: url("../img/icn_data_export_white.png");
+}
+
+li.admin {
+    background-image: url("../img/icn_admin.png");
+}
+
+.item:hover li.admin {
+    background-image: url("../img/icn_admin_white.png");
+}
+
+/*END OF MENU*/
+
+.cog{
+    position: relative;
+    top: -37px;
+    margin-bottom: -15px;
+}
+
+.menu-item ul {
+    list-style-type: none;
 }
 
 .signout-item{
     left: inherit;
-    right: -140px;
-    top: 0px;
+    right: -150px;
     text-align: center;
+    top: 130px;
 }
 
-.cog{
-    position: relative;
-    top: 7px;
+.signout-item>li>a {
+    font-size: 14pt;
+}
+
+.signout-item>li>a:hover {
+    color: #ffffff !important;
+    background-color: #ec2b8b !important;
 }
 
 .main-container{
@@ -314,7 +392,7 @@ input.num-rows{
 }
 
 .top{
-    margin-top: 150px;
+    margin-top: 130px;
 }
 
 .row-breath{
