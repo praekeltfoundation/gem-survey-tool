@@ -8,6 +8,12 @@ gems.controller('groupController', function($scope, $http){
     $scope.columns = [];
     $scope.rows = [];
 
+    $scope.filteredGroups = [];
+    $scope.pagedGroups = [];
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = 10;
+    $scope.maxSize = 6;
+
     $scope.fetchResults = function fetchResults(){
         $scope.rows = [];
         $scope.queryStarted = true;
@@ -17,8 +23,7 @@ gems.controller('groupController', function($scope, $http){
             payload.limit = $scope.numberOfRows;
         }
 
-        payload.filters = $scope.filters;
-
+        payload.filters = $scope.filters
         $http({
             url: '/query/',
             method: 'POST',
@@ -51,6 +56,9 @@ gems.controller('groupController', function($scope, $http){
 
                     $scope.rows.push(row);
                 }
+                $scope.filteredGroups = results;
+                $scope.currentPage = 0;
+                $scope.groupToPages();
             })
     };
 
@@ -156,9 +164,62 @@ gems.controller('groupController', function($scope, $http){
         $scope.cancel();
     };
 
+    ///////PAGING/////
+
+    $scope.groupToPages = function(){
+        $scope.pagedGroups = [];
+
+        for (var i = 0; i < $scope.filteredGroups.length; i++){
+            if (i % $scope.itemsPerPage === 0){
+                $scope.pagedGroups[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredGroups[i] ];
+            }else{
+                $scope.pagedGroups[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredGroups[i]);
+            }
+        }
+    };
+
+    $scope.range = function (start, end){
+        var ret = [];
+        if (!end){
+            end = start;
+            start = 0;
+        }
+        for (var i = start; i < end; i++){
+            ret.push(i);
+        }
+        return ret;
+    };
+
+    $scope.prevPage = function (){
+        if ($scope.currentPage > 0){
+            $scope.currentPage--;
+        }
+    };
+
+    $scope.nextPage = function (){
+        if ($scope.currentPage < $scope.pagedItems.length - 1){
+            $scope.currentPage++;
+        }
+    };
+
+    $scope.setPage = function (){
+        $scope.currentPage = this.n;
+    };
+
+
     $scope.cancel = function cancel(){
         $scope.hideCreateContact();
     };
+
+    $scope.$watch('$parent.createGroup', function(newValue, oldValue){
+        if(newValue){
+            $scope.groupName = $scope.getGroupName();
+        }
+    });
+
+    $scope.queryValid = function queryValid(){
+        return $scope.getQueryValid();
+    }
 
     $scope.fetchFields();
 });

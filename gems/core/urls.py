@@ -3,7 +3,7 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
 from views import *
 from django.contrib import admin
-from rest_framework import routers, serializers, viewsets
+from rest_framework import routers
 from gems.core.viewsets import *
 
 admin.autodiscover()
@@ -11,7 +11,7 @@ admin.autodiscover()
 router = routers.DefaultRouter()
 router.register(r'surveyresult', SurveyResultViewSet)
 router.register(r'contact', ContactViewSet)
-router.register(r'survey', ContactViewSet)
+router.register(r'survey', SurveyViewSet)
 router.register(r'contactgroup', ContactGroupViewSet)
 router.register(r'contactgroupmember', ContactGroupMemberViewSet)
 
@@ -31,9 +31,9 @@ urlpatterns = patterns('',
 
     url(r'^login/$', user_login, name='login'),
 
-    url(r'^', include(router.urls)),
+    url(r'^logout/$', user_logout, name='logout'),
 
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^', include(router.urls)),
 
     url(r'^save_data/', save_data, name='save_data'),
 
@@ -50,4 +50,8 @@ urlpatterns = patterns('',
     url(r'^create_contactgroup/', create_contactgroup),
     url(r'^update_contactgroup/', update_contactgroup),
     url(r'^get_surveys/$', get_surveys),
+
+    url(r'^robots.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")),
+
+    #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 )

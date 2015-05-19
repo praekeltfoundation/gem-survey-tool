@@ -214,6 +214,47 @@ gems.controller('surveyController', function($scope, $http){
         }
     };
 
-    $scope.fetchFields();
+    $scope.initDTP = function initDTP(){
+        var dtp_from = angular.element('#datepicker_from');
+        var dtp_to = angular.element('#datepicker_to');
 
+        if(dtp_from.length){
+            dtp_from.datepicker({
+                dateFormat: 'yy/mm/dd',
+                maxDate: 0,
+                onSelect:
+                    function( selectedDate ) {
+                        dtp_to.datepicker( "option", "minDate", selectedDate );
+                        $scope.$apply($scope.surveySearchForm.from = selectedDate);
+                    }
+            });
+        }
+
+        if(dtp_to.length){
+            dtp_to.datepicker({
+                dateFormat: 'yy/mm/dd',
+                maxDate: 0,
+                onSelect:
+                    function( selectedDate ) {
+                        dtp_from.datepicker( "option", "maxDate", selectedDate );
+                        $scope.$apply($scope.surveySearchForm.to = selectedDate);
+                    }
+            });
+        }
+
+        angular.element('.trigger_to').click(function() {
+            angular.element('#datepicker_to').datepicker("show");
+        });
+
+        angular.element('.trigger_from').click(function() {
+            angular.element('#datepicker_from').datepicker("show");
+        });
+    };
+
+    $scope.queryValid = function queryValid(){
+        return $scope.getQueryValid();
+    };
+
+    $scope.fetchFields();
+    $scope.initDTP();
 });

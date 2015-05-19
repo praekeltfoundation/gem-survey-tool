@@ -135,9 +135,8 @@ INSTALLED_APPS = (
     'gems.core',
     'django.contrib.admin',
     'rest_framework',
-    'south'
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'south',
+    'djcelery'
 )
 
 LOGIN_URL = 'login/'
@@ -185,6 +184,21 @@ TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS +(
     'django.core.context_processors.request',
 )
 
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+RJ_METRICS_URL = 'https://connect.rjmetrics.com/v2/client/'
+RJ_METRICS_CID = '2879'
+RJ_METRICS_API_KEY = 'ffa225cc86f06e0eeec62c19eda1a33f'
+RJ_METRICS_TABLE = 'SurveyData'
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 try:
     from local_settings import *

@@ -13,28 +13,30 @@
 		<link href="{{ STATIC_URL }}css/styles.css" rel="stylesheet">
 	</head>
 
-    <body id="login">
+    <body id="login" class="yellow-back">
         <div class="container">
 			<form class="form-horizontal sign-up centered" method="post" action="/login/">
                 {% csrf_token %}
                 <img class="login-logo" src="{{ STATIC_URL }}img/ghelogo.png">
                 {% if request.session.wrong_password %}
-                    <p class="red-front error-msg-indent">{{ request.session.error_msg_line1 }}</p>
-                    <p class="red-front error-msg-indent">{{ request.session.error_msg_line2 }}</p>
+                    <p class="red-front error-msg-indent">{{ request.session.error_msg_line }}</p>
                 {% endif %}
 				<div class="form-group">
 				    <label for="username" class="col-sm-2 control-label">Username:</label>
-				    <input type="text" class="form-control no-width right" id="username" name="username"/>
+                    <div class="input-wrapper-active two-third-width right">
+				        <input type="text" id="username" name="username" placeholder="Username"/>
+                    </div>
 				</div>
 				<div class="form-group">
 					<label for="password" class="col-sm-2 control-label">Password:</label>
-					<input type="password" class="form-control no-width right" id="password" name="password"/>
+                    <div class="input-wrapper-active two-third-width right">
+					    <input type="password" id="password" name="password" placeholder="Password"/>
+                    </div>
 				</div>
 				<div class="form-group">
-					<input type="submit" value="Sign in" class="btn btn-default right pink white-front"/>
+					<button class="right pink white-front">Sign in</button>
 				</div>
 			</form>
-</div>
-
+        </div>
     </body>
 </html>

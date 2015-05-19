@@ -1,15 +1,23 @@
 var gems = angular.module('gems');
 
 gems.controller('mainController', function($scope, $http, $window){
+    $scope.userMenuItem = false;
+    $scope.builderMenuItem = false;
+    $scope.contactsMenuItem = false;
+    $scope.serviceMenuItem = false;
+    $scope.dataMenuItem = false;
+    $scope.adminMenuItem = false;
+
     $scope.showSurveyDataMenu = false;
     $scope.showContactMenu = false;
     $scope.showCreateGroup = false;
     $scope.showContactGroups = false;
     $scope.showExportSurvey = false;
     $scope.showExportSurveyData = false;
-    $scope.groupName = '';
+    $scope.groupNameMain = '';
     $scope.topQueryWords = '';
     $scope.groupKey = '';
+    $scope.queryValid = false;
 
     $scope.filters = [];
     $scope.createGroup = true;
@@ -39,7 +47,7 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.showExportSurveyData = false;
 
         if(typeof(url) != 'undefined'){
-            $window.location.href = url;
+            $window.open(url, "_blank");
         }
     };
 
@@ -50,6 +58,7 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.showExportSurveyData = false;
         $scope.createGroup = true;
         $scope.filters = [];
+        $scope.setGroupName('');
     };
 
     $scope.hideCreateContact = function hideCreateContact(){
@@ -77,7 +86,7 @@ gems.controller('mainController', function($scope, $http, $window){
         } else {
             $scope.filters = filters;
         }
-        $scope.groupName = name;
+        $scope.setGroupName(name);
         $scope.groupKey = group_key;
     };
 
@@ -111,11 +120,11 @@ gems.controller('mainController', function($scope, $http, $window){
     };
 
     $scope.getGroupName = function getGroupName(){
-        return $scope.groupName;
+        return $scope.groupNameMain;
     };
 
-    $scope.setGroupname = function setGroupName(name){
-        return $scope.groupName = name;
+    $scope.setGroupName = function setGroupName(name){
+        $scope.groupNameMain = name;
     };
 
     $scope.setQueryWords = function setQueryWords(qw){
@@ -124,5 +133,34 @@ gems.controller('mainController', function($scope, $http, $window){
 
     $scope.getQueryWords = function getQueryWords(){
         return $scope.topQueryWords;
+    };
+
+    $scope.unboldMenuItems = function unboldMenuItems()
+    {
+        $scope.userMenuItem = false;
+        $scope.builderMenuItem = false;
+        $scope.contactsMenuItem = false;
+        $scope.serviceMenuItem = false;
+        $scope.dataMenuItem = false;
+        $scope.adminMenuItem = false;
+    }
+
+    $scope.setQueryValid = function setQueryValid(valid){
+        $scope.queryValid = valid;
+    }
+
+    $scope.getQueryValid = function getQueryValid(){
+        return $scope.queryValid;
+    }
+
+    $scope.formatDate = function formatDate(value){
+        if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}\w/.test(value))
+        {
+            return value.substr(0, 10);
+        }
+        else
+        {
+            return value;
+        }
     };
 });

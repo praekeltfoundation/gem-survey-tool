@@ -1,8 +1,6 @@
-from gems.core.serializers import SurveyResultSerializer, ContactSerializer, SurveySerializer, \
-    ContactGroupMemberSerializer, ContactGroupSerializer, UserSerializer
+from gems.core.serializers import *
 from gems.core.models import SurveyResult, Contact, Survey, ContactGroup, ContactGroupMember
-from rest_framework import routers, serializers, viewsets
-from django.contrib.auth.models import User
+from rest_framework import viewsets
 
 
 class SurveyViewSet(viewsets.ModelViewSet):
@@ -24,7 +22,3 @@ class ContactGroupViewSet(viewsets.ModelViewSet):
 class ContactGroupMemberViewSet(viewsets.ModelViewSet):
     queryset = ContactGroupMember.objects.all()
     serializer_class = ContactGroupMemberSerializer
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer

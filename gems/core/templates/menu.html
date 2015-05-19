@@ -2,14 +2,32 @@
     <div class="menu-logo-container">
         <img class="menu-logo " src="{{ STATIC_URL }}img/ghelogo.png"/>
     </div>
-    <div class="submenu-links">
+    <div class="menu-links">
         <ul class="nav nav-stacked">
-            <li><a class="menu-text" href="" ng-click="hideSubMenus()"><img  class="menu-link-icon" src="{{ STATIC_URL }}img/image18.png"/> {{ user.get_username }}</a></li>
-            <li><a class="menu-text" href="" ng-click="hideSubMenus('http://www.vumi.org')"><img class="menu-link-icon" src="{{ STATIC_URL }}img/image19.png"/> Survey Builder</a></li>
-            <li><a class="menu-text" href="" ng-click="toggleContactMenu()"><img class="menu-link-icon" src="{{ STATIC_URL }}img/image23.png"/> Contact Management</a></li>
-            <li><a class="menu-text" href="" ng-click="hideSubMenus()"><img class="menu-link-icon" src="{{ STATIC_URL }}img/image25.png"/> Service Dashboard</a></li>
-            <li><a class="menu-text" href="" ng-click="toggleSurveyDataMenu()"><img class="menu-link-icon" src="{{ STATIC_URL }}img/image21.png"/> Survey Data</a></li>
-            <li><a class="menu-text" href="" ng-click="hideSubMenus('{% url 'admin:index' %}')"><img class="menu-link-icon" src="{{ STATIC_URL }}img/image20.png"/> Admin..</a></li>
+            <li>
+                <div class="dropdown popup-menu-container">
+                    <a class="main-menu-item-popup menu-item" ng-class="{ 'bold' : userMenuItem }" href="" ng-click="hideSubMenus(); unboldMenuItems(); userMenuItem=true"><img  class="menu-item-icon" src="{{ STATIC_URL }}img/image18.png"/> {{ user.get_username }}</a>
+                    <a class="dropdown-toggle"  data-toggle="dropdown" href="#"><img class="menu-item-icon right dropdown-toggle cog" width="16" height="16" src="{{ STATIC_URL }}img/image3.png"/></a>
+                    <ul class="dropdown-menu pink signout-item" role="menu" aria-labelledby="dropdownMenu">
+                        <li><a class="text-right menu-item sub-menu-item" tabindex="-1" href="/logout">Sign Out</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <a class="main-menu-item menu-item" ng-class="{ 'bold' : builderMenuItem }" href="" ng-click="hideSubMenus('http://www.vumi.org'); unboldMenuItems(); builderMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image19.png"/> Survey Builder</a>
+            </li>
+            <li>
+                <a class="main-menu-item menu-item" ng-class="{ 'bold' : contactsMenuItem }" href="" ng-click="toggleContactMenu();unboldMenuItems();contactsMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image23.png"/> Contact Management</a>
+            </li>
+            <li>
+                <a class="main-menu-item menu-item" ng-class="{ 'bold' : serviceMenuItem }" href="" ng-click="hideSubMenus('http://praekeltfoundation.bime.io');unboldMenuItems(); serviceMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image25.png"/> Data Visualisation</a>
+            </li>
+            <li>
+                <a class="main-menu-item menu-item" ng-class="{ 'bold' : dataMenuItem }" href="" ng-click="toggleSurveyDataMenu();unboldMenuItems(); dataMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image21.png"/> Data Export</a>
+            </li>
+            <li>
+                <a class="main-menu-item menu-item" ng-class="{ 'bold' : adminMenuItem }" href="" ng-click="hideSubMenus('{% url 'admin:index' %}');unboldMenuItems(); adminMenuItem=true"><img class="menu-item-icon" src="{{ STATIC_URL }}img/image20.png"/> Admin..</a>
+            </li>
         </ul>
     </div>
 </div>

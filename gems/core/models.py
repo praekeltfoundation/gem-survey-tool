@@ -24,6 +24,7 @@ class Survey(models.Model):
 
 class Contact(models.Model):
     msisdn = models.CharField(max_length=15, primary_key=True)
+    vkey = models.CharField(max_length=32, blank=True, default='')
 
     def __unicode__(self):
         return self.msisdn
@@ -35,6 +36,7 @@ class SurveyResult(HStoreModel):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     answer = hstore.DictionaryField()
+    sent = models.BooleanField(default=False)
 
 
 class ContactGroup(HStoreModel):
@@ -53,3 +55,12 @@ class ContactGroup(HStoreModel):
 class ContactGroupMember(models.Model):
     group = models.ForeignKey(ContactGroup)
     contact = models.ForeignKey(Contact)
+
+
+class ExportTypeMapping(models.Model):
+    casting_choices = (
+        (1, 'Cast to Integer'),
+        (2, 'Cast to Double')
+    )
+    field=models.CharField(max_length=50, blank=False, null=False)
+    cast=models.IntegerField(choices=casting_choices, blank=False, null=False)
