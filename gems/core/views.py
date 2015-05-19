@@ -74,19 +74,6 @@ def user_logout(request):
     return HttpResponseRedirect('/login')
 
 
-def process_extra(extra):
-    keys = extra.keys()
-    rx = re.compile('-\d+')
-    answers = {}
-
-    for key in keys:
-        new_key = rx.sub('', key)
-        if new_key not in answers:
-            answers[new_key] = extra[new_key]
-
-    return answers
-
-
 @csrf_exempt
 def save_data(request):
 
@@ -267,12 +254,11 @@ def serialize_list_to_json(data, encoder):
 
 
 def query(request):
-    """
+    try:
+        payload = json.loads(request.body)
+    except ValueError:
+        return HttpResponse('BAD REQUEST TYPE')
 
-    :param request:
-    :return:
-    """
-    payload = json.loads(request.body)
     results = build_query(payload, True)
 
     return generate_json_response(
@@ -370,6 +356,8 @@ def delete_contactgroup(request):
                 return HttpResponse('FAILED')
         else:
             return HttpResponse('FAILED')
+
+    return HttpResponse('BAD REQUEST TYPE')
 
 
 def process_group_member(api, member, group):
