@@ -51,5 +51,7 @@ urlpatterns = patterns('',
     url(r'^update_contactgroup/', update_contactgroup),
     url(r'^get_surveys/$', get_surveys),
 
+    url(r'^robots.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")),
+
     #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 )
