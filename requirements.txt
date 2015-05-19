@@ -26,3 +26,4 @@ django-filter
 django-celery
 requests-testadapter
 fake-go-contacts
+coverage
