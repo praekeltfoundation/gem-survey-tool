@@ -21,7 +21,6 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-ev/
 .idea/
 
 # PyInstaller
@@ -56,4 +55,4 @@ docs/_build/
 target/
 
 # virtual evnironemnt
-/ve/
+ve/

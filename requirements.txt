@@ -24,3 +24,5 @@ django-queryset-csv
 djangorestframework
 django-filter
 django-celery
+requests-testadapter
+fake-go-contacts
