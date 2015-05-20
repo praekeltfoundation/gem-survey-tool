@@ -209,6 +209,7 @@ footer {
 .menu a .sub-item span {
     display: block;
     color: #000000;
+    font-size: 14px;
     margin-left: 10px;
     margin-top: 0px;
 }
