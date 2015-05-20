@@ -52,12 +52,10 @@ def user_login(request):
             else:
                 # An inactive account was used - no logging in!
                 request.session['wrong_password'] = True
-                request.session['error_msg_line1'] = '*Your account has been disabled'
-                request.session['error_msg_line2'] = ''
+                request.session['error_msg_line'] = '*Your account has been disabled'
                 return HttpResponseRedirect('/login/')
         else:
             # Bad login details were provided. So we can't log the user in.
-            print "Invalid login details: {0}, {1}".format(username, password)
             #return HttpResponse("Invalid login details supplied.")
             request.session['wrong_password'] = True
             request.session['error_msg_line'] = '*Username and password combination incorrect'
@@ -74,19 +72,6 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect('/login')
-
-
-def process_extra(extra):
-    keys = extra.keys()
-    rx = re.compile('-\d+')
-    answers = {}
-
-    for key in keys:
-        new_key = rx.sub('', key)
-        if new_key not in answers:
-            answers[new_key] = extra[new_key]
-
-    return answers
 
 
 @csrf_exempt
@@ -269,12 +254,11 @@ def serialize_list_to_json(data, encoder):
 
 
 def query(request):
-    """
+    try:
+        payload = json.loads(request.body)
+    except ValueError:
+        return HttpResponse('BAD REQUEST TYPE')
 
-    :param request:
-    :return:
-    """
-    payload = json.loads(request.body)
     results = build_query(payload, True)
 
     return generate_json_response(
@@ -372,6 +356,8 @@ def delete_contactgroup(request):
                 return HttpResponse('FAILED')
         else:
             return HttpResponse('FAILED')
+
+    return HttpResponse('BAD REQUEST TYPE')
 
 
 def process_group_member(api, member, group):
