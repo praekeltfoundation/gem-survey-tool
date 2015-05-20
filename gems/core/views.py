@@ -52,12 +52,10 @@ def user_login(request):
             else:
                 # An inactive account was used - no logging in!
                 request.session['wrong_password'] = True
-                request.session['error_msg_line1'] = '*Your account has been disabled'
-                request.session['error_msg_line2'] = ''
+                request.session['error_msg_line'] = '*Your account has been disabled'
                 return HttpResponseRedirect('/login/')
         else:
             # Bad login details were provided. So we can't log the user in.
-            print "Invalid login details: {0}, {1}".format(username, password)
             #return HttpResponse("Invalid login details supplied.")
             request.session['wrong_password'] = True
             request.session['error_msg_line'] = '*Username and password combination incorrect'
