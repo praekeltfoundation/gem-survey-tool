@@ -14,7 +14,7 @@ from go_http.contacts import ContactsApiClient
 import logging
 import datetime
 import re
-from gems.core.tasks import export_data
+import traceback
 
 
 logger = logging.getLogger(__name__)
@@ -80,6 +80,12 @@ def save_data(request):
     if request.method == 'POST':
         msg = 'save_data - POST - Body[ %s ]' % request.body
         logger.info(msg)
+
+        # log the incoming message
+        IncomingSurvey.objects.create(
+            raw_message=request.body[:2000]
+        )
+
         data = json.loads(request.body)
         if type(data) is unicode:
             #decode the string again
@@ -127,15 +133,26 @@ def save_data(request):
                 )
                 contact.save()
 
-                # add the survey result
-                survey_result = SurveyResult(
+                # add the raw survey result
+                RawSurveyResult.objects.create(
                     survey=survey,
                     contact=contact,
                     answer=answers
                 )
-                survey_result.save()
-            except Exception:
+
+                sr, created = SurveyResult.objects.get_or_create(
+                    survey=survey,
+                    contact=contact
+                )
+
+                for answer in answers:
+                    sr.answer[answer] = answers[answer]
+
+                sr.save()
+
+            except Exception as ex:
                 content = {'status': 'failed-ex'}
+                traceback.print_exc()
                 return generate_json_response(json.dumps(content))
             else:
                 content = {'status': 'ok'}
@@ -257,6 +274,7 @@ def query(request):
     try:
         payload = json.loads(request.body)
     except ValueError:
+        print traceback.print_exc()
         return HttpResponse('BAD REQUEST TYPE')
 
     results = build_query(payload, True)

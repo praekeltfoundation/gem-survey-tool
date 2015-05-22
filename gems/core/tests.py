@@ -8,8 +8,8 @@ from gems.core.models import *
 
 
 class RESTTestCase(TestCase):
-    def test_save_data(self):
-        j = {
+    def setUp(self):
+        self.j = {
                 'user':{
                     'answers':{'age':'14'}
                 },
@@ -41,7 +41,10 @@ class RESTTestCase(TestCase):
                 },
                 'conversation_key':'dbb13e9a55874a8d84165bde05c0ad52'
         }
-        self.client.post('/save_data/', content_type='application/json', data=json.dumps(j))
+
+    def test_save_data(self):
+
+        resp = self.client.post('/save_data/', content_type='application/json', data=json.dumps(self.j))
         s = Survey.objects.all().first()
         sr = SurveyResult.objects.all().first()
         c = Contact.objects.all().first()
@@ -54,6 +57,40 @@ class RESTTestCase(TestCase):
 
         resp = self.client.get('/save_data/')
         self.assertContains(resp, '{"status": "Failed"}')
+
+    def test_save_data_multiple_responses(self):
+        self.client.post('/save_data/', content_type='application/json', data=json.dumps(self.j))
+
+        # change age to test update
+        self.j["user"]["answers"]["age"] = 22
+
+        self.client.post('/save_data/', content_type='application/json', data=json.dumps(self.j))
+        sr = SurveyResult.objects.all().first()
+        self.assertEquals(sr.answer["age"], u"22")
+
+        # add color to test merge
+        self.j["user"]["answers"]["color"] = "red"
+
+        self.client.post('/save_data/', content_type='application/json', data=json.dumps(self.j))
+        sr = SurveyResult.objects.all().first()
+        self.assertEquals(sr.answer["age"], u"22")
+        self.assertEquals(sr.answer["color"], "red")
+
+        # remove age to test reservation
+        self.j["user"]["answers"].pop("color", None)
+        self.client.post('/save_data/', content_type='application/json', data=json.dumps(self.j))
+        qs = SurveyResult.objects.all()
+        cnt = qs.count()
+        self.assertEquals(cnt, 1)
+        sr = qs.first()
+        self.assertEquals(sr.answer["age"], u"22")
+        self.assertEquals(sr.answer["color"], "red")
+
+        cnt = RawSurveyResult.objects.all().count()
+        self.assertEquals(cnt, 4)
+
+        cnt = IncomingSurvey.objects.all().count()
+        self.assertEquals(cnt, 4)
 
     def test_csv_export(self):
         result = self.client.get(path='/export_survey/', data={"pk": "1"})
@@ -72,6 +109,65 @@ class RESTTestCase(TestCase):
 
 
 class GeneralTests(TestCase):
+
+    def create_survey(self, survey_id="0928309402384908203423", name="Test"):
+        return Survey.objects.create(
+            name=name,
+            survey_id=survey_id
+        )
+
+    def create_contact(self, msisdn="123456789", vkey="234598274987l"):
+        return Contact.objects.create(
+            msisdn=msisdn,
+            vkey=vkey
+        )
+
+    def create_survey_result(self, survey, contact, answers):
+        return SurveyResult.objects.create(
+            survey=survey,
+            contact=contact,
+            answer=answers
+        )
+
+    def setUp(self):
+        self.f = {
+            'filters': [
+                {
+                    'field': {
+                        'name': 'age',
+                        'type': 'H'
+                    },
+                    'filters': [
+                        {
+                            'operator': 'lt',
+                            'value': '18'
+                        },
+                        {
+                            'loperator': 'or',
+                            'operator': 'gt',
+                            'value': '12'
+                        }
+                    ]
+                },
+                {
+                    'loperator': 'or',
+                    'field': {
+                        'name': 'Gender',
+                        'type': 'H'
+                    },
+                    'filters': [
+                        {
+                            'operator': 'eq',
+                            'value': 'female'
+                        }
+                    ]
+                }
+            ]
+        }
+
+        self.survey = self.create_survey()
+        self.contact = self.create_contact()
+
     def test_login(self):
         usr = User.objects.create_user("admin", "admin@admin.com", "admin")
 
@@ -114,13 +210,13 @@ class GeneralTests(TestCase):
         resp = self.client.get("/contact-groups/")
         # TODO: Complete Test
 
-    def test_build_query(self):
-        resp = self.client.get("/build_query/")
-        # TODO: Complete Test
-
     def test_query(self):
-        resp = self.client.get("/query/")
-        # TODO: Complete Test
+        resp = self.client.post("/query/", content_type='application/json', data=json.dumps(self.f))
+        self.assertContains(resp, "[]")
+
+        self.create_survey_result(survey=self.survey, contact=self.contact, answers={"age": 21, "color": "redish"})
+        resp = self.client.post("/query/", content_type='application/json', data=json.dumps(self.f))
+        self.assertContains(resp, "redish")
 
     def test_home(self):
         resp = self.client.get("/home/")
@@ -144,9 +240,25 @@ class GeneralTests(TestCase):
 
     def test_get_surveys(self):
         resp = self.client.get("/get_surveys/")
-        # TODO: Complete Test
+        self.assertContains(resp, "FAILED")
 
-    def test_get_uique_keys(self):
+        self.create_survey_result(self.survey, self.contact, {"age": 21})
+
+        resp = self.client.post(
+            "/get_surveys/",
+            content_type='application/json',
+            data=json.dumps(
+                {
+                    "name": "Test",
+                    "from": "2015/01/01",
+                    "to": "2015/12/31"
+                }
+            )
+        )
+
+        self.assertContains(resp, "0928309402384908203423")
+
+    def test_get_unique_keys(self):
         resp = self.client.get("/get_unique_keys/")
         # TODO: Complete Test
 

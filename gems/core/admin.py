@@ -1,25 +1,39 @@
 from django.contrib import admin
-from models import Survey, Contact, SurveyResult, ContactGroup, ContactGroupMember, ExportTypeMapping
+from .models import *
 
 
 class SurveyAdmin(admin.ModelAdmin):
     list_display = ('name', 'survey_id', 'created_on')
+    search_fields = ("created_on", "name")
 
 
 class ContactAdmin(admin.ModelAdmin):
     list_display = ('msisdn',)
+    search_fields = ("msisdn",)
 
 
 class SurveyResultAdmin(admin.ModelAdmin):
-    list_display = ('survey', 'contact', 'answer', 'sent')
+    list_display = ("survey", "contact", "created_at", "updated_at", "answer", "sent")
+    search_fields = ("survey__name", "contact__msisdn", "created_at", "updated_at")
+
+
+class RawSurveyResultAdmin(SurveyResultAdmin):
+    pass
+
+
+class IncomingSurveyAdmin(admin.ModelAdmin):
+    list_display = ("timestamp", "raw_message")
+    search_fields = ("timestamp", "raw_message")
 
 
 class ContactGroupAdmin(admin.ModelAdmin):
     list_display = ('name', 'group_key', 'created_by', 'created_at', 'query_words', 'filters')
+    search_fields = ("name", "group_key", "query_words", "filters")
 
 
 class ContactGroupMemberAdmin(admin.ModelAdmin):
     list_display = ('group', 'contact')
+    search_fields = ("group__name", "contact__msisdn")
 
 
 class ExportTypeMappingAdmin(admin.ModelAdmin):
@@ -32,3 +46,5 @@ admin.site.register(SurveyResult, SurveyResultAdmin)
 admin.site.register(ContactGroup, ContactGroupAdmin)
 admin.site.register(ContactGroupMember, ContactGroupMemberAdmin)
 admin.site.register(ExportTypeMapping, ExportTypeMappingAdmin)
+admin.site.register(RawSurveyResult, RawSurveyResultAdmin)
+admin.site.register(IncomingSurvey, IncomingSurveyAdmin)

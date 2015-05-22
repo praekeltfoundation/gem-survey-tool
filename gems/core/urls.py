@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     url(r'^contact-groups/create-contact-group/$', login_required(CreateContactGroupsView.as_view()),
         name='createcontactgroup'),
 
+    url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^login/$', user_login, name='login'),

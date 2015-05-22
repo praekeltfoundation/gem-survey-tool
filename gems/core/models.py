@@ -30,13 +30,28 @@ class Contact(models.Model):
         return self.msisdn
 
 
-class SurveyResult(HStoreModel):
+class SurveyResultBase(HStoreModel):
     survey = models.ForeignKey(Survey)
     contact = models.ForeignKey(Contact)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     answer = hstore.DictionaryField()
     sent = models.BooleanField(default=False)
+
+    class Meta:
+        abstract = True
+
+class SurveyResult(SurveyResultBase):
+    pass
+
+
+class RawSurveyResult(SurveyResultBase):
+    pass
+
+
+class IncomingSurvey(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    raw_message = models.CharField(max_length=2000)
 
 
 class ContactGroup(HStoreModel):
