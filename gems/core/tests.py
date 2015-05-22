@@ -263,6 +263,25 @@ class GeneralTests(TestCase):
         # TODO: Complete Test
 
 
+class ModelTests(TestCase):
+    def test_incoming_survey_length_limit(self):
+        j={
+            "test": ""
+        }
+
+        t = ""
+
+        for i in range(0, 2000):
+            t += "1"
+
+        j["test"] = t + "TEST"
+        t = json.dumps(j)[:2000]
+
+        self.client.post('/save_data/', content_type='application/json', data=json.dumps(j))
+        ins = IncomingSurvey.objects.all().first()
+        self.assertEquals(ins.raw_message, t)
+
+
 class TaskTests(TestCase):
     def test_rj_metrics_task(self):
         pass
