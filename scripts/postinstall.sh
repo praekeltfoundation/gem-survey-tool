@@ -4,4 +4,5 @@ su - postgres -c "createdb gems"
 su - postgres -c "psql gems -c 'CREATE EXTENSION hstore;'"
 
 $manage syncdb --noinput --no-initial-data --migrate
+cd ${INSTALLDIR}/${REPO}
 $manage collectstatic --noinput
