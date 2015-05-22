@@ -47,6 +47,10 @@ coverage.xml
 
 # Django stuff:
 *.log
+gems/core/static/admin/
+gems/core/static/djcelery/
+gems/core/static/grappelli/
+gems/core/static/rest_framework/
 
 # Sphinx documentation
 docs/_build/
