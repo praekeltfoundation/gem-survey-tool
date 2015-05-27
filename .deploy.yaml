@@ -10,3 +10,5 @@ dependencies:
  - libpq-dev
  - postgresql
  - postgresql-contrib
+virtualenv_prefix:
+ - /var/praekelt/gem-python
