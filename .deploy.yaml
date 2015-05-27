@@ -11,4 +11,4 @@ dependencies:
  - postgresql
  - postgresql-contrib
 virtualenv_prefix:
- - /var/praekelt/gem-python
+ - gem-python
