@@ -10,5 +10,4 @@ dependencies:
  - libpq-dev
  - postgresql
  - postgresql-contrib
-virtualenv_prefix:
- - gem-python
+virtualenv_prefix: gem
