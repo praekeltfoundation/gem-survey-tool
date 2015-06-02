@@ -5,6 +5,7 @@ from django.test import TestCase
 import json
 from django.test import Client
 from gems.core.models import *
+from mock import patch
 
 
 class RESTTestCase(TestCase):
@@ -207,8 +208,17 @@ class GeneralTests(TestCase):
         self.assertEquals(resp.url, "http://testserver/login")
 
     def test_contact_groups(self):
-        resp = self.client.get("/contact-groups/")
-        # TODO: Complete Test
+        User.objects.create_user("admin", "admin@admin.com", "admin")
+
+        self.client.post(reverse('login'),
+                         {
+                             'username': "admin",
+                             'password': "admin"
+                         },
+                         follow=True)
+
+        resp = self.client.get(reverse("contactgroups"))
+        self.assertEquals(resp.status_code, 200)
 
     def test_query(self):
         resp = self.client.post("/query/", content_type='application/json', data=json.dumps(self.f))
@@ -220,22 +230,70 @@ class GeneralTests(TestCase):
 
     def test_home(self):
         resp = self.client.get("/home/")
-        # TODO: Complete Test
+        self.assertEquals(resp.status_code, 200)
 
     def test_contactgroup(self):
         resp = self.client.get("/contactgroup/")
-        # TODO: Complete Test
+        self.assertEquals(resp.status_code, 200)
 
     def test_delete_contact_group(self):
         resp = self.client.get("/delete_contactgroup/")
         # TODO: Complete Test
 
     def test_create_contact_group(self):
+        User.objects.create_user("admin", "admin@admin.com", "admin")
+
+        self.client.post(reverse('login'),
+                         {
+                             'username': "admin",
+                             'password': "admin"
+                         },
+                         follow=True)
+
         resp = self.client.get("/create_contactgroup/")
+        self.assertContains(resp, "FAILED")
+
+        mock_create_group = patch('ContactsAPIClient.create_group')
+        r = {'key': 'abc', 'filters': "{'a':'a', 'b':'b'}", 'query_words': 'age > 20'}
+        mock_create_group.return_value = r
+
+        patch('gems.core.views.process_group_member')
+
+        data = []
+        line = {"name": "group name", "members": "members"}
+        data.append(line)
+        resp = self.client.post('/create_contactgroup/', data={'[{"name":"group name"}]'}, follow=True)
+
+        group = ContactGroup.objects.filter(group_key='abc').first()
+
+        self.assertEquals('Group Name', group.name)
+        self.assertEquals("{'a':'a', 'b':'b'}", group.filters)
+        self.assertEquals('age > 20', group.query_words)
+        self.assertEquals(resp, "OK")
+
         # TODO: Complete Test
 
     def test_update_contact_group(self):
         resp = self.client.get("/update_contactgroup/")
+        self.assertContains(resp, "FAILED")
+
+        User.objects.create_user("admin", "admin@admin.com", "admin")
+
+        self.client.post(reverse('login'),
+                         {
+                             'username': "admin",
+                             'password': "admin"
+                         },
+                         follow=True)
+
+        mock_create_group = patch('ContactsAPIClient.update_group')
+        r = {'key': 'abc', 'filters': "{'a':'a', 'b':'b'}", 'query_words': 'age > 20'}
+        mock_create_group.return_value = r
+
+        patch('gems.core.views.process_group_member')
+        patch('gems.core.views.remove_group_member')
+
+
         # TODO: Complete Test
 
     def test_get_surveys(self):
