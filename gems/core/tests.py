@@ -11,36 +11,36 @@ from mock import patch
 class RESTTestCase(TestCase):
     def setUp(self):
         self.j = {
-                'user':{
-                    'answers':{'age':'14'}
+            'user': {
+                'answers': {'age': '14'}
+            },
+            'contact': {
+                'extra': {
+                    'age-1': '21',
+                    'age': 'xx',
+                    'age-12': 'rr',
+                    'age-2': '21',
+                    'age-3': '21'
                 },
-                'contact':{
-                    'extra':{
-                        'age-1':'21',
-                        'age':'xx',
-                        'age-12':'rr',
-                        'age-2':'21',
-                        'age-3':'21',
-                    },
-                    'groups':[],
-                    'subscription':{},
-                    'key':'61a036aa272341c78c0d34b74092885e',
-                    'surname': None,
-                    'user_account':'8a410f412f0b4010ab88e1362518994f',
-                    'bbm_pin': None,
-                    'mxit_id': None,
-                    'twitter_handle': None,
-                    'wechat_id': None,
-                    'email_address':None,
-                    'facebook_id': None,
-                    'msisdn':'+27822247336',
-                    'gtalk_id': None,
-                    'name': None,
-                    'dob':None,
-                    'created_at':'2015-02-25 07:19:39.505567',
-                    '$VERSION':2
-                },
-                'conversation_key':'dbb13e9a55874a8d84165bde05c0ad52'
+                'groups': [],
+                'subscription': {},
+                'key': '61a036aa272341c78c0d34b74092885e',
+                'surname': None,
+                'user_account': '8a410f412f0b4010ab88e1362518994f',
+                'bbm_pin': None,
+                'mxit_id': None,
+                'twitter_handle': None,
+                'wechat_id': None,
+                'email_address': None,
+                'facebook_id': None,
+                'msisdn': '+27822247336',
+                'gtalk_id': None,
+                'name': None,
+                'dob': None,
+                'created_at': '2015-02-25 07:19:39.505567',
+                '$VERSION': 2
+            },
+            'conversation_key': 'dbb13e9a55874a8d84165bde05c0ad52'
         }
 
     def test_save_data(self):
@@ -240,6 +240,14 @@ class GeneralTests(TestCase):
         resp = self.client.get("/delete_contactgroup/")
         # TODO: Complete Test
 
+    def fake_create_group(self, name):
+        return {'key': 'abc', 'filters': "{'a':'a', 'b':'b'}", 'query_words': 'age > 20'}
+
+    def fake_process_group_member(api, member, contact_group ):
+        pass
+
+    @patch('gems.core.views.process_group_member', fake_process_group_member)
+    @patch('go_http.contacts.ContactsApiClient.create_group', fake_create_group)
     def test_create_contact_group(self):
         User.objects.create_user("admin", "admin@admin.com", "admin")
 
@@ -253,25 +261,17 @@ class GeneralTests(TestCase):
         resp = self.client.get("/create_contactgroup/")
         self.assertContains(resp, "FAILED")
 
-        mock_create_group = patch('ContactsAPIClient.create_group')
-        r = {'key': 'abc', 'filters': "{'a':'a', 'b':'b'}", 'query_words': 'age > 20'}
-        mock_create_group.return_value = r
+        resp = self.client.post('/create_contactgroup/',
+                                data='{"name": "group name", "filters": "filter", "query_words": '
+                                     '"age > 20", "members": "members"}',
+                                content_type="application/json",
+                                follow=True)
+        group = ContactGroup.objects.all().first()
 
-        patch('gems.core.views.process_group_member')
-
-        data = []
-        line = {"name": "group name", "members": "members"}
-        data.append(line)
-        resp = self.client.post('/create_contactgroup/', data={'[{"name":"group name"}]'}, follow=True)
-
-        group = ContactGroup.objects.filter(group_key='abc').first()
-
-        self.assertEquals('Group Name', group.name)
-        self.assertEquals("{'a':'a', 'b':'b'}", group.filters)
-        self.assertEquals('age > 20', group.query_words)
-        self.assertEquals(resp, "OK")
-
-        # TODO: Complete Test
+        self.assertEquals(u'group name', group.name)
+        self.assertEquals(u'filter', group.filters)
+        self.assertEquals(u'age > 20', group.query_words)
+        self.assertEquals(resp.content, "OK")
 
     def test_update_contact_group(self):
         resp = self.client.get("/update_contactgroup/")
