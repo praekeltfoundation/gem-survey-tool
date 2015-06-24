@@ -49,6 +49,9 @@ class FieldFilter:
             if field.name == 'survey':
                 field.name = 'survey__name'
 
+            if field.name == 'contact':
+                field.name = 'contact__msisdn'
+
             # These are the normal fields
             if operator == 'eq':
                 kwargs = {
