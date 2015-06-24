@@ -27,9 +27,9 @@
                 </div>
             </div>
             <div class="row button-line">
-                <button class="turquoise-back white-front" ng-disabled="!queryValid()" ng-click="fetchResults()">{$ queryStarted ? 'Refresh Results' : 'Display Results' $}</button>
+                <button class="turquoise-back white-front" ng-disabled="!queryValid() || !queryDone" ng-click="fetchResults()">{$ buttonText $}</button>
             </div>
-            <div class="row" ng-if="queryStarted == true && rows.length == 0">
+            <div class="row" ng-if="queryStarted == true && queryDone && rows.length == 0">
                 <span class="grey-font caption-text">Sorry. There are no results that match your query. Please adjust your Rules.</span>
             </div>
             <div class="results-head" ng-if="queryStarted == true && rows.length > 0">
