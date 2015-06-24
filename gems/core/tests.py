@@ -5,41 +5,42 @@ from django.test import TestCase
 import json
 from django.test import Client
 from gems.core.models import *
+from mock import patch
 
 
 class RESTTestCase(TestCase):
     def setUp(self):
         self.j = {
-                'user':{
-                    'answers':{'age':'14'}
+            'user': {
+                'answers': {'age': '14'}
+            },
+            'contact': {
+                'extra': {
+                    'age-1': '21',
+                    'age': 'xx',
+                    'age-12': 'rr',
+                    'age-2': '21',
+                    'age-3': '21'
                 },
-                'contact':{
-                    'extra':{
-                        'age-1':'21',
-                        'age':'xx',
-                        'age-12':'rr',
-                        'age-2':'21',
-                        'age-3':'21',
-                    },
-                    'groups':[],
-                    'subscription':{},
-                    'key':'61a036aa272341c78c0d34b74092885e',
-                    'surname': None,
-                    'user_account':'8a410f412f0b4010ab88e1362518994f',
-                    'bbm_pin': None,
-                    'mxit_id': None,
-                    'twitter_handle': None,
-                    'wechat_id': None,
-                    'email_address':None,
-                    'facebook_id': None,
-                    'msisdn':'+27822247336',
-                    'gtalk_id': None,
-                    'name': None,
-                    'dob':None,
-                    'created_at':'2015-02-25 07:19:39.505567',
-                    '$VERSION':2
-                },
-                'conversation_key':'dbb13e9a55874a8d84165bde05c0ad52'
+                'groups': [],
+                'subscription': {},
+                'key': '61a036aa272341c78c0d34b74092885e',
+                'surname': None,
+                'user_account': '8a410f412f0b4010ab88e1362518994f',
+                'bbm_pin': None,
+                'mxit_id': None,
+                'twitter_handle': None,
+                'wechat_id': None,
+                'email_address': None,
+                'facebook_id': None,
+                'msisdn': '+27822247336',
+                'gtalk_id': None,
+                'name': None,
+                'dob': None,
+                'created_at': '2015-02-25 07:19:39.505567',
+                '$VERSION': 2
+            },
+            'conversation_key': 'dbb13e9a55874a8d84165bde05c0ad52'
         }
 
     def test_save_data(self):
@@ -207,8 +208,17 @@ class GeneralTests(TestCase):
         self.assertEquals(resp.url, "http://testserver/login")
 
     def test_contact_groups(self):
-        resp = self.client.get("/contact-groups/")
-        # TODO: Complete Test
+        User.objects.create_user("admin", "admin@admin.com", "admin")
+
+        self.client.post(reverse('login'),
+                         {
+                             'username': "admin",
+                             'password': "admin"
+                         },
+                         follow=True)
+
+        resp = self.client.get(reverse("contactgroups"))
+        self.assertEquals(resp.status_code, 200)
 
     def test_query(self):
         resp = self.client.post("/query/", content_type='application/json', data=json.dumps(self.f))
@@ -220,22 +230,70 @@ class GeneralTests(TestCase):
 
     def test_home(self):
         resp = self.client.get("/home/")
-        # TODO: Complete Test
+        self.assertEquals(resp.status_code, 200)
 
     def test_contactgroup(self):
         resp = self.client.get("/contactgroup/")
-        # TODO: Complete Test
+        self.assertEquals(resp.status_code, 200)
 
     def test_delete_contact_group(self):
         resp = self.client.get("/delete_contactgroup/")
         # TODO: Complete Test
 
+    def fake_create_group(self, name):
+        return {'key': 'abc', 'filters': "{'a':'a', 'b':'b'}", 'query_words': 'age > 20'}
+
+    def fake_process_group_member(api, member, contact_group ):
+        pass
+
+    @patch('gems.core.views.process_group_member', fake_process_group_member)
+    @patch('go_http.contacts.ContactsApiClient.create_group', fake_create_group)
     def test_create_contact_group(self):
+        User.objects.create_user("admin", "admin@admin.com", "admin")
+
+        self.client.post(reverse('login'),
+                         {
+                             'username': "admin",
+                             'password': "admin"
+                         },
+                         follow=True)
+
         resp = self.client.get("/create_contactgroup/")
-        # TODO: Complete Test
+        self.assertContains(resp, "FAILED")
+
+        resp = self.client.post('/create_contactgroup/',
+                                data='{"name": "group name", "filters": "filter", "query_words": '
+                                     '"age > 20", "members": "members"}',
+                                content_type="application/json",
+                                follow=True)
+        group = ContactGroup.objects.all().first()
+
+        self.assertEquals(u'group name', group.name)
+        self.assertEquals(u'filter', group.filters)
+        self.assertEquals(u'age > 20', group.query_words)
+        self.assertEquals(resp.content, "OK")
 
     def test_update_contact_group(self):
         resp = self.client.get("/update_contactgroup/")
+        self.assertContains(resp, "FAILED")
+
+        User.objects.create_user("admin", "admin@admin.com", "admin")
+
+        self.client.post(reverse('login'),
+                         {
+                             'username': "admin",
+                             'password': "admin"
+                         },
+                         follow=True)
+
+        mock_create_group = patch('ContactsAPIClient.update_group')
+        r = {'key': 'abc', 'filters': "{'a':'a', 'b':'b'}", 'query_words': 'age > 20'}
+        mock_create_group.return_value = r
+
+        patch('gems.core.views.process_group_member')
+        patch('gems.core.views.remove_group_member')
+
+
         # TODO: Complete Test
 
     def test_get_surveys(self):
