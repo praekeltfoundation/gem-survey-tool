@@ -1,10 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django_hstore import hstore
+from hstore_helper import GemsHStoreManager
 
 
 class HStoreModel(models.Model):
-    objects = hstore.HStoreManager()
+    objects = GemsHStoreManager()
 
     class Meta:
         abstract = True
@@ -16,7 +17,7 @@ class Survey(models.Model):
     created_on = models.DateField(auto_now_add=True)
 
     def __unicode__(self):
-        return  u'%s' % self.name
+        return u'%s' % self.name
 
     def natural_key(self):
         return (self.name)

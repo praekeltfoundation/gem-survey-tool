@@ -85,8 +85,11 @@ class FieldFilter:
                 self.q = ~Q(**kwargs)
         else:
             # These are the hstore fields
+            # Special hack!!!
+            # * contains is a sql ==
+            # * icontains is a sql like
             if operator == 'eq':
-                self.q = Q(answer__icontains={field.name: value})
+                self.q = Q(answer__contains={field.name: value})
             elif operator == 'ex':
                 self.q = Q(answer__contains={field.name: value})
             elif operator == 'gt':
@@ -98,11 +101,11 @@ class FieldFilter:
             elif operator == 'lte':
                 self.q = Q(answer__lte={field.name: value})
             elif operator == 'co':
-                self.q = Q(answer__icontains=value)
+                self.q = Q(answer__icontains={field.name: "%" + value + "%"})
             elif operator == 'neq':
-                self.q = ~Q(answer__icontains={field.name: value})
+                self.q = ~Q(answer__contains={field.name: value})
             elif operator == 'nco':
-                self.q = ~Q(answer__icontains=value)
+                self.q = ~Q(answer__icontains={field.name: "%" + value + "%"})
 
     @staticmethod
     def decode(payload, field):
