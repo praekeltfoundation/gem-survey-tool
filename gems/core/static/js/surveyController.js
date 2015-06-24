@@ -11,6 +11,8 @@ gems.controller('surveyController', function($scope, $http){
     $scope.numberOfRows = 0;
     $scope.columns = [];
     $scope.rows = [];
+    $scope.buttonText = "Display Results";
+    $scope.queryDone = true;
 
     $scope.getSurveys = function getSurveys(){
         $scope.queryStarted = true;
@@ -63,6 +65,8 @@ gems.controller('surveyController', function($scope, $http){
     $scope.fetchResults = function fetchResults(){
         $scope.rows = [];
         $scope.queryStarted = true;
+        $scope.queryDone = false;
+        $scope.buttonText = "Loading Results";
         var payload = {};
 
         if($scope.numberOfRows != null && $scope.numberOfRows > 0){
@@ -103,6 +107,13 @@ gems.controller('surveyController', function($scope, $http){
 
                     $scope.rows.push(row);
                 }
+
+                if ($scope.queryStarted == true){
+                        $scope.buttonText = "Refresh Results";
+                }else{
+                    $scope.buttonText = "Display Results";
+                }
+                $scope.queryDone = true;
             })
     };
 

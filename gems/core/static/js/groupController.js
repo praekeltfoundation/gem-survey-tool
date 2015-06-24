@@ -13,10 +13,14 @@ gems.controller('groupController', function($scope, $http){
     $scope.currentPage = 1;
     $scope.itemsPerPage = 10;
     $scope.maxSize = 6;
+    $scope.buttonText = "Display Results";
+    $scope.queryDone = true;
 
     $scope.fetchResults = function fetchResults(){
         $scope.rows = [];
         $scope.queryStarted = true;
+        $scope.queryDone = false;
+        $scope.buttonText = "Loading Results";
         var payload = {};
 
         if($scope.numberOfRows != null && $scope.numberOfRows > 0){
@@ -53,9 +57,16 @@ gems.controller('groupController', function($scope, $http){
                             row.fields.push('');
                         }
                     }
-
                     $scope.rows.push(row);
                 }
+
+                if ($scope.queryStarted == true){
+                        $scope.buttonText = "Refresh Results";
+                }else{
+                    $scope.buttonText = "Display Results";
+                }
+                $scope.queryDone = true;
+
                 $scope.filteredGroups = results;
                 $scope.currentPage = 0;
                 $scope.groupToPages();
