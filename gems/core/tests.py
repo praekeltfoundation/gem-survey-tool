@@ -1,11 +1,13 @@
 from django.core.urlresolvers import reverse
-import datetime
+from datetime import datetime
 from django.utils import timezone
 from django.test import TestCase
 import json
 from django.test import Client
 from gems.core.models import *
 from mock import patch
+from csv_utils import process_header, process_line, split_line, survey_lookup, process_file
+import os
 
 
 class RESTTestCase(TestCase):
@@ -344,3 +346,182 @@ class TaskTests(TestCase):
     def test_rj_metrics_task(self):
         pass
         # TODO: Complete Tests
+
+
+class CsvImportTests(TestCase):
+    def test_process_headers(self):
+        header_line = "survey, survey_key, msisdn, key, timestamp"
+
+        parts = split_line(header_line)
+        self.assertIsNotNone(parts)
+        self.assertEquals(len(parts), 5)
+
+        header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index = process_header(parts)
+
+        self.assertIsNotNone(header_map)
+        self.assertIsNotNone(survey_index)
+        self.assertIsNotNone(survey_key_index)
+        self.assertIsNotNone(contact_index)
+        self.assertIsNotNone(contact_key_index)
+        self.assertIsNotNone(date_index)
+
+        self.assertEquals(survey_index, 0)
+        self.assertEquals(survey_key_index, 1)
+        self.assertEquals(contact_index, 2)
+        self.assertEquals(contact_key_index, 3)
+        self.assertEquals(date_index, 4)
+
+        self.assertEquals(header_map["survey"], 0)
+        self.assertEquals(header_map["msisdn"], 2)
+
+        # shuffle the keys
+        header_line = "msisdn, survey, survey_key, timestamp, key"
+
+        parts = split_line(header_line)
+        self.assertIsNotNone(parts)
+        self.assertEquals(len(parts), 5)
+
+        header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index = process_header(parts)
+
+        self.assertIsNotNone(header_map)
+        self.assertIsNotNone(survey_index)
+        self.assertIsNotNone(survey_key_index)
+        self.assertIsNotNone(contact_index)
+        self.assertIsNotNone(contact_key_index)
+        self.assertIsNotNone(date_index)
+
+        self.assertEquals(survey_index, 1)
+        self.assertEquals(survey_key_index, 2)
+        self.assertEquals(contact_index, 0)
+        self.assertEquals(contact_key_index, 4)
+        self.assertEquals(date_index, 3)
+
+        self.assertEquals(header_map["survey"], 1)
+        self.assertEquals(header_map["msisdn"], 0)
+
+    def test_process_line(self):
+        header_line = "survey, survey_key, msisdn, key, timestamp, age, color"
+        data_line = "Test Survey, 029830492039, 27801231234, 093450934, 2015-03-27T12:08:55.032231, 24, red"
+
+        parts = split_line(header_line)
+        header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index = process_header(parts)
+        headers = parts
+
+        parts = split_line(data_line)
+        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index, header_map, headers, parts)
+
+        self.assertEquals(result, 1)
+        self.assertEquals(error, None)
+
+        survey = Survey.objects.get(name__exact="Test Survey")
+        contact = Contact.objects.get(msisdn__exact="27801231234")
+        sr = SurveyResult.objects.get(survey=survey, contact=contact)
+
+        self.assertEquals(sr.answer["age"], "24")
+        self.assertEquals(sr.answer["color"], "red")
+
+        # shuffle the keys
+        header_line = "msisdn, survey, survey_key, timestamp, age, color, key"
+        data_line = "27801231244, Test Survey, 029830492039, 2015-03-27T12:08:55.032231, 24, red, 093450934"
+
+        parts = split_line(header_line)
+        header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index = process_header(parts)
+        headers = parts
+
+        parts = split_line(data_line)
+        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index, header_map, headers, parts)
+
+        self.assertEquals(result, 1)
+        self.assertEquals(error, None)
+
+        survey = Survey.objects.get(name__exact="Test Survey")
+        contact = Contact.objects.get(msisdn__exact="27801231244")
+        sr = SurveyResult.objects.get(survey=survey, contact=contact)
+
+        self.assertEquals(sr.answer["age"], "24")
+        self.assertEquals(sr.answer["color"], "red")
+        self.assertEquals(sr.created_at.date(), datetime(2015, 03, 27).date())
+
+        # test more data rows than headers
+        header_line = "survey, survey_key, msisdn, key, timestamp"
+        data_line = "Test Survey, 029830492039, 27801231234, 093450934, 2015-03-27T12:08:55.032231, 24, red"
+        headers = split_line(header_line)
+        header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index = process_header(headers)
+        parts = split_line(data_line)
+        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index, header_map, headers, parts)
+
+        self.assertEquals(result, 0)
+        self.assertEquals(error, "list index out of range")
+
+        # test not all required fields are present, ie. no answers
+        header_line = "survey, survey_key, msisdn, key, timestamp"
+        data_line = "Test Survey, 029830492039, 27801231234, 093450934, 2015-03-27T12:08:55.032231"
+        headers = split_line(header_line)
+        header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index = process_header(headers)
+        parts = split_line(data_line)
+        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index, header_map, headers, parts)
+
+        self.assertEquals(result, 0)
+        self.assertEquals(error, "Survey, Contact and at least 1 answer is required")
+
+        # split_line none line check
+        self.assertIsNone(split_line(None))
+
+        # survey_lookup none key lookup test
+        self.assertIsNotNone(survey_lookup("Test Survey", None))
+
+    def test_process_file(self):
+        filename = "/tmp/tmp_tmp_tmp_tmp"
+        fout = open(filename, "w")
+        fout.write("survey, survey_key, msisdn, key, timestamp, age, color\n")
+        fout.write("Test Survey, 029830492039, 27801231234, 093450934, 2015-03-27T12:08:55.032231, 24, red\n")
+        fout.close()
+
+        errors, num_rows = process_file(filename)
+
+        self.assertEquals(len(errors), 0)
+        self.assertEquals(num_rows, 2)
+
+        survey = Survey.objects.get(name__exact="Test Survey")
+        contact = Contact.objects.get(msisdn__exact="27801231234")
+        sr = SurveyResult.objects.get(survey=survey, contact=contact)
+
+        self.assertEquals(sr.answer["age"], "24")
+        self.assertEquals(sr.answer["color"], "red")
+
+        os.remove(filename)
+
+        # test errors
+        fout = open(filename, "w")
+        fout.write("survey, survey_key, msisdn, key, timestamp\n")
+        fout.write("Test Survey, 029830492039, 27801231234, 093450934, 2015-03-27T12:08:55.032231, 24, red\n")
+        fout.close()
+
+        errors, num_rows = process_file(filename)
+
+        self.assertEquals(len(errors), 1)
+        self.assertEquals(errors[0]["row"], 2)
+        self.assertEquals(errors[0]["error"], "list index out of range")
+        self.assertEquals(num_rows, 2)
+
+        os.remove(filename)
+
+        # test num result created
+        fout = open(filename, "w")
+        fout.write("survey, survey_key, msisdn, key, timestamp, age, color\n")
+        for i in range(0, 100):
+            fout.write("Test Survey, 029830492039, 27801231233, 093450933, 2015-03-27T12:08:55.032231, %s, red\n" % i)
+        fout.close()
+
+        errors, num_rows = process_file(filename)
+
+        self.assertEquals(len(errors), 0)
+        self.assertEquals(num_rows, 101)
+
+        survey = Survey.objects.get(name__exact="Test Survey")
+        contact = Contact.objects.get(msisdn__exact="27801231233")
+        cnt = SurveyResult.objects.filter(survey=survey, contact=contact).count()
+
+        self.assertEquals(cnt, 100)
+
+        os.remove(filename)
