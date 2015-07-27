@@ -26,9 +26,6 @@ def process_file(filename):
                     process_header(parts)
                 headers = parts
             else:
-                if headers is None:
-                    raise Exception("No headers found in file %s" % filename)
-
                 result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index,
                                              date_index, header_map, headers, parts)
 

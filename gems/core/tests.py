@@ -525,3 +525,32 @@ class CsvImportTests(TestCase):
         self.assertEquals(cnt, 100)
 
         os.remove(filename)
+
+        # test empty file
+        fout = open(filename, "w")
+        fout.close()
+
+        errors, num_rows = process_file(filename)
+
+        self.assertEquals(len(errors), 0)
+        self.assertEquals(num_rows, 0)
+
+        os.remove(filename)
+
+        # test non existing file
+        errors, num_rows = process_file("/temp/temp/tmp/temp/temp/temp.xtxtemp")
+
+        self.assertEquals(len(errors), 1)
+        self.assertEquals(num_rows, 0)
+
+        # test blank lines
+        fout = open(filename, "w")
+        fout.write("\n\n\n\n")
+        fout.close()
+
+        errors, num_rows = process_file(filename)
+
+        self.assertEquals(len(errors), 3)
+        self.assertEquals(num_rows, 4)
+
+        os.remove(filename)
