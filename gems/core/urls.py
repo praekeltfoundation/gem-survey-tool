@@ -25,6 +25,8 @@ urlpatterns = patterns('',
     url(r'^contact-groups/create-contact-group/$', login_required(CreateContactGroupsView.as_view()),
         name='createcontactgroup'),
 
+    url(r"^admin/survey_csv_import/$", survey_csv_import),
+
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
 
@@ -51,6 +53,4 @@ urlpatterns = patterns('',
     url(r'^get_surveys/$', get_surveys),
 
     url(r'^robots.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")),
-
-    #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 )

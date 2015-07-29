@@ -1,0 +1,56 @@
+{% extends "admin/base_site.html" %}
+{% block title %}Survey Result Import | Django site admin{% endblock %}
+
+<!-- BREADCRUMBS -->
+{% block breadcrumbs %}
+    {% if not is_popup %}
+        <ul>
+            <li><a href="/admin/">Home</a></li>
+            <li>Survey Result Import</li>
+        </ul>
+    {% endif %}
+{% endblock %}
+
+{% load static %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/admin_styles.css" %}">
+{% endblock %}
+
+{% block content_title %}
+    <h1>Survey Result Import</h1>
+    {% if not done %}
+        <h2 class="light-blue-front">Required Columns</h2>
+        <p><strong>survey</strong> : Name of survey</p>
+        <p><strong>msisdn</strong> : MSISDN of respondent</p>
+        <p><strong>timestamp</strong> : Timestamp of response</p>
+        <h2 class="light-blue-front">Optional Columns</h2>
+        <p><strong>survey_key</strong> : Survey's Vumi UUID</p>
+        <p><strong>key</strong> : MSISDN's Vumi UUID</p>
+        <br>
+        <h2>All other columns are processed as survey results</h2>
+        <br>
+    {% else %}
+        <h2 class="light-blue-front">Import Results</h2>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if not done %}
+        <form enctype="multipart/form-data" action="" method="post" name="result_form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <br>
+            <input type="submit" value="Submit"/>
+        </form>
+    {% else %}
+        <h2>Rows Processed: {{ num_rows }}</h2>
+        {% if errors %}
+            <br>
+            <h2 class="red-front">Errors:</h2>
+            {% for error in errors %}
+                <p>Row: {{ error.row }} - {{ error.error }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+{% endblock %}

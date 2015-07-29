@@ -29,3 +29,4 @@ fake-go-contacts
 coverage
 django-grappelli==2.5.7
 mock
+python-dateutil
