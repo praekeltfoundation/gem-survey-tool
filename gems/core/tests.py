@@ -554,3 +554,28 @@ class CsvImportTests(TestCase):
         self.assertEquals(num_rows, 4)
 
         os.remove(filename)
+
+        # test file handle processing
+        filename = "/tmp/tmp_tmp_tmp_tmp.ttt.xxt"
+        fout = open(filename, "w")
+        fout.write("survey, survey_key, msisdn, key, timestamp, age, color\n")
+        fout.write("Test Survey, 029830492039, 27801231200, 093450934, 2015-03-27T12:08:55.032231, 20, ted\n")
+        fout.close()
+
+        fin = open(filename, "r")
+
+        errors, num_rows = process_file(filename=filename, f=fin)
+
+        fin.close()
+
+        self.assertEquals(len(errors), 0)
+        self.assertEquals(num_rows, 2)
+
+        survey = Survey.objects.get(name__exact="Test Survey")
+        contact = Contact.objects.get(msisdn__exact="27801231200")
+        sr = SurveyResult.objects.get(survey=survey, contact=contact)
+
+        self.assertEquals(sr.answer["age"], "20")
+        self.assertEquals(sr.answer["color"], "ted")
+
+        os.remove(filename)

@@ -6,6 +6,7 @@ from django.core import serializers
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from forms import SurveyImportForm
 from viewhelpers import *
 import json
 import djqscsv
@@ -15,6 +16,7 @@ import logging
 import datetime
 import re
 import traceback
+from csv_utils import process_file
 
 
 logger = logging.getLogger(__name__)
@@ -554,3 +556,30 @@ def get_surveys(request):
                 list(results)))
     else:
         return HttpResponse("FAILED")
+
+
+def survey_csv_import(request):
+    errors = None
+    done = None
+    num_rows = None
+    if request.method == "POST":
+        form = SurveyImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            f = request.FILES['file']
+            done = True
+            errors, num_rows = process_file(filename=f.name, f=f)
+        else:
+            error = "No file specified"
+    else:
+        form = SurveyImportForm()
+
+    return render_to_response(
+        "survey_csv_import.html",
+        {
+            "form": form,
+            "errors": errors,
+            "num_rows": num_rows,
+            "done": done
+        },
+        context_instance=RequestContext(request)
+    )

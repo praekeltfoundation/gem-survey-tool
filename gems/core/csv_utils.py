@@ -1,15 +1,20 @@
 from .models import Survey, SurveyResult, Contact
 from dateutil import parser
 from datetime import datetime
+from django.db import transaction
 
 
-def process_file(filename):
+def process_file(filename, f=None):
     errors = []
     i = 0
 
     try:
 
-        fin = open(filename, 'r')
+        if f is None:
+            fin = open(filename, 'r')
+        else:
+            fin = f
+
         headers = None
         header_map = {}
         survey_index = 0
@@ -34,11 +39,14 @@ def process_file(filename):
 
             i = i + 1
 
-        fin.close()
+        if f is None:
+            fin.close()
+
     except Exception as ex:
         errors.append({"row": i + 1, "error": "%s" % ex})
 
     return errors, i
+
 
 def split_line(line):
     if line:
@@ -81,6 +89,7 @@ def process_header(parts):
     return header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index
 
 
+@transaction.atomic
 def survey_lookup(name, key):
     if key:
         survey = Survey.objects.filter(survey_id__exact=key).first()
@@ -88,20 +97,30 @@ def survey_lookup(name, key):
         survey = Survey.objects.filter(name__exact=name).first()
 
     if survey is None:
-        survey = Survey.objects.create(survey_id=key, name=name)
+        with transaction.atomic():
+            try:
+                survey = Survey.objects.create(survey_id=key, name=name)
+            except:
+                survey = None
 
     return survey
 
 
+@transaction.atomic
 def contact_lookup(msisdn, key):
     contact = Contact.objects.filter(msisdn__exact=msisdn).first()
 
     if contact is None:
-        contact = Contact.objects.create(msisdn=msisdn, vkey=key)
+        with transaction.atomic():
+            try:
+                contact = Contact.objects.create(msisdn=msisdn, vkey=key)
+            except:
+                contact = None
 
     return contact
 
 
+@transaction.atomic
 def process_line(survey_index, survey_key_index, contact_index,
                  contact_key_index, date_index, header_map, headers, results):
     try:
@@ -138,24 +157,25 @@ def process_line(survey_index, survey_key_index, contact_index,
             i = i + 1
 
         if survey and contact and len(answers.keys()) > 0:
-            sr = SurveyResult(
-                survey=survey,
-                contact=contact,
-                created_at=date,
-                answer=answers
-            )
+            with transaction.atomic():
+                sr = SurveyResult(
+                    survey=survey,
+                    contact=contact,
+                    created_at=date,
+                    answer=answers
+                )
 
-            for field in sr._meta.local_fields:
-                if field.name == "created_at":
-                    field.auto_now_add = False
-                    break;
+                for field in sr._meta.local_fields:
+                    if field.name == "created_at":
+                        field.auto_now_add = False
+                        break;
 
-            sr.save()
+                sr.save()
 
-            for field in sr._meta.local_fields:
-                if field.name == "created_at":
-                    field.auto_now_add = True
-                    break;
+                for field in sr._meta.local_fields:
+                    if field.name == "created_at":
+                        field.auto_now_add = True
+                        break;
         else:
             return 0, "Survey, Contact and at least 1 answer is required"
 
