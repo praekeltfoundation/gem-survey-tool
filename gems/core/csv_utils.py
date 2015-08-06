@@ -2,6 +2,7 @@ from .models import Survey, SurveyResult, Contact
 from dateutil import parser
 from datetime import datetime
 from django.db import transaction
+import uuid
 
 
 def process_file(filename, f=None):
@@ -99,7 +100,8 @@ def survey_lookup(name, key):
     if survey is None:
         with transaction.atomic():
             try:
-                survey = Survey.objects.create(survey_id=key, name=name)
+                if key is None:
+                    survey = Survey.objects.create(survey_id='CSV_IMPORT_%s' % uuid.uuid4(), name=name)
             except:
                 survey = None
 
