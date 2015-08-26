@@ -30,3 +30,4 @@ coverage
 django-grappelli==2.5.7
 mock
 python-dateutil
+go-http
