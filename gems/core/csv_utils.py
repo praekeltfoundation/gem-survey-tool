@@ -102,6 +102,8 @@ def survey_lookup(name, key):
             try:
                 if key is None:
                     survey = Survey.objects.create(survey_id='CSV_IMPORT_%s' % uuid.uuid4(), name=name)
+                else:
+                    survey = Survey.objects.create(survey_id=key, name=name)
             except:
                 survey = None
 
