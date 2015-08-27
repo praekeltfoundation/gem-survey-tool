@@ -1,0 +1,10 @@
+sudo: false
+language: python
+python:
+  - "2.7"
+before_script:
+  - ./setuptests.sh
+install:
+  - "pip install -r requirements.txt --use-wheel"
+script:
+  - ./travis_run_tests.sh
