@@ -1,5 +1,10 @@
 # GEMS
 
+|gems-ci|_
+
+.. |gems-ci| image:: https://travis-ci.org/praekelt/gem-survey-tool.svg?branch=develop
+.. _gems-ci: https://travis-ci.org/praekelt/gem-survey-tool
+
 ## Install
 ```
 source ev/bin/active
