@@ -145,15 +145,22 @@ gems.controller('groupController', function($scope, $http){
         return group;
     };
 
-    $scope.saveGroup = function saveGroup(filters){
-        var group = $scope.getGroup(filters);
+    $scope.saveGroup = function saveGroup(filters, group, count){
+        group = typeof group !== 'undefined' ? group : $scope.getGroup(filters);
+        count = typeof count !== 'undefined' ? count : 3;
 
-        $http.post('/create_contactgroup/', group).
+        $http.post('/create_contactgroup/', group, config={timeout: 300000}).
             success(function(status){
                 alert(status);
             }).
-            error(function(status){
-                alert("Failed to create contact group." + "\n\n" + status);
+            error(function(data, status){
+                if(count === 0){
+                    alert("Failed to create contact group after 3 retries." + "\n\n" + status + " : " + data);
+                } else {
+                    // retry
+                    $scope.saveGroup(filters, group, count - 1);
+                }
+
             });
 
         $scope.cancel();
