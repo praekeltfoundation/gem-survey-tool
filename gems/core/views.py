@@ -390,7 +390,6 @@ def timing(f):
     return wrap
 
 
-@timing
 def process_group_member(api, member, group):
     try:
         db_contact = Contact.objects.filter(msisdn=member, vkey__isnull=False).first()
@@ -435,7 +434,6 @@ def remove_group_member(api, member, group):
     ContactGroupMember.objects.filter(group=group, contact=local_contact).delete()
 
 
-@timing
 def create_contactgroup(request):
     if request.method == 'POST':
         data = json.loads(request.body)
