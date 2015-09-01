@@ -14,7 +14,7 @@ from django.shortcuts import render
 from go_http.contacts import ContactsApiClient
 import logging
 import datetime
-import re
+import time
 import traceback
 from csv_utils import process_file
 
@@ -380,22 +380,37 @@ def delete_contactgroup(request):
     return HttpResponse('BAD REQUEST TYPE')
 
 
+def timing(f):
+    def wrap(*args):
+        time1 = time.time()
+        ret = f(*args)
+        time2 = time.time()
+        print '%s function took %0.3f ms' % (f.func_name, (time2-time1)*1000.0)
+        return ret
+    return wrap
+
+
 def process_group_member(api, member, group):
     try:
-        contact = api.get_contact(msisdn=member)
+        db_contact = Contact.objects.filter(msisdn=member, vkey__isnull=False).first()
+        contact_key = db_contact.vkey
+
+        # if for some reason we don't have the vumi key in the db for this contact
+        # fetch the contact from vumi
+        if contact_key is None:
+            contact = api.get_contact(msisdn=member)
+            contact_key = contact["key"]
     except Exception:
-        contact = None
+        contact_key = None
         logger.info('Contact: %s not found in vumi' % member)
 
-    if contact:
-        contact['groups'].append(group.group_key)
+    if contact_key:
         try:
-            api.update_contact(contact['key'], {u'groups': contact['groups']})
+            api.update_contact(contact_key, {u'groups': (group.group_key, )})
         except Exception:
             logger.info('Contact: %s update failed' % member)
 
-    local_contact = Contact.objects.get(msisdn=member)
-    group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=local_contact)
+    group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=db_contact)
     group_member.save()
 
 
@@ -429,7 +444,6 @@ def create_contactgroup(request):
             api = ContactsApiClient(settings.VUMI_TOKEN)
             data_returned = api.create_group({u'name': group_name, })
 
-            #check if the group key has been returned (checks if the group has been created on vumi)
             if 'key' in data_returned:
                 group_key = data_returned['key']
 
