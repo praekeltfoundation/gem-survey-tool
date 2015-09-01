@@ -42,6 +42,7 @@ class SurveyResultBase(HStoreModel):
     class Meta:
         abstract = True
 
+
 class SurveyResult(SurveyResultBase):
     pass
 
@@ -78,5 +79,5 @@ class ExportTypeMapping(models.Model):
         (1, 'Cast to Integer'),
         (2, 'Cast to Double')
     )
-    field=models.CharField(max_length=50, blank=False, null=False)
-    cast=models.IntegerField(choices=casting_choices, blank=False, null=False)
+    field = models.CharField(max_length=50, blank=False, null=False)
+    cast = models.IntegerField(choices=casting_choices, blank=False, null=False)
