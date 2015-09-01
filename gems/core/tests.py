@@ -110,6 +110,84 @@ class RESTTestCase(TestCase):
         self.assertEquals(result._headers['content-type'][1], 'text/csv')
         self.assertEquals(result._headers['content-disposition'][1], 'attachment; filename=surveyresult_export.csv;')
 
+    def test_rest_pages_empty(self):
+        result = self.client.get(path="/survey/")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/surveyresult/")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/contact/")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/contactgroup/")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/contactgroupmember/")
+        self.assertContains(result, "\"count\":0")
+
+    def test_rest_pages_empty_params(self):
+        result = self.client.get(path="/survey/?page=1&page_size=100")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/surveyresult/?page=1&page_size=100")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/contact/?page=1&page_size=100")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/contactgroup/?page=1&page_size=100")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/contactgroupmember/?page=1&page_size=100")
+        self.assertContains(result, "\"count\":0")
+
+    def test_rest_pages_empty_params_errors(self):
+        result = self.client.get(path="/survey/?page=2&page_size=100")
+        self.assertContains(result, "Invalid page", status_code=404)
+
+        result = self.client.get(path="/surveyresult/?page=2&page_size=100")
+        self.assertContains(result, "Invalid page", status_code=404)
+
+        result = self.client.get(path="/contact/?page=2&page_size=100")
+        self.assertContains(result, "Invalid page", status_code=404)
+
+        result = self.client.get(path="/contactgroup/?page=2&page_size=100")
+        self.assertContains(result, "Invalid page", status_code=404)
+
+        result = self.client.get(path="/contactgroupmember/?page=2&page_size=100")
+        self.assertContains(result, "Invalid page", status_code=404)
+
+    def test_rest_pages(self):
+        s = Survey.objects.create(survey_id="123", name="test")
+        result = self.client.get(path="/survey/")
+        self.assertContains(result, "\"count\":1")
+        self.assertContains(result, "\"name\":\"test\"")
+
+        c = Contact.objects.create(msisdn="+27821230000", vkey="1234")
+        result = self.client.get(path="/contact/")
+        self.assertContains(result, "\"count\":1")
+        self.assertContains(result, "\"vkey\":\"1234\"")
+
+        SurveyResult.objects.create(survey=s, contact=c, answer={"age": "21"})
+        result = self.client.get(path="/surveyresult/")
+        self.assertContains(result, "\"count\":1")
+        self.assertContains(result, "\"name\":\"test\"")
+        self.assertContains(result, "\"vkey\":\"1234\"")
+
+        usr = User.objects.create_user("admin", "admin@admin.com", "admin")
+        cg = ContactGroup.objects.create(group_id="123", group_key="1234", name="test group", created_by=usr)
+        result = self.client.get(path="/contactgroup/")
+        self.assertContains(result, "\"count\":1")
+        self.assertContains(result, "\"name\":\"test group\"")
+        self.assertContains(result, "\"group_key\":\"1234\"")
+
+        ContactGroupMember.objects.create(group=cg, contact=c)
+        result = self.client.get(path="/contactgroupmember/")
+        self.assertContains(result, "\"count\":1")
+        self.assertContains(result, "\"name\":\"test group\"")
+        self.assertContains(result, "\"group_key\":\"1234\"")
+
 
 class GeneralTests(TestCase):
 
@@ -294,7 +372,6 @@ class GeneralTests(TestCase):
 
         patch('gems.core.views.process_group_member')
         patch('gems.core.views.remove_group_member')
-
 
         # TODO: Complete Test
 
@@ -579,3 +656,22 @@ class CsvImportTests(TestCase):
         self.assertEquals(sr.answer["color"], "ted")
 
         os.remove(filename)
+
+    def admin_page_test_helper(self, c, page):
+        resp = c.get(page)
+        self.assertEquals(resp.status_code, 200)
+
+    def test_basic_empty_admin(self):
+        User.objects.create_user("admin", "admin@admin.com", "admin")
+        c = Client()
+        c.login(username="admin", password="admin")
+
+        self.admin_page_test_helper(c, "/admin/core/contactgroupmember/")
+        self.admin_page_test_helper(c, "/admin/core/contactgroup/")
+        self.admin_page_test_helper(c, "/admin/core/contact/")
+        self.admin_page_test_helper(c, "/admin/core/exporttypemapping/")
+        self.admin_page_test_helper(c, "/admin/core/incomingsurvey/")
+        self.admin_page_test_helper(c, "/admin/core/rawsurveyresult/")
+        self.admin_page_test_helper(c, "/admin/core/surveyresult/")
+        self.admin_page_test_helper(c, "/admin/core/surveyresult/")
+        self.admin_page_test_helper(c, "/admin/survey_csv_import/")
