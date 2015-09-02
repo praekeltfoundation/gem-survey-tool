@@ -1,10 +1,15 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
-from views import *
+from django.http import HttpResponse
 from django.contrib import admin
 from rest_framework import routers
-from gems.core.viewsets import *
+
+from views import survey_csv_import, user_login, user_logout, save_data, export_survey, export_survey_results, \
+    query, get_unique_keys, view_home, load_contact_groups, delete_contactgroup, create_contactgroup, \
+    update_contactgroup, get_surveys, LandingStatsView
+from gems.core.viewsets import SurveyResultViewSet, ContactGroupMemberViewSet, ContactViewSet, SurveyViewSet, \
+    ContactGroupViewSet
 
 admin.autodiscover()
 
@@ -17,13 +22,6 @@ router.register(r'contactgroupmember', ContactGroupMemberViewSet)
 
 urlpatterns = patterns('',
     url(r'^$', login_required(TemplateView.as_view(template_name='base.html'))),
-
-
-    url(r'^contact-groups/$', login_required(ContactGroupsView.as_view()),
-        name='contactgroups'),
-
-    url(r'^contact-groups/create-contact-group/$', login_required(CreateContactGroupsView.as_view()),
-        name='createcontactgroup'),
 
     url(r"^admin/survey_csv_import/$", survey_csv_import),
 
@@ -51,6 +49,8 @@ urlpatterns = patterns('',
     url(r'^create_contactgroup/', create_contactgroup),
     url(r'^update_contactgroup/', update_contactgroup),
     url(r'^get_surveys/$', get_surveys),
+
+    url(r"^get_stats/$", login_required(LandingStatsView.as_view())),
 
     url(r'^robots.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")),
 )

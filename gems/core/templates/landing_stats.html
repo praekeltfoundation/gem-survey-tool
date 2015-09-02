@@ -1,91 +1,57 @@
-<div ng-controller="contentController" class="col-md-8" ng-if="showContactGroups && showContactMenu">
+<div class="col-md-8" ng-if="showLandingStats">
     <div class="main-container">
         <div class="row container-head">
-            <span class="h1-text">Contact Groups ({$ filteredGroups.length $})</span>
-            <div class="input-wrapper-active quarter-width right input-align-big-label">
-                <i class="glyphicon glyphicon-search caption-text-size i-align-big-label"></i>
-                <input type="text" class="input-text-large" ng-model="query" ng-change="search()" placeholder="Search">
-            </div>
+            <span class="h1-text">Welcome to GHE Survey Tool!</span>
+        </div>
+        <div class="row container-head">
+            <span class="h1-text">GHE Stats</span>
         </div>
         <div class="row">
-            <table class="table contact-groups">
-                <thead class="table-heading ">
-                    <tr>
-                        <th class="name">
-                            <a href="#" ng-click="sortingOrder='name'; reverseSort = !reverseSort">
-                                Name
-                                <span ng-show="sortingOrder == 'name'">
-                                    <span class="glyphicon glyphicon-triangle-top right white-front" aria-hidden="true" ng-show="!reverseSort"></span>
-                                    <span class="glyphicon glyphicon-triangle-bottom right white-front" aria-hidden="true" ng-show="reverseSort"></span>
-                                </span>
-                            </a>
-                        </th>
-                        <th class="created-by">
-                            <a href="#" ng-click="sortingOrder='created_by'; reverseSort = !reverseSort">
-                                Created By
-                                <span ng-show="sortingOrder == 'created_by'">
-                                    <span class="glyphicon glyphicon-triangle-top right white-front" aria-hidden="true" ng-show="!reverseSort"></span>
-                                    <span class="glyphicon glyphicon-triangle-bottom right white-front" aria-hidden="true" ng-show="reverseSort"></span>
-                                </span>
-                            </a>
-                        </th>
-                        <th class="created-on">
-                            <a href="#" ng-click="sortingOrder='created_at'; reverseSort = !reverseSort">
-                                Created On
-                                <span ng-show="sortingOrder == 'created_at'">
-                                    <span class="glyphicon glyphicon-triangle-top right white-front" aria-hidden="true" ng-show="!reverseSort"></span>
-                                    <span class="glyphicon glyphicon-triangle-bottom right white-front" aria-hidden="true" ng-show="reverseSort"></span>
-                                </span>
-                            </a>
-                        </th>
-                        <th class="rules">
-                            <a href="#" ng-click="sortingOrder='filters'; reverseSort = !reverseSort">
-                                Rules
-                                <span ng-show="sortingOrder == 'filters'">
-                                    <span class="glyphicon glyphicon-triangle-top right white-front" aria-hidden="true" ng-show="!reverseSort"></span>
-                                    <span class="glyphicon glyphicon-triangle-bottom right white-front" aria-hidden="true" ng-show="reverseSort"></span>
-                                </span>
-                            </a>
-                        </th>
-                        <th class="buttons"></th>
-                    </tr>
-                </thead>
-                <tbody class="table-rows">
-                    <tr ng-repeat="(key, data) in pagedGroups[currentPage] | orderBy:sortingOrder:reverseSort">
-                        <td>{$ data.name $}</td>
-                        <td>{$ data.created_by $}</td>
-                        <td>{$ data.created_at | date:'MM-dd-yyyy'$}</td>
-                        <td>{$ data.query_words $}</td>
-                        <td>
-                            <button class="table-button" ng-click="showEditContact(data.name , data.filters, data.group_key)">Edit</button>
-                            <button class="table-button" data-toggle="modal" data-target="#confirm-delete" ng-click="setGroupId(data.group_id)">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="col-sm-3 teal-back stat-block">
+                <p class="h1-text">{$ stats.total_users $}</p>
+                <p class="p-text">Total users</p>
+            </div>
+            <div class="col-sm-3 pink-back stat-block">
+                <p class="h1-text">{$ stats.new_users_last_month $}</p>
+                <p class="p-text">New users last month</p>
+            </div>
+            <div class="col-sm-3 teal-back stat-block">
+                <p class="h1-text">{$ stats.new_users_this_month $}</p>
+                <p class="p-text">New users this month</p>
+            </div>
+            <div class="col-sm-3 pink-back stat-block">
+                <p class="h1-text">{$ stats.new_users_this_week $}</p>
+                <p class="p-text">New users this week</p>
+            </div>
         </div>
-        <div class="row paging" ng-if="pagedGroups.length != 1">
-            <ul>
-                <li class="paging-item" ng-repeat="n in range(pagedGroups.length)" ng-class="{active: n == currentPage}" ng-click="setPage()">
-                    <a href ng-bind="n + 1" ng-class="n == currentPage ? 'current-page' : 'not-current-page'">1</a>
-                </li>
-            </ul>
+
+        <div class="row ">
+            <div class="col-sm-3 pink-back stat-block">
+                <p class="h1-text">{$ stats.total_results $}</p>
+                <p class="p-text">Total survey results</p>
+            </div>
+            <div class="col-sm-3 teal-back stat-block">
+                <p class="h1-text">{$ stats.total_results_last_month $}</p>
+                <p class="p-text">Total survey results last month</p>
+            </div>
+            <div class="col-sm-3 pink-back stat-block">
+                <p class="h1-text">{$ stats.total_results_this_month $}</p>
+                <p class="p-text">Total survey results this month</p>
+            </div>
+            <div class="col-sm-3 teal-back stat-block">
+                <p class="h1-text">{$ stats.total_results_this_week $}</p>
+                <p class="p-text">Total survey results this week</p>
+            </div>
         </div>
-        <div class="modal modal-dialog-center" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel"><b>Are you Sure?</b></h4>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to delete this contact group? This will not delete the contacts themselves but will delete the group.
-                    </div>
-                    <div class="modal-footer">
-                        <button class="red" ng-click="deleteContactGroup()" data-dismiss="modal">Delete</button>
-                        <button class="orange" data-dismiss="modal">Cancel</button>
-                    </div>
-                </div>
+
+        <div class="row">
+            <div class="col-sm-3 teal-back stat-block">
+                <p class="h1-text">{$ stats.total_surveys $}</p>
+                <p class="p-text">Total surveys</p>
+            </div>
+            <div class="col-sm-3 pink-back stat-block">
+                <p class="h1-text">{$ stats.total_contact_groups $}</p>
+                <p class="p-text">Total contract groups</p>
             </div>
         </div>
     </div>
