@@ -35,6 +35,7 @@
             <div class="results-head" ng-if="queryStarted == true && rows.length > 0">
                 <span class="p-text">Results ({$ rows.length $})</span>
                 <button class="grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
+                <button class="pink white-front table-aligned" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0" style="overflow: auto;">
                 <table class="table contact-groups has-checkbox-column">
