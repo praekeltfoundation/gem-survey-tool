@@ -460,7 +460,7 @@ table tr th:last-child {
     font-weight: bold !important;
     font-size: 13px !important;
     background-color: rgb(41, 183, 171);
-    color: black;
+    color: white;
 }
 
 thead.table-heading>tr>th>a{
