@@ -14,6 +14,9 @@ gems.controller('surveyController', function($scope, $http){
     $scope.buttonText = "Display Results";
     $scope.queryDone = true;
 
+    $scope.pagedGroups = [];
+    $scope.currentPage = 1;
+
     $scope.getSurveys = function getSurveys(){
         $scope.queryStarted = true;
         var payload = {};
@@ -56,6 +59,8 @@ gems.controller('surveyController', function($scope, $http){
                     };
                     $scope.rows.push(row);
                 }
+                $scope.currentPage = 0;
+                $scope.pagedGroups = $scope.groupToPages($scope.rows);
             })
             .error(function(data){
                 alert("Failed to retrieve the surveys");
@@ -107,6 +112,9 @@ gems.controller('surveyController', function($scope, $http){
 
                     $scope.rows.push(row);
                 }
+
+                $scope.currentPage = 0;
+                $scope.pagedGroups = $scope.groupToPages($scope.rows);
 
                 if ($scope.queryStarted == true){
                         $scope.buttonText = "Refresh Results";
@@ -223,6 +231,10 @@ gems.controller('surveyController', function($scope, $http){
             var tempUrl = url + data[x];
             window.location.assign(tempUrl);
         }
+    };
+
+    $scope.setPage = function (){
+        $scope.currentPage = this.n;
     };
 
     $scope.initDTP = function initDTP(){

@@ -11,7 +11,6 @@ gems.controller('groupController', function($scope, $http){
     $scope.filteredGroups = [];
     $scope.pagedGroups = [];
     $scope.currentPage = 1;
-    $scope.itemsPerPage = 10;
     $scope.maxSize = 6;
     $scope.buttonText = "Display Results";
     $scope.queryDone = true;
@@ -67,9 +66,8 @@ gems.controller('groupController', function($scope, $http){
                 }
                 $scope.queryDone = true;
 
-                $scope.filteredGroups = results;
                 $scope.currentPage = 0;
-                $scope.groupToPages();
+                $scope.pagedGroups = $scope.groupToPages($scope.rows);
             })
     };
 
@@ -183,47 +181,19 @@ gems.controller('groupController', function($scope, $http){
     };
 
     ///////PAGING/////
-
-    $scope.groupToPages = function(){
-        $scope.pagedGroups = [];
-
-        for (var i = 0; i < $scope.filteredGroups.length; i++){
-            if (i % $scope.itemsPerPage === 0){
-                $scope.pagedGroups[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredGroups[i] ];
-            }else{
-                $scope.pagedGroups[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredGroups[i]);
-            }
+    $scope.groupToPages = function(results){
+        var paged = [];
+        var temp = results.slice();
+        while (temp.length > 0)
+        {
+            paged.push(temp.splice(0, $scope.itemsPerPage));
         }
-    };
-
-    $scope.range = function (start, end){
-        var ret = [];
-        if (!end){
-            end = start;
-            start = 0;
-        }
-        for (var i = start; i < end; i++){
-            ret.push(i);
-        }
-        return ret;
-    };
-
-    $scope.prevPage = function (){
-        if ($scope.currentPage > 0){
-            $scope.currentPage--;
-        }
-    };
-
-    $scope.nextPage = function (){
-        if ($scope.currentPage < $scope.pagedItems.length - 1){
-            $scope.currentPage++;
-        }
+        return paged;
     };
 
     $scope.setPage = function (){
         $scope.currentPage = this.n;
     };
-
 
     $scope.cancel = function cancel(){
         $scope.hideCreateContact();
