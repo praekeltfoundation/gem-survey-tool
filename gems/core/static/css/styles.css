@@ -431,14 +431,6 @@ table.contact-groups>tbody:first-child>tr>td{
     border-top: 0;
 }
 
-table.has-checkbox-column {
-    margin-left: -21px;
-}
-
-table.export-survey-has-checkbox-column {
-    margin-left: -16px;
-}
-
 button.table-aligned{
     margin-right: 20px;
 }
@@ -508,16 +500,8 @@ th.general{
     font-size: 10pt;*/
 }
 
-th.checkbox-table-header {
-    background-color: white;
-    width:0%;
-}
-
 td.checkbox-table-column{
-    position: absolute;
-    left: 12px;
-    top: auto;
-    border-right: 0px none black;
+    width:10px;
     border-top-width: 3px; /*only relevant for first row*/
     margin-top: -3px; /*compensate for top border*/
 }
