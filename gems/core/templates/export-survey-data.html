@@ -26,7 +26,7 @@
                     </tr>
                 </thead>
                 <tbody class="table-rows">
-                    <tr ng-repeat="row in rows">
+                    <tr ng-repeat="row in pagedGroups[currentPage]">
                         <td class="checkbox-table-column">
                            <div>
                                 <input type="checkbox" id="checkbox_{$ $index $}" ng-model="row.selected" class='pseudo-checkbox sr-only'>
@@ -42,6 +42,13 @@
         </div>
         <div class="row" ng-if="queryStarted == true && rows.length > 0 && createGroup">
             <button class="right pink white-front table-aligned" ng-click="exportCsv()" ng-disabled="!anyRowsSelected()">Export Data</button>
+        </div>
+        <div class="row paging" ng-if="queryStarted == true && rows.length > 0 && createGroup && pagedGroups.length != 1">
+            <ul>
+                <li class="paging-item" ng-repeat="n in range(pagedGroups.length)" ng-class="{active: n == currentPage}" ng-click="setPage()">
+                    <a href ng-bind="n + 1" ng-class="n == currentPage ? 'current-page' : 'not-current-page'">1</a>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
