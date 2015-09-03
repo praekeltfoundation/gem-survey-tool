@@ -677,6 +677,7 @@ class AdminTests(TestCase):
         self.admin_page_test_helper(c, "/admin/core/rawsurveyresult/")
         self.admin_page_test_helper(c, "/admin/core/surveyresult/")
         self.admin_page_test_helper(c, "/admin/core/surveyresult/")
+        self.admin_page_test_helper(c, "/admin/core/setting/")
         self.admin_page_test_helper(c, "/admin/survey_csv_import/")
 
 
