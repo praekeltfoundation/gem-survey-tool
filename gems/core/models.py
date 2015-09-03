@@ -83,3 +83,18 @@ class ExportTypeMapping(models.Model):
     )
     field = models.CharField(max_length=50, blank=False, null=False)
     cast = models.IntegerField(choices=casting_choices, blank=False, null=False)
+
+
+class Setting(models.Model):
+    name = models.CharField(max_length=64)
+    value = models.CharField(max_length=1024)
+
+    @staticmethod
+    def get_setting(name):
+        if name:
+            rs = Setting.objects.filter(name=name).first()
+
+            if rs:
+                return rs.value
+
+        return None
