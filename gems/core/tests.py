@@ -1,11 +1,13 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-import json
 from django.test import Client
-from gems.core.models import *
+from gems.core.models import Contact, ContactGroup, ContactGroupMember, Survey, SurveyResult, RawSurveyResult, \
+    IncomingSurvey, User, Setting
 from mock import patch
 from csv_utils import process_header, process_line, split_line, survey_lookup, process_file
+from datetime import datetime
 import os
+import json
 
 
 class RESTTestCase(TestCase):
@@ -308,7 +310,7 @@ class GeneralTests(TestCase):
     def fake_create_group(self, name):
         return {'key': 'abc', 'filters': "{'a':'a', 'b':'b'}", 'query_words': 'age > 20'}
 
-    def fake_process_group_member(api, member, contact_group ):
+    def fake_process_group_member(api, member, contact_group):
         pass
 
     @patch('gems.core.views.process_group_member', fake_process_group_member)
@@ -387,7 +389,7 @@ class GeneralTests(TestCase):
 
 class ModelTests(TestCase):
     def test_incoming_survey_length_limit(self):
-        j={
+        j = {
             "test": ""
         }
 
@@ -402,6 +404,13 @@ class ModelTests(TestCase):
         self.client.post('/save_data/', content_type='application/json', data=json.dumps(j))
         ins = IncomingSurvey.objects.all().first()
         self.assertEquals(ins.raw_message, t)
+
+    def test_setting_lookup(self):
+        Setting.objects.create(name="Test", value="test123")
+
+        self.assertIsNone(Setting.get_setting(None))
+        self.assertIsNone(Setting.get_setting("tset"))
+        self.assertEquals(Setting.get_setting("Test"), "test123")
 
 
 class TaskTests(TestCase):
@@ -470,7 +479,8 @@ class CsvImportTests(TestCase):
         headers = parts
 
         parts = split_line(data_line)
-        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index, header_map, headers, parts)
+        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index,
+                                     header_map, headers, parts)
 
         self.assertEquals(result, 1)
         self.assertEquals(error, None)
@@ -491,7 +501,8 @@ class CsvImportTests(TestCase):
         headers = parts
 
         parts = split_line(data_line)
-        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index, header_map, headers, parts)
+        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index,
+                                     header_map, headers, parts)
 
         self.assertEquals(result, 1)
         self.assertEquals(error, None)
@@ -508,9 +519,11 @@ class CsvImportTests(TestCase):
         header_line = "survey, survey_key, msisdn, key, timestamp"
         data_line = "Test Survey, 029830492039, 27801231234, 093450934, 2015-03-27T12:08:55.032231, 24, red"
         headers = split_line(header_line)
-        header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index = process_header(headers)
+        header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index = \
+            process_header(headers)
         parts = split_line(data_line)
-        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index, header_map, headers, parts)
+        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index,
+                                     header_map, headers, parts)
 
         self.assertEquals(result, 0)
         self.assertEquals(error, "list index out of range")
@@ -519,9 +532,11 @@ class CsvImportTests(TestCase):
         header_line = "survey, survey_key, msisdn, key, timestamp"
         data_line = "Test Survey, 029830492039, 27801231234, 093450934, 2015-03-27T12:08:55.032231"
         headers = split_line(header_line)
-        header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index = process_header(headers)
+        header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index = \
+            process_header(headers)
         parts = split_line(data_line)
-        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index, header_map, headers, parts)
+        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index,
+                                     header_map, headers, parts)
 
         self.assertEquals(result, 0)
         self.assertEquals(error, "Survey, Contact and at least 1 answer is required")
@@ -642,6 +657,9 @@ class CsvImportTests(TestCase):
 
         os.remove(filename)
 
+
+class AdminTests(TestCase):
+
     def admin_page_test_helper(self, c, page):
         resp = c.get(page)
         self.assertEquals(resp.status_code, 200)
@@ -660,6 +678,9 @@ class CsvImportTests(TestCase):
         self.admin_page_test_helper(c, "/admin/core/surveyresult/")
         self.admin_page_test_helper(c, "/admin/core/surveyresult/")
         self.admin_page_test_helper(c, "/admin/survey_csv_import/")
+
+
+class LandingPageStatsTests(TestCase):
 
     def test_landing_page_stats(self):
         User.objects.create_user("admin", "admin@admin.com", "admin")
