@@ -61,6 +61,10 @@ footer {
     background-color: #ec2b8b;
 }
 
+.pink-back{
+    background-color: #ec2b8b;
+}
+
 .green{
     background-color: #00b9ad;
 }
@@ -127,6 +131,10 @@ footer {
 
 .white-back{
     background-color: #ffffff;
+}
+
+.teal-back{
+    background-color: rgb(51, 186, 175);
 }
 
 .login-logo{
@@ -847,4 +855,8 @@ p {
 
 div.spaced {
     padding-top: 10px;
+}
+
+.stat-block{
+    min-height: 120px;
 }

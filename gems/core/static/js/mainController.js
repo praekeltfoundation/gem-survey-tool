@@ -18,6 +18,8 @@ gems.controller('mainController', function($scope, $http, $window){
     $scope.topQueryWords = '';
     $scope.groupKey = '';
     $scope.queryValid = false;
+    $scope.showLandingStats = true;
+    $scope.stats = {};
 
     $scope.filters = [];
     $scope.createGroup = true;
@@ -26,7 +28,10 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.showSurveyDataMenu = !$scope.showSurveyDataMenu;
 
         if($scope.showSurveyDataMenu == true){
+            $scope.updateStats(false);
             $scope.showContactMenu = false;
+        } else {
+            $scope.updateStats(true);
         }
     };
 
@@ -34,7 +39,10 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.showContactMenu = !$scope.showContactMenu;
 
         if($scope.showContactMenu == true){
+            $scope.updateStats(false);
             $scope.showSurveyDataMenu = false;
+        } else {
+            $scope.updateStats(true);
         }
     };
 
@@ -48,6 +56,8 @@ gems.controller('mainController', function($scope, $http, $window){
 
         if(typeof(url) != 'undefined'){
             $window.open(url, "_blank");
+        } else {
+            $scope.updateStats(true);
         }
     };
 
@@ -163,4 +173,21 @@ gems.controller('mainController', function($scope, $http, $window){
             return value;
         }
     };
+
+    $scope.updateStats = function updateStats(value){
+        $scope.showLandingStats = value;
+
+        if($scope.showLandingStats){
+            $scope.fetchStats();
+        }
+    }
+
+    $scope.fetchStats = function fetchStats(){
+        $http.get("/get_stats/")
+            .success(function(data){
+                $scope.stats = data;
+            });
+    };
+
+    $scope.fetchStats();
 });

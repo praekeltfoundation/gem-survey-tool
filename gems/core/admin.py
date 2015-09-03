@@ -8,8 +8,8 @@ class SurveyAdmin(admin.ModelAdmin):
 
 
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('msisdn',)
-    search_fields = ("msisdn",)
+    list_display = ('msisdn', "created_on")
+    search_fields = ("msisdn", "created_on")
 
 
 class SurveyResultAdmin(admin.ModelAdmin):
