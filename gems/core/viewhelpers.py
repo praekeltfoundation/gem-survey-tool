@@ -1,34 +1,5 @@
 from django.db.models import Q
-from django.views.generic.base import TemplateView
-from models import *
 import json
-
-
-class CreateContactGroupsView(TemplateView):
-
-    template_name = "createcontactgroup.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(CreateContactGroupsView, self)\
-            .get_context_data(**kwargs)
-
-        contactgroups = ContactGroup.objects.all()
-        context['contactgroups'] = contactgroups
-
-        return context
-
-
-class ContactGroupsView(TemplateView):
-
-    template_name = "contact-groups.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(ContactGroupsView, self).get_context_data(**kwargs)
-
-        contactgroups = ContactGroup.objects.all()
-        context['contactgroups'] = contactgroups
-
-        return context
 
 
 class FieldFilter:
@@ -58,7 +29,7 @@ class FieldFilter:
                     '{0}__iexact'.format(field.name): value
                 }
                 self.q = Q(**kwargs)
-            elif  operator == 'ex':
+            elif operator == 'ex':
                 kwargs = {
                     '{0}__exact'.format(field.name): value
                 }
