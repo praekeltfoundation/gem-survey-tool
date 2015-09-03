@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django_hstore import hstore
 from hstore_helper import GemsHStoreManager
+from datetime import datetime
 
 
 class HStoreModel(models.Model):
@@ -26,6 +27,7 @@ class Survey(models.Model):
 class Contact(models.Model):
     msisdn = models.CharField(max_length=15, primary_key=True)
     vkey = models.CharField(max_length=32, blank=True, default='')
+    created_on = models.DateField(auto_now_add=True, default=datetime.now(), blank=False)
 
     def __unicode__(self):
         return self.msisdn

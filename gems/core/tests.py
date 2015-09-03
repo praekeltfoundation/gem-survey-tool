@@ -1,6 +1,4 @@
 from django.core.urlresolvers import reverse
-from datetime import datetime
-from django.utils import timezone
 from django.test import TestCase
 import json
 from django.test import Client
@@ -286,19 +284,6 @@ class GeneralTests(TestCase):
         resp = self.client.get(reverse('logout'))
         self.assertEquals(resp.status_code, 302)
         self.assertEquals(resp.url, "http://testserver/login")
-
-    def test_contact_groups(self):
-        User.objects.create_user("admin", "admin@admin.com", "admin")
-
-        self.client.post(reverse('login'),
-                         {
-                             'username': "admin",
-                             'password': "admin"
-                         },
-                         follow=True)
-
-        resp = self.client.get(reverse("contactgroups"))
-        self.assertEquals(resp.status_code, 200)
 
     def test_query(self):
         resp = self.client.post("/query/", content_type='application/json', data=json.dumps(self.f))
@@ -675,3 +660,20 @@ class CsvImportTests(TestCase):
         self.admin_page_test_helper(c, "/admin/core/surveyresult/")
         self.admin_page_test_helper(c, "/admin/core/surveyresult/")
         self.admin_page_test_helper(c, "/admin/survey_csv_import/")
+
+    def test_landing_page_stats(self):
+        User.objects.create_user("admin", "admin@admin.com", "admin")
+        c = Client()
+        c.login(username="admin", password="admin")
+
+        resp = c.get("/get_stats/")
+        self.assertContains(resp, "new_users_last_month")
+        self.assertContains(resp, "total_contact_groups")
+        self.assertContains(resp, "total_surveys")
+        self.assertContains(resp, "total_users")
+        self.assertContains(resp, "new_users_this_month")
+        self.assertContains(resp, "new_users_this_week")
+        self.assertContains(resp, "total_results_last_month")
+        self.assertContains(resp, "total_results")
+        self.assertContains(resp, "total_results_this_month")
+        self.assertContains(resp, "total_results_this_week")

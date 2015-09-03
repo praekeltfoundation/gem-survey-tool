@@ -1,0 +1,58 @@
+<div class="col-md-8" ng-if="showLandingStats">
+    <div class="main-container">
+        <div class="row container-head">
+            <span class="h1-text">Welcome to GHE Survey Tool!</span>
+        </div>
+        <div class="row container-head">
+            <span class="h1-text">GHE Stats</span>
+        </div>
+        <div class="row">
+            <div class="col-sm-3 teal-back stat-block">
+                <p class="h1-text">{$ stats.total_users $}</p>
+                <p class="p-text">Total users</p>
+            </div>
+            <div class="col-sm-3 pink-back stat-block">
+                <p class="h1-text">{$ stats.new_users_last_month $}</p>
+                <p class="p-text">New users last month</p>
+            </div>
+            <div class="col-sm-3 teal-back stat-block">
+                <p class="h1-text">{$ stats.new_users_this_month $}</p>
+                <p class="p-text">New users this month</p>
+            </div>
+            <div class="col-sm-3 pink-back stat-block">
+                <p class="h1-text">{$ stats.new_users_this_week $}</p>
+                <p class="p-text">New users this week</p>
+            </div>
+        </div>
+
+        <div class="row ">
+            <div class="col-sm-3 pink-back stat-block">
+                <p class="h1-text">{$ stats.total_results $}</p>
+                <p class="p-text">Total survey results</p>
+            </div>
+            <div class="col-sm-3 teal-back stat-block">
+                <p class="h1-text">{$ stats.total_results_last_month $}</p>
+                <p class="p-text">Total survey results last month</p>
+            </div>
+            <div class="col-sm-3 pink-back stat-block">
+                <p class="h1-text">{$ stats.total_results_this_month $}</p>
+                <p class="p-text">Total survey results this month</p>
+            </div>
+            <div class="col-sm-3 teal-back stat-block">
+                <p class="h1-text">{$ stats.total_results_this_week $}</p>
+                <p class="p-text">Total survey results this week</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-3 teal-back stat-block">
+                <p class="h1-text">{$ stats.total_surveys $}</p>
+                <p class="p-text">Total surveys</p>
+            </div>
+            <div class="col-sm-3 pink-back stat-block">
+                <p class="h1-text">{$ stats.total_contact_groups $}</p>
+                <p class="p-text">Total contract groups</p>
+            </div>
+        </div>
+    </div>
+</div>
