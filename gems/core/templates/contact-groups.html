@@ -20,15 +20,6 @@
                                 </span>
                             </a>
                         </th>
-                        <th class="created-by">
-                            <a href="#" ng-click="sortingOrder='created_by'; reverseSort = !reverseSort">
-                                Created By
-                                <span ng-show="sortingOrder == 'created_by'">
-                                    <span class="glyphicon glyphicon-triangle-top right white-front" aria-hidden="true" ng-show="!reverseSort"></span>
-                                    <span class="glyphicon glyphicon-triangle-bottom right white-front" aria-hidden="true" ng-show="reverseSort"></span>
-                                </span>
-                            </a>
-                        </th>
                         <th class="created-on">
                             <a href="#" ng-click="sortingOrder='created_at'; reverseSort = !reverseSort">
                                 Created On
@@ -53,7 +44,6 @@
                 <tbody class="table-rows">
                     <tr ng-repeat="(key, data) in pagedGroups[currentPage] | orderBy:sortingOrder:reverseSort">
                         <td>{$ data.name $}</td>
-                        <td>{$ data.created_by $}</td>
                         <td>{$ data.created_at | date:'MM-dd-yyyy'$}</td>
                         <td>{$ data.query_words $}</td>
                         <td>
