@@ -1,13 +1,13 @@
 from django.core.urlresolvers import reverse
-from datetime import datetime
-from django.utils import timezone
 from django.test import TestCase
-import json
 from django.test import Client
-from gems.core.models import *
+from gems.core.models import Contact, ContactGroup, ContactGroupMember, Survey, SurveyResult, RawSurveyResult, \
+    IncomingSurvey, User, Setting
 from mock import patch
 from csv_utils import process_header, process_line, split_line, survey_lookup, process_file
+from datetime import datetime
 import os
+import json
 
 
 class RESTTestCase(TestCase):
@@ -110,6 +110,84 @@ class RESTTestCase(TestCase):
         self.assertEquals(result._headers['content-type'][1], 'text/csv')
         self.assertEquals(result._headers['content-disposition'][1], 'attachment; filename=surveyresult_export.csv;')
 
+    def test_rest_pages_empty(self):
+        result = self.client.get(path="/survey/")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/surveyresult/")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/contact/")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/contactgroup/")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/contactgroupmember/")
+        self.assertContains(result, "\"count\":0")
+
+    def test_rest_pages_empty_params(self):
+        result = self.client.get(path="/survey/?page=1&page_size=100")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/surveyresult/?page=1&page_size=100")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/contact/?page=1&page_size=100")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/contactgroup/?page=1&page_size=100")
+        self.assertContains(result, "\"count\":0")
+
+        result = self.client.get(path="/contactgroupmember/?page=1&page_size=100")
+        self.assertContains(result, "\"count\":0")
+
+    def test_rest_pages_empty_params_errors(self):
+        result = self.client.get(path="/survey/?page=2&page_size=100")
+        self.assertContains(result, "Invalid page", status_code=404)
+
+        result = self.client.get(path="/surveyresult/?page=2&page_size=100")
+        self.assertContains(result, "Invalid page", status_code=404)
+
+        result = self.client.get(path="/contact/?page=2&page_size=100")
+        self.assertContains(result, "Invalid page", status_code=404)
+
+        result = self.client.get(path="/contactgroup/?page=2&page_size=100")
+        self.assertContains(result, "Invalid page", status_code=404)
+
+        result = self.client.get(path="/contactgroupmember/?page=2&page_size=100")
+        self.assertContains(result, "Invalid page", status_code=404)
+
+    def test_rest_pages(self):
+        s = Survey.objects.create(survey_id="123", name="test")
+        result = self.client.get(path="/survey/")
+        self.assertContains(result, "\"count\":1")
+        self.assertContains(result, "\"name\":\"test\"")
+
+        c = Contact.objects.create(msisdn="+27821230000", vkey="1234")
+        result = self.client.get(path="/contact/")
+        self.assertContains(result, "\"count\":1")
+        self.assertContains(result, "\"vkey\":\"1234\"")
+
+        SurveyResult.objects.create(survey=s, contact=c, answer={"age": "21"})
+        result = self.client.get(path="/surveyresult/")
+        self.assertContains(result, "\"count\":1")
+        self.assertContains(result, "\"name\":\"test\"")
+        self.assertContains(result, "\"vkey\":\"1234\"")
+
+        usr = User.objects.create_user("admin", "admin@admin.com", "admin")
+        cg = ContactGroup.objects.create(group_id="123", group_key="1234", name="test group", created_by=usr)
+        result = self.client.get(path="/contactgroup/")
+        self.assertContains(result, "\"count\":1")
+        self.assertContains(result, "\"name\":\"test group\"")
+        self.assertContains(result, "\"group_key\":\"1234\"")
+
+        ContactGroupMember.objects.create(group=cg, contact=c)
+        result = self.client.get(path="/contactgroupmember/")
+        self.assertContains(result, "\"count\":1")
+        self.assertContains(result, "\"name\":\"test group\"")
+        self.assertContains(result, "\"group_key\":\"1234\"")
+
 
 class GeneralTests(TestCase):
 
@@ -209,19 +287,6 @@ class GeneralTests(TestCase):
         self.assertEquals(resp.status_code, 302)
         self.assertEquals(resp.url, "http://testserver/login")
 
-    def test_contact_groups(self):
-        User.objects.create_user("admin", "admin@admin.com", "admin")
-
-        self.client.post(reverse('login'),
-                         {
-                             'username': "admin",
-                             'password': "admin"
-                         },
-                         follow=True)
-
-        resp = self.client.get(reverse("contactgroups"))
-        self.assertEquals(resp.status_code, 200)
-
     def test_query(self):
         resp = self.client.post("/query/", content_type='application/json', data=json.dumps(self.f))
         self.assertContains(resp, "[]")
@@ -245,7 +310,7 @@ class GeneralTests(TestCase):
     def fake_create_group(self, name):
         return {'key': 'abc', 'filters': "{'a':'a', 'b':'b'}", 'query_words': 'age > 20'}
 
-    def fake_process_group_member(api, member, contact_group ):
+    def fake_process_group_member(api, member, contact_group):
         pass
 
     @patch('gems.core.views.process_group_member', fake_process_group_member)
@@ -295,14 +360,14 @@ class GeneralTests(TestCase):
         patch('gems.core.views.process_group_member')
         patch('gems.core.views.remove_group_member')
 
-
         # TODO: Complete Test
 
     def test_get_surveys(self):
-        resp = self.client.get("/get_surveys/")
-        self.assertContains(resp, "FAILED")
-
         self.create_survey_result(self.survey, self.contact, {"age": 21})
+
+        resp = self.client.get("/get_surveys/")
+        self.assertContains(resp, "0928309402384908203423")
+
 
         resp = self.client.post(
             "/get_surveys/",
@@ -325,7 +390,7 @@ class GeneralTests(TestCase):
 
 class ModelTests(TestCase):
     def test_incoming_survey_length_limit(self):
-        j={
+        j = {
             "test": ""
         }
 
@@ -340,6 +405,13 @@ class ModelTests(TestCase):
         self.client.post('/save_data/', content_type='application/json', data=json.dumps(j))
         ins = IncomingSurvey.objects.all().first()
         self.assertEquals(ins.raw_message, t)
+
+    def test_setting_lookup(self):
+        Setting.objects.create(name="Test", value="test123")
+
+        self.assertIsNone(Setting.get_setting(None))
+        self.assertIsNone(Setting.get_setting("tset"))
+        self.assertEquals(Setting.get_setting("Test"), "test123")
 
 
 class TaskTests(TestCase):
@@ -408,7 +480,8 @@ class CsvImportTests(TestCase):
         headers = parts
 
         parts = split_line(data_line)
-        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index, header_map, headers, parts)
+        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index,
+                                     header_map, headers, parts)
 
         self.assertEquals(result, 1)
         self.assertEquals(error, None)
@@ -429,7 +502,8 @@ class CsvImportTests(TestCase):
         headers = parts
 
         parts = split_line(data_line)
-        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index, header_map, headers, parts)
+        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index,
+                                     header_map, headers, parts)
 
         self.assertEquals(result, 1)
         self.assertEquals(error, None)
@@ -446,9 +520,11 @@ class CsvImportTests(TestCase):
         header_line = "survey, survey_key, msisdn, key, timestamp"
         data_line = "Test Survey, 029830492039, 27801231234, 093450934, 2015-03-27T12:08:55.032231, 24, red"
         headers = split_line(header_line)
-        header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index = process_header(headers)
+        header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index = \
+            process_header(headers)
         parts = split_line(data_line)
-        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index, header_map, headers, parts)
+        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index,
+                                     header_map, headers, parts)
 
         self.assertEquals(result, 0)
         self.assertEquals(error, "list index out of range")
@@ -457,9 +533,11 @@ class CsvImportTests(TestCase):
         header_line = "survey, survey_key, msisdn, key, timestamp"
         data_line = "Test Survey, 029830492039, 27801231234, 093450934, 2015-03-27T12:08:55.032231"
         headers = split_line(header_line)
-        header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index = process_header(headers)
+        header_map, survey_index, survey_key_index, contact_index, contact_key_index, date_index = \
+            process_header(headers)
         parts = split_line(data_line)
-        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index, header_map, headers, parts)
+        result, error = process_line(survey_index, survey_key_index, contact_index, contact_key_index, date_index,
+                                     header_map, headers, parts)
 
         self.assertEquals(result, 0)
         self.assertEquals(error, "Survey, Contact and at least 1 answer is required")
@@ -579,3 +657,46 @@ class CsvImportTests(TestCase):
         self.assertEquals(sr.answer["color"], "ted")
 
         os.remove(filename)
+
+
+class AdminTests(TestCase):
+
+    def admin_page_test_helper(self, c, page):
+        resp = c.get(page)
+        self.assertEquals(resp.status_code, 200)
+
+    def test_basic_empty_admin(self):
+        User.objects.create_user("admin", "admin@admin.com", "admin")
+        c = Client()
+        c.login(username="admin", password="admin")
+
+        self.admin_page_test_helper(c, "/admin/core/contactgroupmember/")
+        self.admin_page_test_helper(c, "/admin/core/contactgroup/")
+        self.admin_page_test_helper(c, "/admin/core/contact/")
+        self.admin_page_test_helper(c, "/admin/core/exporttypemapping/")
+        self.admin_page_test_helper(c, "/admin/core/incomingsurvey/")
+        self.admin_page_test_helper(c, "/admin/core/rawsurveyresult/")
+        self.admin_page_test_helper(c, "/admin/core/surveyresult/")
+        self.admin_page_test_helper(c, "/admin/core/surveyresult/")
+        self.admin_page_test_helper(c, "/admin/core/setting/")
+        self.admin_page_test_helper(c, "/admin/survey_csv_import/")
+
+
+class LandingPageStatsTests(TestCase):
+
+    def test_landing_page_stats(self):
+        User.objects.create_user("admin", "admin@admin.com", "admin")
+        c = Client()
+        c.login(username="admin", password="admin")
+
+        resp = c.get("/get_stats/")
+        self.assertContains(resp, "new_users_last_month")
+        self.assertContains(resp, "total_contact_groups")
+        self.assertContains(resp, "total_surveys")
+        self.assertContains(resp, "total_users")
+        self.assertContains(resp, "new_users_this_month")
+        self.assertContains(resp, "new_users_this_week")
+        self.assertContains(resp, "total_results_last_month")
+        self.assertContains(resp, "total_results")
+        self.assertContains(resp, "total_results_this_month")
+        self.assertContains(resp, "total_results_this_week")

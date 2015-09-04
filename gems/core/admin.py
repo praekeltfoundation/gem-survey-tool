@@ -8,8 +8,8 @@ class SurveyAdmin(admin.ModelAdmin):
 
 
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('msisdn',)
-    search_fields = ("msisdn",)
+    list_display = ('msisdn', "created_on")
+    search_fields = ("msisdn", "created_on")
 
 
 class SurveyResultAdmin(admin.ModelAdmin):
@@ -40,6 +40,11 @@ class ExportTypeMappingAdmin(admin.ModelAdmin):
     list_display = ('field', 'cast')
 
 
+class SettingAdmin(admin.ModelAdmin):
+    list_display = ("name", "value")
+    search_fields = ("name", "value")
+
+
 admin.site.register(Survey, SurveyAdmin)
 admin.site.register(Contact, ContactAdmin)
 admin.site.register(SurveyResult, SurveyResultAdmin)
@@ -48,3 +53,4 @@ admin.site.register(ContactGroupMember, ContactGroupMemberAdmin)
 admin.site.register(ExportTypeMapping, ExportTypeMappingAdmin)
 admin.site.register(RawSurveyResult, RawSurveyResultAdmin)
 admin.site.register(IncomingSurvey, IncomingSurveyAdmin)
+admin.site.register(Setting, SettingAdmin)

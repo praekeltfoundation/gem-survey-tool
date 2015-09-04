@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django_hstore import hstore
 from hstore_helper import GemsHStoreManager
+from datetime import datetime
 
 
 class HStoreModel(models.Model):
@@ -26,6 +27,7 @@ class Survey(models.Model):
 class Contact(models.Model):
     msisdn = models.CharField(max_length=15, primary_key=True)
     vkey = models.CharField(max_length=32, blank=True, default='')
+    created_on = models.DateField(auto_now_add=True, default=datetime.now(), blank=False)
 
     def __unicode__(self):
         return self.msisdn
@@ -41,6 +43,7 @@ class SurveyResultBase(HStoreModel):
 
     class Meta:
         abstract = True
+
 
 class SurveyResult(SurveyResultBase):
     pass
@@ -78,5 +81,20 @@ class ExportTypeMapping(models.Model):
         (1, 'Cast to Integer'),
         (2, 'Cast to Double')
     )
-    field=models.CharField(max_length=50, blank=False, null=False)
-    cast=models.IntegerField(choices=casting_choices, blank=False, null=False)
+    field = models.CharField(max_length=50, blank=False, null=False)
+    cast = models.IntegerField(choices=casting_choices, blank=False, null=False)
+
+
+class Setting(models.Model):
+    name = models.CharField(max_length=64)
+    value = models.CharField(max_length=1024)
+
+    @staticmethod
+    def get_setting(name):
+        if name:
+            rs = Setting.objects.filter(name=name).first()
+
+            if rs:
+                return rs.value
+
+        return None

@@ -6,17 +6,20 @@ from django.core import serializers
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from forms import SurveyImportForm
-from viewhelpers import *
-import json
-import djqscsv
+from django.views.generic import View
 from django.shortcuts import render
 from go_http.contacts import ContactsApiClient
+from forms import SurveyImportForm
+from viewhelpers import Filter, UIField, UIFieldEncoder
+from csv_utils import process_file
+from models import Survey, SurveyResult, IncomingSurvey, Contact, ContactGroupMember, ContactGroup, RawSurveyResult, \
+    Setting
+import json
+import djqscsv
 import logging
-import datetime
+from datetime import datetime, timedelta
 import time
 import traceback
-from csv_utils import process_file
 
 
 logger = logging.getLogger(__name__)
@@ -152,7 +155,7 @@ def save_data(request):
 
                 sr.save()
 
-            except Exception as ex:
+            except Exception:
                 content = {'status': 'failed-ex'}
                 traceback.print_exc()
                 return generate_json_response(json.dumps(content))
@@ -453,7 +456,7 @@ def create_contactgroup(request):
                     if 'query_words' in data:
                         group_query_words = data['query_words']
 
-                        date_created = datetime.datetime.now()
+                        date_created = datetime.now()
 
                         contact_group = ContactGroup.objects.create(
                             group_key=group_key,
@@ -552,14 +555,14 @@ def get_surveys(request):
 
         if 'from' in data:
             try:
-                date_from = datetime.datetime.strptime(data['from'], "%Y/%m/%d")
+                date_from = datetime.strptime(data['from'], "%Y/%m/%d")
                 results = results.filter(created_on__gte=date_from)
             except ValueError:
                 return HttpResponse("Invalid date.")
 
         if 'to' in data:
             try:
-                date_to = datetime.datetime.strptime(data['to'], "%Y/%m/%d")
+                date_to = datetime.strptime(data['to'], "%Y/%m/%d")
                 results = results.filter(created_on__lte=date_to)
             except ValueError:
                 return HttpResponse("Invalid date.")
@@ -568,8 +571,14 @@ def get_surveys(request):
             serializers.serialize(
                 'json',
                 list(results)))
-    else:
-        return HttpResponse("FAILED")
+    elif request.method == 'GET':
+        results = Survey.objects.select_related().all()
+        return generate_json_response(
+            serializers.serialize(
+                'json',
+                list(results)
+            )
+        )
 
 
 def survey_csv_import(request):
@@ -583,7 +592,7 @@ def survey_csv_import(request):
             done = True
             errors, num_rows = process_file(filename=f.name, f=f)
         else:
-            error = "No file specified"
+            errors = "No file specified"
     else:
         form = SurveyImportForm()
 
@@ -597,3 +606,109 @@ def survey_csv_import(request):
         },
         context_instance=RequestContext(request)
     )
+
+
+class LandingStatsView(View):
+
+    def get_today(self):
+        return datetime.now()
+
+    def get_this_week(self):
+        end = self.get_today()
+        start = end.replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=end.weekday())
+        end = end.replace(hour=23, minute=59, second=59, microsecond=999999)
+        return [start, end]
+
+    def get_day_in_last_month(self):
+        today = self.get_today().replace(day=1) - timedelta(days=1)
+        return today
+
+    def get_stats(self):
+        today = self.get_today()
+        this_week = self.get_this_week()
+        this_month = today.month
+        this_year = today.year
+        day_in_last_month = self.get_day_in_last_month()
+        last_month = day_in_last_month.month
+        last_month_year = day_in_last_month.year
+
+        #total users
+        total_users = Contact.objects.all().count()
+
+        #new users last month
+        new_users_last_month = Contact.objects.filter(
+            created_on__month=last_month,
+            created_on__year=last_month_year
+        ).count()
+
+        #new users this month
+        new_users_this_month = Contact.objects.filter(
+            created_on__month=this_month,
+            created_on__year=this_year
+        ).count()
+
+        #new users this week
+        new_users_this_week = Contact.objects.filter(
+            created_on__range=this_week
+        ).count()
+
+        #total survey results
+        total_results = SurveyResult.objects.all().count()
+
+        #survey results last month
+        total_results_last_month = SurveyResult.objects.filter(
+            created_at__month=last_month,
+            created_at__year=last_month_year
+        ).count()
+
+        #survey results this month
+        total_results_this_month = SurveyResult.objects.filter(
+            created_at__month=today.month,
+            created_at__year=today.year
+        ).count()
+
+        #survey results this week
+        total_results_this_week = SurveyResult.objects.filter(
+            created_at__range=this_week
+        ).count()
+
+        #total surveys
+        total_surveys = Survey.objects.all().count()
+
+        #total contact groups
+        total_contact_groups = ContactGroup.objects.all().count()
+
+        return {
+            "total_users": total_users,
+            "new_users_last_month": new_users_last_month,
+            "new_users_this_month": new_users_this_month,
+            "new_users_this_week": new_users_this_week,
+            "total_results": total_results,
+            "total_results_last_month": total_results_last_month,
+            "total_results_this_month": total_results_this_month,
+            "total_results_this_week": total_results_this_week,
+            "total_surveys": total_surveys,
+            "total_contact_groups": total_contact_groups
+        }
+
+    def get(self, request):
+
+        return generate_json_response(json.dumps(self.get_stats()))
+
+
+class LandingPage(View):
+
+    def get(self, request):
+        url = Setting.get_setting("VUMI_URL")
+        usr = Setting.get_setting("VUMI_USR")
+        pwd = Setting.get_setting("VUMI_PWD")
+
+        return render(
+            request,
+            'base.html',
+            {
+                "url": url,
+                "usr": usr,
+                "pwd": pwd
+            }
+        )
