@@ -9,8 +9,8 @@ gems.controller('contentController', function ($scope, $http, $filter) {
         order: 'name',
         reverse: {
             name: false,
-            createdOn: false,
-            rules: false
+            created_at: false,
+            filters: false
         }
     }
 
