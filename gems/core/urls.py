@@ -7,7 +7,7 @@ from rest_framework import routers
 
 from views import survey_csv_import, user_login, user_logout, save_data, export_survey, export_survey_results, \
     query, get_unique_keys, view_home, load_contact_groups, delete_contactgroup, create_contactgroup, \
-    update_contactgroup, get_surveys, LandingStatsView
+    update_contactgroup, get_surveys, LandingStatsView, LandingPage
 from gems.core.viewsets import SurveyResultViewSet, ContactGroupMemberViewSet, ContactViewSet, SurveyViewSet, \
     ContactGroupViewSet
 
@@ -21,7 +21,7 @@ router.register(r'contactgroup', ContactGroupViewSet)
 router.register(r'contactgroupmember', ContactGroupMemberViewSet)
 
 urlpatterns = patterns('',
-    url(r'^$', login_required(TemplateView.as_view(template_name='base.html'))),
+    url(r'^$', login_required(LandingPage.as_view())),
 
     url(r"^admin/survey_csv_import/$", survey_csv_import),
 

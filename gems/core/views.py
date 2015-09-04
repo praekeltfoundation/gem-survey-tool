@@ -12,7 +12,8 @@ from go_http.contacts import ContactsApiClient
 from forms import SurveyImportForm
 from viewhelpers import Filter, UIField, UIFieldEncoder
 from csv_utils import process_file
-from models import Survey, SurveyResult, IncomingSurvey, Contact, ContactGroupMember, ContactGroup, RawSurveyResult
+from models import Survey, SurveyResult, IncomingSurvey, Contact, ContactGroupMember, ContactGroup, RawSurveyResult, \
+    Setting
 import json
 import djqscsv
 import logging
@@ -694,6 +695,20 @@ class LandingStatsView(View):
 
         return generate_json_response(json.dumps(self.get_stats()))
 
-    def post(self, request):
 
-        return generate_json_response(json.dumps(self.get_stats()))
+class LandingPage(View):
+
+    def get(self, request):
+        url = Setting.get_setting("VUMI_URL")
+        usr = Setting.get_setting("VUMI_USR")
+        pwd = Setting.get_setting("VUMI_PWD")
+
+        return render(
+            request,
+            'base.html',
+            {
+                "url": url,
+                "usr": usr,
+                "pwd": pwd
+            }
+        )
