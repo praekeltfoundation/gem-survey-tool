@@ -319,11 +319,15 @@ li.admin {
 }
 
 .main-container{
-    margin: 100px 40px 30px;
+    margin: 0px 40px 30px;
+}
+
+.heading-top-margin {
+    margin-top: 115px;
 }
 
 .container-head{
-    padding-bottom: 20px;
+    padding-bottom: 22px;
 }
 
 .container-heading{
@@ -468,7 +472,7 @@ th.name {
     width: 15%;
 }
 
-th.created-by, th.created-at {
+th.created-at {
     width: 15%;
 }
 
@@ -477,7 +481,7 @@ th.buttons {
 }
 
 th.rules {
-    width: 35%
+    width: 50%
 }
 
 th.survey-name {
@@ -493,11 +497,9 @@ th.general{
 }
 
 .table-button {
-    /*height: 31px;
-    width: 60px;*/
     background-color: #D6D6D6 !important;
-    /*color: rgb(66, 66, 66);
-    font-size: 10pt;*/
+    width: 41%;
+    margin-left: 6%
 }
 
 td.checkbox-table-column{

@@ -1,6 +1,6 @@
 <div ng-controller="contentController" class="col-md-8" ng-if="showContactGroups && showContactMenu">
     <div class="main-container">
-        <div class="row container-head">
+        <div class="row container-head heading-top-margin">
             <span class="h1-text">Contact Groups ({$ filteredGroups.length $})</span>
             <div class="input-wrapper-active quarter-width right input-align-big-label">
                 <i class="glyphicon glyphicon-search caption-text-size i-align-big-label"></i>
@@ -20,30 +20,21 @@
                                 </span>
                             </a>
                         </th>
-                        <th class="created-by">
-                            <a href="#" ng-click="sortingOrder='created_by'; reverseSort = !reverseSort">
-                                Created By
-                                 <span ng-show="sortingOrder == 'created_by'">
-                                    <span class="glyphicon glyphicon-triangle-top right white-front" aria-hidden="true" ng-show="!reverseSort"></span>
-                                    <span class="glyphicon glyphicon-triangle-bottom right white-front" aria-hidden="true" ng-show="reverseSort"></span>
-                                </span>
-                            </a>
-                        </th>
                         <th class="created-on">
-                            <a href="#" ng-click="sorting.order='created_at'; sorting.reverse.createdOn = !sorting.reverse.createdOn">
+                            <a href="#" ng-click="sorting.order='created_at'; sorting.reverse.created_at = !sorting.reverse.created_at">
                                 Created On
                                 <span>
-                                    <span class="glyphicon glyphicon-triangle-top right white-front" aria-hidden="true" ng-show="!sorting.reverse.createdOn"></span>
-                                    <span class="glyphicon glyphicon-triangle-bottom right white-front" aria-hidden="true" ng-show="sorting.reverse.createdOn"></span>
+                                    <span class="glyphicon glyphicon-triangle-top right white-front" aria-hidden="true" ng-show="!sorting.reverse.created_at"></span>
+                                    <span class="glyphicon glyphicon-triangle-bottom right white-front" aria-hidden="true" ng-show="sorting.reverse.created_at"></span>
                                 </span>
                             </a>
                         </th>
                         <th class="rules">
-                            <a href="#" ng-click="sorting.order='filters'; sorting.reverse.rules = !sorting.reverse.rules">
+                            <a href="#" ng-click="sorting.order='filters'; sorting.reverse.filters = !sorting.reverse.filters">
                                 Rules
                                 <span>
-                                    <span class="glyphicon glyphicon-triangle-top right white-front" aria-hidden="true" ng-show="!sorting.reverse.rules"></span>
-                                    <span class="glyphicon glyphicon-triangle-bottom right white-front" aria-hidden="true" ng-show="sorting.reverse.rules"></span>
+                                    <span class="glyphicon glyphicon-triangle-top right white-front" aria-hidden="true" ng-show="!sorting.reverse.filters"></span>
+                                    <span class="glyphicon glyphicon-triangle-bottom right white-front" aria-hidden="true" ng-show="sorting.reverse.filters"></span>
                                 </span>
                             </a>
                         </th>
@@ -53,7 +44,6 @@
                 <tbody class="table-rows">
                     <tr ng-repeat="(key, data) in pagedGroups[currentPage] | orderBy:sorting.order:sorting.reverse[sorting.order]">
                         <td>{$ data.name $}</td>
-                        <td>{$ data.created_by $}</td>
                         <td>{$ data.created_at | date:'MM-dd-yyyy'$}</td>
                         <td>{$ data.query_words $}</td>
                         <td>

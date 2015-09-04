@@ -9,8 +9,8 @@ gems.controller('contentController', function ($scope, $http, $filter) {
         order: 'name',
         reverse: {
             name: false,
-            createdOn: false,
-            rules: false
+            created_at: false,
+            filters: false
         }
     }
 
@@ -25,9 +25,9 @@ gems.controller('contentController', function ($scope, $http, $filter) {
     }
 
     $scope.getContactGroups = function getContactGroups() {
-        $http.get('/contactgroup/').
+        $http.get('/contactgroup/?page_size=1000').
             success(function(data) {
-                $scope.ContactGroups = data;
+                $scope.ContactGroups = data.results;
                 $scope.search();
             }).
             error(function(data) {
