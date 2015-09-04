@@ -5,8 +5,15 @@ gems.controller('contentController', function ($scope, $http, $filter) {
 
     $scope.group_id;
 
-    $scope.sortingOrder = 'name';
-    $scope.reverseSort = false;
+    $scope.sorting = {
+        order: 'name',
+        reverse: {
+            name: false,
+            createdOn: false,
+            rules: false
+        }
+    }
+
     $scope.filteredGroups = [];
     $scope.pagedGroups = [];
     $scope.currentPage = 1;
@@ -66,8 +73,8 @@ gems.controller('contentController', function ($scope, $http, $filter) {
             return false;
         });
 
-        if ($scope.sortingOrder !== '') {
-            $scope.filteredGroups = $filter('orderBy')($scope.filteredGroups, $scope.sortingOrder, $scope.reverseSort);
+        if ($scope.sorting.order !== '') {
+            $scope.filteredGroups = $filter('orderBy')($scope.filteredGroups, $scope.sorting.order, $scope.sorting.reverse[$scope.sorting.order]);
         }
         $scope.currentPage = 0;
         $scope.groupToPages();
