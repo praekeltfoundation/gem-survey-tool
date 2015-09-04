@@ -8,9 +8,9 @@ gems.controller('contentController', function ($scope, $http, $filter) {
     $scope.sorting = {
         order: 'name',
         reverse: {
-            name: false,
-            created_at: false,
-            filters: false
+            name: true,
+            created_at: true,
+            filters: true
         }
     }
 
