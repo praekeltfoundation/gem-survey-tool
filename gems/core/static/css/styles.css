@@ -493,11 +493,9 @@ th.general{
 }
 
 .table-button {
-    /*height: 31px;
-    width: 60px;*/
     background-color: #D6D6D6 !important;
-    /*color: rgb(66, 66, 66);
-    font-size: 10pt;*/
+    width: 41%;
+    margin-left: 6%
 }
 
 td.checkbox-table-column{
