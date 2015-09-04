@@ -52,7 +52,7 @@
                         <a class="caption-text" ng-click="removeFieldFilter($parent.$parent.$index, $index)"><img width="16" height="16" src="{{ STATIC_URL }}img/red_cross.png"></a>
                     </div>
                     <div class="col-md-10">
-                        <a class="caption-text" ng-click="addFieldFilter($parent.$parent.$index)" href="">Add new condition+</a>
+                        <button class="caption-text turquoise-back white-front" ng-click="addFieldFilter($parent.$parent.$index)">Add new rule</button>
                     </div>
                 </div>
             </div>
@@ -62,14 +62,14 @@
                         <a class="caption-text" ng-click="removeFilter($parent.$parent.$parent.$index)"><img width="16" height="16" src="{{ STATIC_URL }}img/red_cross.png"></a>
                     </div>
                     <div class="col-md-10">
-                        <a class="caption-text" ng-click="addFieldFilter($parent.$parent.$index)" href="">Add new condition+</a>
+                        <button class="caption-text turquoise-back white-front" ng-click="addFieldFilter($parent.$parent.$index)">Add new rule</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row row-breath">
-        <a class="caption-text" ng-click="addFilter()" href="">Add new data field+</a>
+        <button class="caption-text turquoise-back white-front" ng-click="addFilter()">Add new data field</button>
     </div>
     <div class="row yellow-back row-breath">
         <span class="caption-text white-front" ng-if="queryWords != ''"><strong>Query: </strong>{$queryWords$}</span>
