@@ -3,6 +3,19 @@
         <div class="row container-head">
             <span class="h1-text">Export Survey</span>
         </div>
+        <div class="row" ng-if="AllSurveys">
+            <div class="sub-head">
+                <span class="p-text">Select a survey:</span>
+            </div>
+            <div class="form-inline data-line">
+                <select ng-model="selected.survey" ng-options="survey.fields.name for survey in AllSurveys">
+                    <option value="">-- select a survey --</option>
+                </select>
+            </div>
+            <div class="sub-head button-line">
+                <button class="pink white-front table-aligned" ng-disabled="!selected.survey" ng-click="exportSelectedSurvey()">Export Data</button>
+            </div>
+        </div>
         <div class="row sub-head">
             <span class="p-text">Search for your survey:</span>
         </div>

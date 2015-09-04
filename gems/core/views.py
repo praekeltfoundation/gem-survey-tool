@@ -570,8 +570,14 @@ def get_surveys(request):
             serializers.serialize(
                 'json',
                 list(results)))
-    else:
-        return HttpResponse("FAILED")
+    elif request.method == 'GET':
+        results = Survey.objects.select_related().all()
+        return generate_json_response(
+            serializers.serialize(
+                'json',
+                list(results)
+            )
+        )
 
 
 def survey_csv_import(request):

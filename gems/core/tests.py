@@ -361,10 +361,11 @@ class GeneralTests(TestCase):
         # TODO: Complete Test
 
     def test_get_surveys(self):
-        resp = self.client.get("/get_surveys/")
-        self.assertContains(resp, "FAILED")
-
         self.create_survey_result(self.survey, self.contact, {"age": 21})
+
+        resp = self.client.get("/get_surveys/")
+        self.assertContains(resp, "0928309402384908203423")
+
 
         resp = self.client.post(
             "/get_surveys/",

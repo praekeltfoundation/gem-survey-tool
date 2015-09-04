@@ -2,6 +2,9 @@ var gems = angular.module('gems');
 
 gems.controller('surveyController', function($scope, $http){
     $scope.Surveys = {};
+    $scope.selected = {
+        survey: null
+    };
     $scope.queryStarted = false;
     $scope.surveySearchForm = {
         name : null,
@@ -66,6 +69,19 @@ gems.controller('surveyController', function($scope, $http){
                 alert("Failed to retrieve the surveys");
             });
     };
+
+    $scope.getAllSurveys = function getAllSurveys(){
+        $http({
+                url: '/get_surveys/',
+                method: 'GET'
+            })
+            .success(function(data){
+                $scope.AllSurveys = data;
+            })
+            .error(function(data){
+                alert("Failed to retrieve the surveys");
+            });
+    }
 
     $scope.fetchResults = function fetchResults(){
         $scope.rows = [];
@@ -233,6 +249,11 @@ gems.controller('surveyController', function($scope, $http){
         }
     };
 
+    $scope.exportSelectedSurvey = function() {
+        var url = '/export_survey/?pk=' + $scope.selected.survey.id;
+        window.location.assign(url);
+    }
+
     $scope.setPage = function (){
         $scope.currentPage = this.n;
     };
@@ -280,4 +301,5 @@ gems.controller('surveyController', function($scope, $http){
 
     $scope.fetchFields();
     $scope.initDTP();
+    $scope.getAllSurveys();
 });
