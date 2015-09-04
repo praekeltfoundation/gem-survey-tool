@@ -578,8 +578,6 @@ def get_surveys(request):
                 list(results)
             )
         )
-    else:
-        return HttpResponse("FAILED")
 
 
 def survey_csv_import(request):
