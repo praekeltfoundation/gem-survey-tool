@@ -24,6 +24,8 @@ gems.controller('mainController', function($scope, $http, $window){
     $scope.filters = [];
     $scope.createGroup = true;
 
+    $scope.itemsPerPage = 10;
+
     $scope.toggleSurveyDataMenu = function toggleSurveyDataMenu(){
         $scope.showSurveyDataMenu = !$scope.showSurveyDataMenu;
 
@@ -172,6 +174,28 @@ gems.controller('mainController', function($scope, $http, $window){
         {
             return value;
         }
+    };
+
+    $scope.groupToPages = function(results){
+        var paged = [];
+        var temp = results.slice();
+        while (temp.length > 0)
+        {
+            paged.push(temp.splice(0, $scope.itemsPerPage));
+        }
+        return paged;
+    };
+
+    $scope.range = function (start, end){
+        var ret = [];
+        if (!end){
+            end = start;
+            start = 0;
+        }
+        for (var i = start; i < end; i++){
+            ret.push(i);
+        }
+        return ret;
     };
 
     $scope.updateStats = function updateStats(value){
