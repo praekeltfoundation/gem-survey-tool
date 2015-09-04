@@ -843,10 +843,6 @@ div.spaced {
     padding-top: 10px;
 }
 
-.stat-block{
-    min-height: 120px;
-}
-
 .info-icon {
     font-size: 25px;
     margin-left: 15px;
@@ -861,4 +857,32 @@ div.spaced {
     height: 25px;
     width: 25px;
     display:block;
+}
+
+.stat-number{
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 48px !important;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1em;
+    color: white;
+    padding-top: 0.7em;
+}
+
+.stat-text {
+    font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
+    font-size: 15px;
+    font-weight: 100;
+    text-align: center;
+    line-height: 1em;
+    color: white;
+}
+
+.stat-block{
+    margin: 0.5em;
+    width: 10em;
+    height: 10em;
+    float: left;
+    position: relative;
+    padding: 0px;
 }
