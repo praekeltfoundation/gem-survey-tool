@@ -48,7 +48,7 @@
                         <td>{$ data.query_words $}</td>
                         <td>
                             <button class="table-button" ng-click="showEditContact(data.name , data.filters, data.group_key)">Edit</button>
-                            <button class="table-button" data-toggle="modal" data-target="#confirm-delete" ng-click="setGroupId(data.group_id)">Delete</button>
+                            <button class="table-button" data-toggle="modal" data-target="#confirm-delete" ng-click="setGroupKey(data.group_key)">Delete</button>
                         </td>
                     </tr>
                 </tbody>
