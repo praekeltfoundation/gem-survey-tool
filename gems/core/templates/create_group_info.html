@@ -1,0 +1,62 @@
+ <div id="show_info_popup" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 class="modal-title" id="myModalLabel">Creating Contact Groups</h2>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Rules allow us to segment our database based on their answers to previous survey questions and create a Contact Group
+                    to send further surveys to. E.g. Create a random group of 200 girls in Addis Ababa who said Mimi was their favourite
+                    character.
+                </p>
+                <p>
+                    To create a rule you first have to decide what answers you'd like to segment your database on. These could be demographic
+                    questions, questions about listenership, questions about favourite characters or behaviour change questions. Once you've
+                    decided what contact group you want to create, you need to find the question in the first dropdown. Then you need to select
+                    a rule and a answer. Rules inform how the database is queried. If you select 'text contains' for example, the database will
+                    be queried for all users whose answers to the question you selected contains the text you put in the question input. Lastly
+                    you can choose a max number of results (or leave this blank to see all the results). Choosing a max number of results will
+                    return the same number of random users who match the rule from the total number who match the rule.
+                </p>
+                <p>
+                    For example, if I wanted to create a random group of 200 girls in Addis Ababa I would do the following:
+                </p>
+                <p>
+                    1. Select gender question in the question drop down.
+                </p>
+                <p>
+                    2. Select 'text is exactly' in the rule dropdown.
+                </p>
+                <p>
+                    3. Write 'female' as the answer
+                </p>
+                <p>
+                    4. Add another data field
+                </p>
+                <p>
+                    5. Select age question in the question drop down.
+                </p>
+                <p>
+                    6. Select 'Less than or equal to' in the rule dropdown.
+                </p>
+                <p>
+                    7. Write '19' as the answer
+                </p>
+                <p>
+                    8. Add another data field
+                </p>
+                <p>
+                    9. Select Location question in the question drop down.
+                </p>
+                <p>
+                    10. Select 'text is exactly' in the rule dropdown.
+                </p>
+                <p>
+                    11. Write 'Addis Ababa' as the answer."
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

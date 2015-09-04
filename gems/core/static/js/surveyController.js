@@ -2,6 +2,9 @@ var gems = angular.module('gems');
 
 gems.controller('surveyController', function($scope, $http){
     $scope.Surveys = {};
+    $scope.selected = {
+        survey: null
+    };
     $scope.queryStarted = false;
     $scope.surveySearchForm = {
         name : null,
@@ -13,6 +16,9 @@ gems.controller('surveyController', function($scope, $http){
     $scope.rows = [];
     $scope.buttonText = "Display Results";
     $scope.queryDone = true;
+
+    $scope.pagedGroups = [];
+    $scope.currentPage = 1;
 
     $scope.getSurveys = function getSurveys(){
         $scope.queryStarted = true;
@@ -56,11 +62,26 @@ gems.controller('surveyController', function($scope, $http){
                     };
                     $scope.rows.push(row);
                 }
+                $scope.currentPage = 0;
+                $scope.pagedGroups = $scope.groupToPages($scope.rows);
             })
             .error(function(data){
                 alert("Failed to retrieve the surveys");
             });
     };
+
+    $scope.getAllSurveys = function getAllSurveys(){
+        $http({
+                url: '/get_surveys/',
+                method: 'GET'
+            })
+            .success(function(data){
+                $scope.AllSurveys = data;
+            })
+            .error(function(data){
+                alert("Failed to retrieve the surveys");
+            });
+    }
 
     $scope.fetchResults = function fetchResults(){
         $scope.rows = [];
@@ -107,6 +128,9 @@ gems.controller('surveyController', function($scope, $http){
 
                     $scope.rows.push(row);
                 }
+
+                $scope.currentPage = 0;
+                $scope.pagedGroups = $scope.groupToPages($scope.rows);
 
                 if ($scope.queryStarted == true){
                         $scope.buttonText = "Refresh Results";
@@ -225,6 +249,15 @@ gems.controller('surveyController', function($scope, $http){
         }
     };
 
+    $scope.exportSelectedSurvey = function() {
+        var url = '/export_survey/?pk=' + $scope.selected.survey.id;
+        window.location.assign(url);
+    }
+
+    $scope.setPage = function (){
+        $scope.currentPage = this.n;
+    };
+
     $scope.initDTP = function initDTP(){
         var dtp_from = angular.element('#datepicker_from');
         var dtp_to = angular.element('#datepicker_to');
@@ -268,4 +301,5 @@ gems.controller('surveyController', function($scope, $http){
 
     $scope.fetchFields();
     $scope.initDTP();
+    $scope.getAllSurveys();
 });
