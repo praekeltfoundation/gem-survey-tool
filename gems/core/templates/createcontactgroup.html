@@ -3,6 +3,8 @@
         <form ng-submit="">
             <div class="row container-head" ng-if="createGroup">
                 <span class="h1-text">Create Group</span>
+                <span class="glyphicon glyphicon-circle-info" data-toggle="modal" data-target="#show_info_popup">i</span>
+                {% include 'create_group_info.html' %}
             </div>
             <div class="row form-horizontal" ng-if="!createGroup">
                 <div class="form-group">
