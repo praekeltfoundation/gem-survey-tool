@@ -3,7 +3,7 @@
         <form ng-submit="">
             <div class="row container-head heading-top-margin" ng-if="createGroup">
                 <span class="h1-text">Create Group</span>
-                <span class="glyphicon glyphicon-circle-info" data-toggle="modal" data-target="#show_info_popup">i</span>
+                <span class="glyphicon glyphicon-info-sign info-icon yellow-back pink-front" data-toggle="modal" data-target="#show_info_popup"></span>
                 {% include 'create_group_info.html' %}
             </div>
             <div class="row form-horizontal" ng-if="!createGroup">
@@ -37,7 +37,7 @@
             <div class="results-head" ng-if="queryStarted == true && rows.length > 0">
                 <span class="p-text">Results ({$ rows.length $})</span>
                 <button class="grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
-                <button class="pink white-front table-aligned" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
+                <button class="pink-back white-front table-aligned" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0" style="overflow: auto;">
                 <table class="table contact-groups">
@@ -63,14 +63,14 @@
                 </table>
             </div>
             <div class="row spaced has-checkbox=column" ng-if="queryStarted == true && rows.length > 0 && createGroup">
-                <button class="right pink white-front table-aligned" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
+                <button class="right pink-back white-front table-aligned" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0 && !createGroup">
                 <div class="col-md-2 col-md-offset-8">
                     <button class="orange white-front right">Cancel</button>
                 </div>
                 <div class="col-md-2">
-                    <button class="pink white-front right" ng-click="updateGroup(filters)">Save Changes</button>
+                    <button class="pink-back white-front right" ng-click="updateGroup(filters)">Save Changes</button>
                 </div>
             </div>
             <div class="row paging" ng-if="queryStarted == true && rows.length > 0 && createGroup && pagedGroups.length != 1">
@@ -101,7 +101,7 @@
                         </div>
                         <div class="modal-footer">
                             <button class="orange white-front" data-dismiss="modal">Cancel</button>
-                            <button class="pink white-front" data-dismiss="modal" ng-click="saveGroup(filters)">Save</button>
+                            <button class="pink-back white-front" data-dismiss="modal" ng-click="saveGroup(filters)">Save</button>
                         </div>
                     </div>
                 </div>
