@@ -319,11 +319,15 @@ li.admin {
 }
 
 .main-container{
-    margin: 100px 40px 30px;
+    margin: 0px 40px 30px;
+}
+
+.heading-top-margin {
+    margin-top: 115px;
 }
 
 .container-head{
-    padding-bottom: 20px;
+    padding-bottom: 22px;
 }
 
 .container-heading{
