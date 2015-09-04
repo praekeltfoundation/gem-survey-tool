@@ -49,16 +49,16 @@ footer {
     width: 400px;
 }
 
-.yellow{
-    background-color: #fee62c !important;
+.yellow-front{
+    color: #fee62c !important;
 }
 
 .yellow-back{
     background-color: #fee62c !important;
 }
 
-.pink{
-    background-color: #ec2b8b;
+.pink-front{
+    color: #ec2b8b;
 }
 
 .pink-back{
@@ -845,4 +845,20 @@ div.spaced {
 
 .stat-block{
     min-height: 120px;
+}
+
+.info-icon {
+    font-size: 25px;
+    margin-left: 15px;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+}
+
+.info-icon:before {
+    margin-top: -2px;
+    margin-left: -2px;
+    height: 25px;
+    width: 25px;
+    display:block;
 }

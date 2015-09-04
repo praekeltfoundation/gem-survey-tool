@@ -1,4 +1,4 @@
-<div class="col-md-2 yellow submenu">
+<div class="col-md-2 yellow-back submenu">
     <div class="menu-logo-container">
         <img class="menu-logo " src="{{ STATIC_URL }}img/ghelogo.png"/>
     </div>
@@ -9,7 +9,7 @@
         <a class="dropdown-toggle"  data-toggle="dropdown" href="#">
             <img class="dropdown-toggle right cog" width="16" height="16" src="{{ STATIC_URL }}img/image3.png"/>
         </a>
-        <ul class="dropdown-menu pink signout-item" role="menu" aria-labelledby="dropdownMenu">
+        <ul class="dropdown-menu pink-back signout-item" role="menu" aria-labelledby="dropdownMenu">
             <li><a class="text-right" tabindex="-1" href="/logout">Sign Out</a></li>
         </ul>
         <a ng-class="{ 'bold' : builderMenuItem }" href="" ng-click="hideSubMenus('https://go.vumi.org/conversations/'); unboldMenuItems(); builderMenuItem=true">
