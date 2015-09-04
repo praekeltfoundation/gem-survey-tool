@@ -472,7 +472,7 @@ th.name {
     width: 15%;
 }
 
-th.created-by, th.created-at {
+th.created-at {
     width: 15%;
 }
 
@@ -481,7 +481,7 @@ th.buttons {
 }
 
 th.rules {
-    width: 35%
+    width: 50%
 }
 
 th.survey-name {
