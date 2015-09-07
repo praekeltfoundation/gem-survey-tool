@@ -34,7 +34,7 @@
             <div class="row" ng-if="queryStarted == true && queryDone && rows.length == 0">
                 <span class="grey-font caption-text">Sorry. There are no results that match your query. Please adjust your Rules.</span>
             </div>
-            <div class="results-head" ng-if="queryStarted == true && rows.length > 0">
+            <div class="row results-head" ng-if="queryStarted == true && rows.length > 0">
                 <span class="p-text">Results ({$ rows.length $})</span>
                 <button class="grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
                 <button class="pink-back white-front table-aligned" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>

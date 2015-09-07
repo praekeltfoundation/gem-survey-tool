@@ -20,13 +20,13 @@ class SurveyResultSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SurveyResult
-        fields = ( 'survey', 'contact', 'answer', 'created_at')
+        fields = ('survey', 'contact', 'answer', 'created_at')
 
 
 class ContactGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactGroup
-        fields = ('group_id', 'name', 'created_at', 'group_key', 'filters', 'query_words')
+        fields = ('name', 'created_at', 'group_key', 'filters', 'query_words')
 
 
 class ContactGroupMemberSerializer(serializers.ModelSerializer):

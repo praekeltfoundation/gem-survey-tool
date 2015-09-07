@@ -3,14 +3,14 @@ var gems = angular.module('gems');
 gems.controller('contentController', function ($scope, $http, $filter) {
     $scope.ContactGroups = {};
 
-    $scope.group_id;
+    $scope.group_key = null;
 
     $scope.sorting = {
         order: 'name',
         reverse: {
-            name: false,
-            created_at: false,
-            filters: false
+            name: true,
+            created_at: true,
+            filters: true
         }
     }
 
@@ -20,8 +20,8 @@ gems.controller('contentController', function ($scope, $http, $filter) {
     $scope.itemsPerPage = 10;
     $scope.maxSize = 6;
 
-    $scope.setGroupId =  function setGroupId(id){
-        $scope.group_id = id;
+    $scope.setGroupKey =  function setGroupKey(key){
+        $scope.group_key = key;
     }
 
     $scope.getContactGroups = function getContactGroups() {
@@ -36,7 +36,7 @@ gems.controller('contentController', function ($scope, $http, $filter) {
     };
 
     $scope.deleteContactGroup = function deleteContactGroup(){
-        $http.post('/delete_contactgroup/', {group_id : $scope.group_id}).
+        $http.post('/delete_contactgroup/', {group_key : $scope.group_key}).
             success(function(status){
                 if(status  == "FAILED")
                     alert("Failed to delete.");
