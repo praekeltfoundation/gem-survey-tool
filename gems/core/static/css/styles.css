@@ -903,3 +903,15 @@ div.spaced {
     position: relative;
     padding: 0px;
 }
+
+.stat-heading {
+    margin-top: 52px;
+}
+
+.stat-sub-heading {
+    margin-top: 10px;
+}
+
+.stat-data {
+    margin-top: 27px;
+}
