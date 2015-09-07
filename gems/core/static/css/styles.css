@@ -851,6 +851,11 @@ p {
     left: 35px;
 }
 
+.or-switch-label {
+    top: -20px;
+    left: 4px;
+}
+
 div.spaced {
     padding-top: 10px;
 }
