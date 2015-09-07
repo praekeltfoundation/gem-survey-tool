@@ -152,6 +152,8 @@ gems.controller('queryController', function($scope, $http){
 
     $scope.fetchFields();
     $scope.makeQueryWords();
+    $scope.filters = [];
+    $scope.addFilter();
 
     $scope.$watch('filters', function(){
         $scope.makeQueryWords();

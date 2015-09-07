@@ -118,10 +118,12 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.showCreateGroup = false;
         $scope.showExportSurvey = false;
         $scope.showExportSurveyData = true;
+        $scope.filters = [];
     };
 
     $scope.hideViewExportSurveyData = function hideViewExportSurveyData(){
         $scope.showExportSurveyData = false;
+        $scope.filters = [];
     };
 
     $scope.hideViews = function hideViews(){
