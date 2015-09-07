@@ -23,7 +23,7 @@
                     <span class="caption-text" ng-if="createGroup">Max number of results:</span>
                     <span class="caption-text" ng-if="!createGroup">Limit random results to:</span>
                     <span class="caption-text">&nbsp;</span>
-                    <input class="num-rows form-control input-text" type="number" ng-model="numberOfRows">
+                    <input class="num-rows form-control input-text" type="number" ng-model="numberOfRows" min="0">
                     <span class="caption-text">&nbsp;</span>
                     <span class="caption-text">(leave blank for no limit)</span>
                 </div>

@@ -839,6 +839,18 @@ p {
     width: 30px;
 }
 
+.and-switch {
+    position: relative;
+    top: 45px;
+    left: 45px;
+}
+
+.or-switch {
+    position: relative;
+    top: -45px;
+    left: 210px;
+}
+
 div.spaced {
     padding-top: 10px;
 }
