@@ -1,22 +1,22 @@
 <div ng-controller="queryController">
-    <div class="row" ng-repeat="filter in filters">
+    <div class="row" ng-repeat="filter in filters" ng-init="outerIndex = $index">
         <div class="row row-breath" ng-if="$index != 0">
             <div class="col-md-3 toggle-container">
                 <!--
                 <input toggle-checkbox class="form-control" data-on="and" data-off="or" ng-true-value="'and'" ng-false-value="'or'" ng-model="filter.loperator" type="checkbox">
                 -->
-                <span class="and-switch">AND</span>
                 <div class="switch switch-green">
-                    <input type="radio" class="switch-input" name="toggle_{$$index$}" id="lop_and_{$$index$}" value="and" checked ng-model="filter.loperator">
-                    <label for="lop_and_{$$index$}" class="switch-label switch-label-off">&nbsp;&nbsp;</label>
-                    <input type="radio" class="switch-input" name="toggle_{$$index$}" id="lop_or_{$$index$}" value="or" ng-model="filter.loperator">
-                    <label for="lop_or_{$$index$}" class="switch-label switch-label-on">&nbsp;&nbsp;</label>
+                <span class="and-switch">AND</span>
+                    <input type="radio" class="switch-input" name="toggle_{$ outerIndex $}" id="lop_and_{$ outerIndex $}" value="and" checked ng-model="filter.loperator">
+                    <label for="lop_and_{$ outerIndex $}" class="switch-label switch-label-off">&nbsp;&nbsp;</label>
+                    <input type="radio" class="switch-input" name="toggle_{$ outerIndex $}" id="lop_or_{$ outerIndex $}" value="or" ng-model="filter.loperator">
+                    <label for="lop_or_{$ outerIndex $}" class="switch-label switch-label-on">&nbsp;&nbsp;</label>
                     <span class="switch-selection"></span>
+                    <span class="or-switch">OR</span>
                 </div>
-                <span class="or-switch">OR</span>
             </div>
         </div>
-        <div class="row" ng-repeat="fieldFilter in filter.filters">
+        <div class="row" ng-repeat="fieldFilter in filter.filters" ng-init="innerIndex = $index">
             <div class="col-md-3" ng-if="$index == 0">
                 <select class="form-control input-text" ng-model="filter.field" ng-options="field.name for field in fields">
                     <option value="">Please select question</option>
@@ -27,15 +27,15 @@
                     <!--
                     <input toggle-checkbox class="form-control" data-on="and" data-off="or" ng-true-value="'and'" ng-false-value="'or'" ng-model="fieldFilter.loperator" type="checkbox">
                     -->
-                    <span class="and-switch">AND</span>
                     <div class="switch switch-green">
-                        <input type="radio" class="switch-input" name="toggle_{$$parent.$index$}_{$$index$}" id="lop_and_{$$parent.$index$}_{$$index$}" value="and" checked ng-model="fieldFilter.loperator">
-                        <label for="lop_and_{$$parent.$index$}_{$$index$}" class="switch-label switch-label-off">&nbsp;&nbsp;</label>
-                        <input type="radio" class="switch-input" name="toggle_{$$parent.$index$}_{$$index$}" id="lop_or_{$$parent.$index$}_{$$index$}" value="or" ng-model="fieldFilter.loperator">
-                        <label for="lop_or_{$$parent.$index$}_{$$index$}" class="switch-label switch-label-on">&nbsp;&nbsp;</label>
+                        <span class="and-switch">AND</span>
+                        <input type="radio" class="switch-input" name="toggle_{$ outerIndex $}_{$ innerIndex $}" id="lop_and_{$ outerIndex $}_{$ innerIndex $}" value="and" checked ng-model="fieldFilter.loperator">
+                        <label for="lop_and_{$ outerIndex $}_{$ innerIndex $}" class="switch-label switch-label-off">&nbsp;&nbsp;</label>
+                        <input type="radio" class="switch-input" name="toggle_{$ outerIndex $}_{$ innerIndex $}" id="lop_or_{$ outerIndex $}_{$ innerIndex $}" value="or" ng-model="fieldFilter.loperator">
+                        <label for="lop_or_{$ outerIndex $}_{$ innerIndex $}" class="switch-label switch-label-on">&nbsp;&nbsp;</label>
                         <span class="switch-selection"></span>
+                        <span class="or-switch">OR</span>
                     </div>
-                    <span class="or-switch">OR</span>
                 </div>
             </div>
             <div class="col-md-3" ng-if="$index != 0">

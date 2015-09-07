@@ -841,14 +841,14 @@ p {
 
 .and-switch {
     position: relative;
-    top: 45px;
-    left: 45px;
+    top: 5px;
+    left: -90px;
 }
 
 .or-switch {
     position: relative;
-    top: -45px;
-    left: 210px;
+    top: 5px;
+    left: 35px;
 }
 
 div.spaced {
