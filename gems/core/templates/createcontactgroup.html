@@ -3,7 +3,7 @@
         <form ng-submit="">
             <div class="row container-head heading-top-margin" ng-if="createGroup">
                 <span class="h1-text">Create Group</span>
-                <span class="glyphicon glyphicon-info-sign info-icon yellow-back pink-front" data-toggle="modal" data-target="#show_info_popup"></span>
+                <span class="glyphicon glyphicon-info-sign info-icon white-back pink-front" data-toggle="modal" data-target="#show_info_popup"></span>
                 {% include 'create_group_info.html' %}
             </div>
             <div class="row form-horizontal" ng-if="!createGroup">
@@ -23,7 +23,7 @@
                     <span class="caption-text" ng-if="createGroup">Max number of results:</span>
                     <span class="caption-text" ng-if="!createGroup">Limit random results to:</span>
                     <span class="caption-text">&nbsp;</span>
-                    <input class="num-rows form-control input-text" type="number" ng-model="numberOfRows">
+                    <input class="num-rows form-control input-text" type="number" ng-model="numberOfRows" min="0">
                     <span class="caption-text">&nbsp;</span>
                     <span class="caption-text">(leave blank for no limit)</span>
                 </div>
