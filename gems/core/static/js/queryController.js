@@ -77,7 +77,7 @@ gems.controller('queryController', function($scope, $http){
     $scope.processFilters = function processFilters(){
         for(var x = 0; x < $scope.filters.length; ++x){
             for(var y = 0; y < $scope.fields.length; ++y){
-                if($scope.filters[x].field.name == $scope.fields[y].name){
+                if($scope.filters[x].field !== null && $scope.filters[x].field.name == $scope.fields[y].name){
                     $scope.filters[x].field = $scope.fields[y];
                 }
             }
@@ -152,7 +152,6 @@ gems.controller('queryController', function($scope, $http){
 
     $scope.fetchFields();
     $scope.makeQueryWords();
-    $scope.filters = [];
     $scope.addFilter();
 
     $scope.$watch('filters', function(){
