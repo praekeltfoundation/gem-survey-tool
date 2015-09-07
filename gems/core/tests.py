@@ -176,7 +176,7 @@ class RESTTestCase(TestCase):
         self.assertContains(result, "\"vkey\":\"1234\"")
 
         usr = User.objects.create_user("admin", "admin@admin.com", "admin")
-        cg = ContactGroup.objects.create(group_id="123", group_key="1234", name="test group", created_by=usr)
+        cg = ContactGroup.objects.create(group_key="1234", name="test group", created_by=usr)
         result = self.client.get(path="/contactgroup/")
         self.assertContains(result, "\"count\":1")
         self.assertContains(result, "\"name\":\"test group\"")

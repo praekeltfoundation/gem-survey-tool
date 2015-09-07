@@ -364,16 +364,15 @@ def delete_contactgroup(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        if 'group_id' in data:
-            group_id = data['group_id']
+        if 'group_key' in data:
+            group_key = data['group_key']
 
-            group = ContactGroup.objects.get(group_id=group_id)
-            key = group.group_key
+            group = ContactGroup.objects.filter(group_key=group_key).first()
             api = ContactsApiClient(settings.VUMI_TOKEN)
-            deleted_group = api.delete_group(key)
+            deleted_group = api.delete_group(group_key)
 
-            if deleted_group['key'] == key:
-                ContactGroup.objects.filter(group_id=group_id).delete()
+            if deleted_group['key'] == group_key:
+                group.delete()
                 return HttpResponse('OK')
             else:
                 return HttpResponse('FAILED')
