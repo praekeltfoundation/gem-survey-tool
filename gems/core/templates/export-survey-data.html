@@ -8,7 +8,7 @@
         </div>
         {% include 'query.html' %}
         <div class="row button-line">
-            <button class="green white-front" ng-disabled="!queryValid() || !queryDone" ng-click="fetchResults()">{$ buttonText $}</button>
+            <button class="light-green-back white-front" ng-disabled="!queryValid() || !queryDone" ng-click="fetchResults()">{$ buttonText $}</button>
         </div>
         <div class="row" ng-if="queryStarted == true && queryDone && rows.length == 0">
             <span class="caption-text">Sorry. There are no results that match your query. Please adjust your Rules.</span>
@@ -23,7 +23,7 @@
                 <thead class="table-heading">
                     <tr>
                         <th></th>
-                        <th class="green general" ng-repeat="column in columns">{$ column.name $}</th>
+                        <th class="light-green-back general" ng-repeat="column in columns">{$ column.name $}</th>
                     </tr>
                 </thead>
                 <tbody class="table-rows">
