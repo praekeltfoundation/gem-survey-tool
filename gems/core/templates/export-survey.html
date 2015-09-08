@@ -8,8 +8,8 @@
                 <span class="p-text">Select a survey:</span>
             </div>
             <div class="form-inline data-line">
-                <select ng-model="selected.survey" ng-options="survey.fields.name for survey in AllSurveys">
-                    <option value="">-- select a survey --</option>
+                <select class="form-control input-text" ng-model="selected.survey" ng-options="survey.fields.name for survey in AllSurveys">
+                    <option value="">Select a survey</option>
                 </select>
             </div>
             <div class="sub-head button-line">
