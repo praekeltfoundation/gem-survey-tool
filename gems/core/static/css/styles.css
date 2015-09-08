@@ -560,6 +560,11 @@ input[type='checkbox']:checked.pseudo-checkbox + div{
     border: 1px solid rgb(221, 221, 221);
 }
 
+.checkbox-align {
+    position: absolute;
+    left: 40px;
+}
+
 /*---------------------------*/
 
 .error-msg-indent{
