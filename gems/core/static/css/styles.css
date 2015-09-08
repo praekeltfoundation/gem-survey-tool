@@ -447,17 +447,12 @@ table.contact-groups>tbody:first-child>tr>td{
     border-top: 0;
 }
 
-button.table-aligned{
-    margin-right: 20px;
-}
-
-th {
-    border-left: 2px solid rgb(51, 186, 175);
-    border-right: 2px solid rgb(51, 186, 175);
+th:not(:first-child) {
+    border-right: 1px solid #FFFFFF;
 }
 
 table tr th:first-child {
-    border-left: 0;
+    border: 0;
 }
 
 table tr th:last-child {
@@ -518,7 +513,7 @@ th.general{
 }
 
 td.checkbox-table-column{
-    width:10px;
+    width: 25px;
     border-top-width: 3px; /*only relevant for first row*/
     margin-top: -3px; /*compensate for top border*/
 }
