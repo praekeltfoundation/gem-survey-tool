@@ -53,7 +53,7 @@
             <div class="col-md-3" ng-if="$index != 0">
                 <div class="row">
                     <div class="col-md-10 float-right">
-                        <button class="caption-text turquoise-back white-front float-right" ng-click="addFieldFilter($parent.$parent.$index)">Add new rule</button>
+                        <button class="caption-text pink-back white-front float-right" ng-click="addFieldFilter($parent.$parent.$index)">Add new rule</button>
                         <a class="caption-text float-right cross-margin" ng-click="removeFieldFilter($parent.$parent.$index, $index)"><img width="16" height="16" src="{{ STATIC_URL }}img/red_cross.png"></a>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
             <div class="col-md-3" ng-if="filter.filters.length == 1">
                 <div class="row">
                     <div class="col-md-10 float-right" ng-if="$parent.$parent.$index != 0">
-                        <button class="caption-text turquoise-back white-front float-right" ng-click="addFieldFilter($parent.$parent.$index)">Add new rule</button>
+                        <button class="caption-text pink-back white-front float-right" ng-click="addFieldFilter($parent.$parent.$index)">Add new rule</button>
                         <a class="caption-text float-right cross-margin" ng-click="removeFilter($parent.$parent.$parent.$index)"><img width="16" height="16" src="{{ STATIC_URL }}img/red_cross.png"></a>
                     </div>
                 </div>
@@ -69,7 +69,7 @@
         </div>
     </div>
     <div class="row row-breath">
-        <button class="caption-text turquoise-back white-front" ng-click="addFilter()">Add new data field</button>
+        <button class="caption-text pink-back white-front" ng-click="addFilter()">Add new data field</button>
     </div>
     <div class="row yellow-back row-breath">
         <span class="caption-text white-front" ng-if="queryWords != ''"><strong>Query: </strong>{$queryWords$}</span>
