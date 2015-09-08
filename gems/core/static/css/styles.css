@@ -69,6 +69,14 @@ footer {
     background-color: #00b9ad;
 }
 
+.aqua-back{
+    background-color: #00b9ad;
+}
+
+.aqua-front{
+    color: #00b9ad;
+}
+
 .red{
     background-color: #d81f23;
 }
@@ -904,7 +912,7 @@ div.spaced {
 
 .stat-block{
     margin: 0.5em;
-    width: 10em;
+    width: 18em;
     height: 10em;
     float: left;
     position: relative;
