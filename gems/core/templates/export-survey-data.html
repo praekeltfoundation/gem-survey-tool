@@ -8,7 +8,7 @@
         </div>
         {% include 'query.html' %}
         <div class="row button-line">
-            <button class="light-green-back white-front" ng-disabled="!queryValid() || !queryDone" ng-click="fetchResults()">{$ buttonText $}</button>
+            <button class="pink-back white-front" ng-disabled="!queryValid() || !queryDone" ng-click="fetchResults()">{$ buttonText $}</button>
         </div>
         <div class="row" ng-if="queryStarted == true && queryDone && rows.length == 0">
             <span class="caption-text">Sorry. There are no results that match your query. Please adjust your Rules.</span>
