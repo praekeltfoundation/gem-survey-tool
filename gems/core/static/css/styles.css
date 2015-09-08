@@ -202,7 +202,7 @@ footer {
 
 .menu a :focus{
     color: #ffffff !important;
-    background-color: #fee62c !important;
+    background-color: #00b9ad !important;
 }
 
 .menu .item, .menu .sub-item{
@@ -222,12 +222,12 @@ footer {
 
 .menu a:hover .item span {
     color: #ffffff !important;
-    background-color: #fee62c !important;
+    background-color: #00b9ad !important;
 }
 
 .menu a:focus .item span {
     color: #ffffff !important;
-    background-color: #fee62c !important;
+    background-color: #00b9ad !important;
 }
 
 .menu a .sub-item span {
