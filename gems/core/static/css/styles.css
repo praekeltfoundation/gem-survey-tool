@@ -919,3 +919,12 @@ div.spaced {
 .stat-data {
     margin-top: 27px;
 }
+
+.float-right {
+    float: right;
+}
+
+.cross-margin {
+    margin-right: 20px;
+    margin-top: 6px;
+}

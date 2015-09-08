@@ -52,21 +52,17 @@
             </div>
             <div class="col-md-3" ng-if="$index != 0">
                 <div class="row">
-                    <div class="col-md-2">
-                        <a class="caption-text" ng-click="removeFieldFilter($parent.$parent.$index, $index)"><img width="16" height="16" src="{{ STATIC_URL }}img/red_cross.png"></a>
-                    </div>
-                    <div class="col-md-10">
-                        <button class="caption-text turquoise-back white-front" ng-click="addFieldFilter($parent.$parent.$index)">Add new rule</button>
+                    <div class="col-md-10 float-right">
+                        <button class="caption-text turquoise-back white-front float-right" ng-click="addFieldFilter($parent.$parent.$index)">Add new rule</button>
+                        <a class="caption-text float-right cross-margin" ng-click="removeFieldFilter($parent.$parent.$index, $index)"><img width="16" height="16" src="{{ STATIC_URL }}img/red_cross.png"></a>
                     </div>
                 </div>
             </div>
             <div class="col-md-3" ng-if="filter.filters.length == 1">
                 <div class="row">
-                    <div class="col-md-2" ng-if="$parent.$parent.$index != 0">
-                        <a class="caption-text" ng-click="removeFilter($parent.$parent.$parent.$index)"><img width="16" height="16" src="{{ STATIC_URL }}img/red_cross.png"></a>
-                    </div>
-                    <div class="col-md-10">
-                        <button class="caption-text turquoise-back white-front" ng-click="addFieldFilter($parent.$parent.$index)">Add new rule</button>
+                    <div class="col-md-10 float-right" ng-if="$parent.$parent.$index != 0">
+                        <button class="caption-text turquoise-back white-front float-right" ng-click="addFieldFilter($parent.$parent.$index)">Add new rule</button>
+                        <a class="caption-text float-right cross-margin" ng-click="removeFilter($parent.$parent.$parent.$index)"><img width="16" height="16" src="{{ STATIC_URL }}img/red_cross.png"></a>
                     </div>
                 </div>
             </div>
