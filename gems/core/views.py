@@ -181,6 +181,8 @@ def build_query(payload, random=False):
     if 'filters' in payload:
         for filter_json in payload['filters']:
             filters.append(Filter.decode(filter_json))
+    else:
+        return None
 
     q = None
 
