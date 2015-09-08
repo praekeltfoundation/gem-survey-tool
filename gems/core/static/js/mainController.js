@@ -70,6 +70,7 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.showExportSurveyData = false;
         $scope.createGroup = true;
         $scope.filters = [];
+        $scope.rows = [];
         $scope.setGroupName('');
     };
 
