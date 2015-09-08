@@ -8,12 +8,12 @@
                 <span class="p-text">Select a survey:</span>
             </div>
             <div class="form-inline data-line">
-                <select ng-model="selected.survey" ng-options="survey.fields.name for survey in AllSurveys">
-                    <option value="">-- select a survey --</option>
+                <select class="form-control input-text" ng-model="selected.survey" ng-options="survey.fields.name for survey in AllSurveys">
+                    <option value="">Select a survey</option>
                 </select>
             </div>
             <div class="sub-head button-line">
-                <button class="pink-back white-front table-aligned" ng-disabled="!selected.survey" ng-click="exportSelectedSurvey()">Export Data</button>
+                <button class="pink-back white-front" ng-disabled="!selected.survey" ng-click="exportSelectedSurvey()">Export Data</button>
             </div>
         </div>
         <div class="row sub-head">
@@ -43,16 +43,16 @@
             </div>
         </div>
         <div class="row button-line">
-            <button class="turquoise-back white-front" ng-click="getSurveys()" ng-disabled="!(!!surveySearchForm.name || !!surveySearchForm.from  || !!surveySearchForm.to)">Display Results</button>
+            <button class="pink-back white-front" ng-click="getSurveys()" ng-disabled="!(!!surveySearchForm.name || !!surveySearchForm.from  || !!surveySearchForm.to)">Display Results</button>
         </div>
         <div class="row results-head" ng-if="queryStarted">
             <span class="p-text">Results ({$ rows.length $})</span>
             <button class="grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
-            <button class="pink-back white-front table-aligned" ng-disabled="!anyRowsSelected()" ng-click="exportSurveyCsv()">Export Data</button>
+            <button class="pink-back white-front" ng-disabled="!anyRowsSelected()" ng-click="exportSurveyCsv()">Export Data</button>
         </div>
         <div class="row" ng-if="queryStarted == true">
             <table class="table contact-groups">
-                <thead class="table-heading">
+                <thead class="table-heading aqua-back">
                     <tr>
                         <th></th>
                         <th class="survey-name">Survey Name</th>
@@ -76,7 +76,7 @@
             </table>
         </div>
         <div class="row" ng-if="queryStarted == true && rows.length > 0">
-            <button class="right pink-back white-front table-aligned" ng-disabled="!anyRowsSelected()" ng-click="exportSurveyCsv()">Export Data</button>
+            <button class="right pink-back white-front" ng-disabled="!anyRowsSelected()" ng-click="exportSurveyCsv()">Export Data</button>
         </div>
         <div class="row paging" ng-if="queryStarted == true && rows.length > 0 && createGroup && pagedGroups.length != 1">
             <ul>

@@ -57,6 +57,10 @@ footer {
     background-color: #fee62c !important;
 }
 
+.light-green-back {
+    background-color: #CBDB2A !important;
+}
+
 .pink-front{
     color: #ec2b8b;
 }
@@ -65,8 +69,12 @@ footer {
     background-color: #ec2b8b;
 }
 
-.green{
+.aqua-back{
     background-color: #00b9ad;
+}
+
+.aqua-front{
+    color: #00b9ad;
 }
 
 .red{
@@ -95,6 +103,10 @@ footer {
 
 .grey-background{
     background-color: rgb(214, 214, 214);
+}
+
+.light-grey-back{
+    background-color: #F0F0F0;
 }
 
 .white-front{
@@ -186,7 +198,7 @@ footer {
 
 .menu a :focus{
     color: #ffffff !important;
-    background-color: #fee62c !important;
+    background-color: #00b9ad !important;
 }
 
 .menu .item, .menu .sub-item{
@@ -206,12 +218,12 @@ footer {
 
 .menu a:hover .item span {
     color: #ffffff !important;
-    background-color: #fee62c !important;
+    background-color: #00b9ad !important;
 }
 
 .menu a:focus .item span {
     color: #ffffff !important;
-    background-color: #fee62c !important;
+    background-color: #00b9ad !important;
 }
 
 .menu a .sub-item span {
@@ -224,12 +236,12 @@ footer {
 
 .menu a:hover .sub-item span {
     color: #ffffff !important;
-    background-color: #ec2b8b !important;
+    background-color: #CBDB2A !important;
 }
 
 .menu a:focus .sub-item span {
     color: #ffffff !important;
-    background-color: #ec2b8b !important;
+    background-color: #CBDB2A !important;
 }
 
 li.icon {
@@ -315,7 +327,7 @@ li.admin {
 
 .signout-item>li>a:hover {
     color: #ffffff !important;
-    background-color: #ec2b8b !important;
+    background-color: #CBDB2A !important;
 }
 
 .main-container{
@@ -323,11 +335,11 @@ li.admin {
 }
 
 .heading-top-margin {
-    margin-top: 115px;
+    margin-top: 55px;
 }
 
 .container-head{
-    padding-bottom: 22px;
+    padding-bottom: 29px;
 }
 
 .container-heading{
@@ -435,17 +447,12 @@ table.contact-groups>tbody:first-child>tr>td{
     border-top: 0;
 }
 
-button.table-aligned{
-    margin-right: 20px;
-}
-
-th {
-    border-left: 2px solid rgb(51, 186, 175);
-    border-right: 2px solid rgb(51, 186, 175);
+th:not(:first-child) {
+    border-right: 1px solid #FFFFFF;
 }
 
 table tr th:first-child {
-    border-left: 0;
+    border: 0;
 }
 
 table tr th:last-child {
@@ -455,7 +462,6 @@ table tr th:last-child {
 .table-heading{
     font-weight: bold !important;
     font-size: 13px !important;
-    background-color: rgb(41, 183, 171);
     color: white;
 }
 
@@ -507,7 +513,7 @@ th.general{
 }
 
 td.checkbox-table-column{
-    width:10px;
+    width: 25px;
     border-top-width: 3px; /*only relevant for first row*/
     margin-top: -3px; /*compensate for top border*/
 }
@@ -546,6 +552,11 @@ input[type='checkbox'].pseudo-checkbox + div{
 
 input[type='checkbox']:checked.pseudo-checkbox + div{
     border: 1px solid rgb(221, 221, 221);
+}
+
+.checkbox-align {
+    position: absolute;
+    left: 40px;
 }
 
 /*---------------------------*/
@@ -784,7 +795,6 @@ p {
     font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
     font-size: 13px;
     font-weight: normal;
-    color: black;
 }
 
 .caption-text-size{
@@ -806,11 +816,11 @@ p {
 }
 
 .input-align-big-label{
-    padding-top: 30px;
+    padding-top: 22px;
 }
 
 .i-align-big-label{
-    padding-top: 36px !important;
+    padding-top: 31px !important;
 }
 
 .toggle-container{
@@ -884,28 +894,28 @@ div.spaced {
     font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
     font-size: 48px !important;
     font-weight: bold;
-    text-align: center;
     line-height: 1em;
-    color: white;
-    padding-top: 0.7em;
+    padding-top: 0.5em;
+    padding-left: 15px;
 }
 
 .stat-text {
     font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
     font-size: 15px;
-    font-weight: 100;
-    text-align: center;
+    font-weight: 500;
     line-height: 1em;
-    color: white;
+    color: black;
+    padding-left: 15px;
 }
 
 .stat-block{
-    margin: 0.5em;
-    width: 10em;
-    height: 10em;
+    margin: 0.7em;
+    width: 20em;
+    height: 8em;
     float: left;
     position: relative;
     padding: 0px;
+
 }
 
 .stat-heading {

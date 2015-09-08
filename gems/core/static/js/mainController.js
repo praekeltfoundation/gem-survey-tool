@@ -69,13 +69,12 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.showExportSurvey = false;
         $scope.showExportSurveyData = false;
         $scope.createGroup = true;
-        $scope.filters = [];
+        $scope.rows = [];
         $scope.setGroupName('');
     };
 
     $scope.hideCreateContact = function hideCreateContact(){
         $scope.showCreateGroup = false;
-        $scope.filters = [];
     };
 
     $scope.showViewContactGroups = function showViewContactGroups(){
@@ -118,12 +117,10 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.showCreateGroup = false;
         $scope.showExportSurvey = false;
         $scope.showExportSurveyData = true;
-        $scope.filters = [];
     };
 
     $scope.hideViewExportSurveyData = function hideViewExportSurveyData(){
         $scope.showExportSurveyData = false;
-        $scope.filters = [];
     };
 
     $scope.hideViews = function hideViews(){

@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="row button-line">
-                <button class="turquoise-back white-front" ng-disabled="!queryValid() || !queryDone" ng-click="fetchResults()">{$ buttonText $}</button>
+                <button class="pink-back white-front" ng-disabled="!queryValid() || !queryDone" ng-click="fetchResults()">{$ buttonText $}</button>
             </div>
             <div class="row" ng-if="queryStarted == true && queryDone && rows.length == 0">
                 <span class="grey-font caption-text">Sorry. There are no results that match your query. Please adjust your Rules.</span>
@@ -37,14 +37,14 @@
             <div class="row results-head" ng-if="queryStarted == true && rows.length > 0">
                 <span class="p-text">Results ({$ rows.length $})</span>
                 <button class="grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
-                <button class="pink-back white-front table-aligned" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
+                <button class="pink-back white-front" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0" style="overflow: auto;">
                 <table class="table contact-groups">
-                    <thead class="table-heading">
+                    <thead class="table-heading aqua-back">
                         <tr>
                             <th></th>
-                            <th class="green" ng-repeat="column in columns">{$ column.name $}</th>
+                            <th ng-repeat="column in columns">{$ column.name $}</th>
                         </tr>
                     </thead>
                     <tbody class="table-rows">
@@ -52,7 +52,7 @@
                             <td class="checkbox-table-column">
                                 <div>
                                     <input type="checkbox" id="checkbox_{$ $index $}" ng-model="row.selected" class='pseudo-checkbox sr-only'>
-                                    <div class="fancy-checkbox-div right">
+                                    <div class="fancy-checkbox-div checkbox-align">
                                         <label for='checkbox_{$ $index $}' class='fancy-checkbox-label glyphicon' ng-class="{'glyphicon-ok' : row.selected}">&nbsp;</label>
                                     </div>
                                 </div>
@@ -63,7 +63,7 @@
                 </table>
             </div>
             <div class="row spaced has-checkbox=column" ng-if="queryStarted == true && rows.length > 0 && createGroup">
-                <button class="right pink-back white-front table-aligned" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
+                <button class="right pink-back white-front" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0 && !createGroup">
                 <div class="col-md-2 col-md-offset-8">
