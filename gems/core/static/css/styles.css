@@ -57,6 +57,10 @@ footer {
     background-color: #fee62c !important;
 }
 
+.light-green-back {
+    background-color: #CBDB2A !important;
+}
+
 .pink-front{
     color: #ec2b8b;
 }
@@ -198,7 +202,7 @@ footer {
 
 .menu a :focus{
     color: #ffffff !important;
-    background-color: #fee62c !important;
+    background-color: #00b9ad !important;
 }
 
 .menu .item, .menu .sub-item{
@@ -218,12 +222,12 @@ footer {
 
 .menu a:hover .item span {
     color: #ffffff !important;
-    background-color: #fee62c !important;
+    background-color: #00b9ad !important;
 }
 
 .menu a:focus .item span {
     color: #ffffff !important;
-    background-color: #fee62c !important;
+    background-color: #00b9ad !important;
 }
 
 .menu a .sub-item span {
@@ -236,12 +240,12 @@ footer {
 
 .menu a:hover .sub-item span {
     color: #ffffff !important;
-    background-color: #ec2b8b !important;
+    background-color: #CBDB2A !important;
 }
 
 .menu a:focus .sub-item span {
     color: #ffffff !important;
-    background-color: #ec2b8b !important;
+    background-color: #CBDB2A !important;
 }
 
 li.icon {
@@ -327,7 +331,7 @@ li.admin {
 
 .signout-item>li>a:hover {
     color: #ffffff !important;
-    background-color: #ec2b8b !important;
+    background-color: #CBDB2A !important;
 }
 
 .main-container{
