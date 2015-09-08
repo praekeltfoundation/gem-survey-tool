@@ -97,6 +97,10 @@ footer {
     background-color: rgb(214, 214, 214);
 }
 
+.stat-grey-back{
+    background-color: #F0F0F0;
+}
+
 .white-front{
     color: white;
 }
@@ -886,7 +890,6 @@ div.spaced {
     font-weight: bold;
     text-align: center;
     line-height: 1em;
-    color: white;
     padding-top: 0.7em;
 }
 
@@ -896,7 +899,7 @@ div.spaced {
     font-weight: 100;
     text-align: center;
     line-height: 1em;
-    color: white;
+    color: black;
 }
 
 .stat-block{
@@ -906,6 +909,7 @@ div.spaced {
     float: left;
     position: relative;
     padding: 0px;
+
 }
 
 .stat-heading {
