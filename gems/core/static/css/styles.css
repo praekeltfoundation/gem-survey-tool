@@ -896,24 +896,24 @@ div.spaced {
     font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
     font-size: 48px !important;
     font-weight: bold;
-    text-align: center;
     line-height: 1em;
-    padding-top: 0.7em;
+    padding-top: 0.5em;
+    padding-left: 15px;
 }
 
 .stat-text {
     font-family: 'TwCenMT-Regular', 'Helvetica Neue', Helvetica, Arial, Sans-Serif;
     font-size: 15px;
-    font-weight: 100;
-    text-align: center;
+    font-weight: 500;
     line-height: 1em;
     color: black;
+    padding-left: 15px;
 }
 
 .stat-block{
-    margin: 0.5em;
-    width: 18em;
-    height: 10em;
+    margin: 0.7em;
+    width: 20em;
+    height: 8em;
     float: left;
     position: relative;
     padding: 0px;
