@@ -447,11 +447,11 @@ table.contact-groups>tbody:first-child>tr>td{
     border-top: 0;
 }
 
-th:not(:first-child) {
+th {
     border-right: 1px solid #FFFFFF;
 }
 
-table tr th:first-child {
+th.checkbox-heading {
     border: 0;
 }
 
