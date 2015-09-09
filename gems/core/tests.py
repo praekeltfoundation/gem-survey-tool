@@ -387,6 +387,23 @@ class GeneralTests(TestCase):
         resp = self.client.get("/get_unique_keys/")
         # TODO: Complete Test
 
+    def test_get_answer_values(self):
+        self.create_survey_result(self.survey, self.contact, {"age": 21})
+        resp = self.client.get("get_unique_keys")
+        self.assertEquals(resp.status_code, 404)
+
+        resp = self.client.post("get_unique_keys")
+        self.assertEquals(resp.status_code, 404)
+
+        resp = self.client.post("get_unique_keys",
+                                data=
+                                {
+                                    "field": 'blah'
+                                })
+        self.assertEquals(resp.status_code, 404)
+
+        #TODO: Complete Test
+
 
 class ModelTests(TestCase):
     def test_incoming_survey_length_limit(self):
