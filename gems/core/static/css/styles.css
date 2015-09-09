@@ -942,10 +942,11 @@ div.spaced {
 div.custom-tooltip {
     position: absolute;
     width: 100%;
-    opacity: 0.8;
     border-radius: 4px;
     padding: 5px;
     text-align: center;
+    opacity: 0.85;
+    z-index: 2;
 }
 
 .custom-tooltip-head {
