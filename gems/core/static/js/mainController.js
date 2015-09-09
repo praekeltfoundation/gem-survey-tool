@@ -20,6 +20,8 @@ gems.controller('mainController', function($scope, $http, $window){
     $scope.queryValid = false;
     $scope.showLandingStats = true;
     $scope.stats = {};
+    $scope.origColumns = [];
+    $scope.fields = [];
 
     $scope.filters = [];
     $scope.createGroup = true;
@@ -82,6 +84,7 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.setGroupName('');
         $scope.filters = [];
         $scope.addFilter();
+        $scope.fetchFields();
     };
 
     $scope.hideCreateContact = function hideCreateContact(){
@@ -225,6 +228,97 @@ gems.controller('mainController', function($scope, $http, $window){
             .success(function(data){
                 $scope.stats = data;
             });
+    };
+
+    $scope.fetchFields = function fetchFields(){
+        $http.get('/get_unique_keys/')
+            .success(function(data){
+                $scope.fields = data;
+                $scope.origColumns = $scope.fields.slice();
+            })
+    };
+
+    $scope.processQueryResults = function processQueryResults(results, _columns){
+
+        var columns = _columns.slice();
+        var rows = [];
+
+        // Construct the fields
+        for(var x = 0; x < results.length; ++x){
+            var fields = results[x].fields;
+            var answer = fields['answer'];
+            var row = {
+                selected: false,
+                fields: []
+            };
+
+            fields.id = results[x].pk;
+
+            for(var y = 0; y < columns.length; ++y){
+                var column = columns[y];
+
+                if(fields.hasOwnProperty(column.name)){
+                    row.fields.push(fields[column.name]);
+                } else if(answer.hasOwnProperty(column.name)){
+                    row.fields.push(answer[column.name]);
+                } else {
+                    row.fields.push('');
+                }
+            }
+
+            rows.push(row);
+        }
+
+        // Establish what columns need to be removed
+        var foundData = new Array();
+
+        for(var x = 0; x < columns.length; ++x){
+            foundData.push(false);
+        }
+
+        for(var x = 0; x < rows.length; ++x){
+            for(var y = 0; y < columns.length; ++y){
+                if(foundData[y] === false && rows[x].fields[y] !== ''){
+                    foundData[y] = true;
+                }
+            }
+        }
+
+        for(var x = foundData.length - 1; x > -1; --x){
+            if(foundData[x] === false){
+                columns.splice(x, 1);
+            }
+        }
+
+        // Construct the fields based on the removed columns
+        rows = [];
+
+        for(var x = 0; x < results.length; ++x){
+            var fields = results[x].fields;
+            var answer = fields['answer'];
+            var row = {
+                selected: false,
+                fields: []
+            };
+
+            fields.id = results[x].pk;
+
+            for(var y = 0; y < columns.length; ++y){
+                var column = columns[y];
+
+                if(fields.hasOwnProperty(column.name)){
+                    row.fields.push(fields[column.name]);
+                } else if(answer.hasOwnProperty(column.name)){
+                    row.fields.push(answer[column.name]);
+                } else {
+                    row.fields.push('');
+                }
+            }
+
+            rows.push(row);
+        }
+
+        return [columns, rows];
     };
 
     $scope.fetchStats();
