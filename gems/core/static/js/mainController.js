@@ -28,6 +28,15 @@ gems.controller('mainController', function($scope, $http, $window){
 
     $scope.itemsPerPage = 10;
 
+    $scope.addFilter = function addFilter(){
+        $scope.filters.push(
+            {
+                loperator: "and",
+                field:null,
+                filters: [{loperator: null, operator: null, value: null}]
+            })
+    };
+
     $scope.toggleSurveyDataMenu = function toggleSurveyDataMenu(){
         $scope.showSurveyDataMenu = !$scope.showSurveyDataMenu;
 
@@ -71,9 +80,10 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.showExportSurvey = false;
         $scope.showExportSurveyData = false;
         $scope.createGroup = true;
-        $scope.filters = [];
         $scope.rows = [];
         $scope.setGroupName('');
+        $scope.filters = [];
+        $scope.addFilter();
         $scope.fetchFields();
     };
 
@@ -123,6 +133,7 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.showExportSurvey = false;
         $scope.showExportSurveyData = true;
         $scope.filters = [];
+        $scope.addFilter();
     };
 
     $scope.hideViewExportSurveyData = function hideViewExportSurveyData(){

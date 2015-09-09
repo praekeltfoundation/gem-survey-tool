@@ -53,15 +53,6 @@ gems.controller('queryController', function($scope, $http){
             })
     };
 
-    $scope.addFilter = function addFilter(){
-        $scope.filters.push(
-            {
-                loperator: "and",
-                field:null,
-                filters: [{loperator: null, operator: null, value: null}]
-            })
-    };
-
     $scope.addFieldFilter = function addFieldFilter(pIndex){
         $scope.filters[pIndex].filters.push({loperator: 'and', operator: null, value: null});
     };
@@ -152,7 +143,6 @@ gems.controller('queryController', function($scope, $http){
 
     $scope.fetchFields();
     $scope.makeQueryWords();
-    $scope.addFilter();
 
     $scope.$watch('filters', function(){
         $scope.makeQueryWords();
