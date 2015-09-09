@@ -205,10 +205,12 @@ def build_query(payload, random=False):
             else:
                 q = q & temp_q
 
-    rs = SurveyResult.objects.filter(q)
+    rs = SurveyResult.objects.select_related("Survey", "Contact").filter(q)
 
     if random is True:
         rs = rs.order_by('?')
+    else:
+        rs = rs.order_by("id")
 
     if limit is not None:
         return rs[:limit]
@@ -237,31 +239,17 @@ def export_survey_results(request):
     return HttpResponse('Bad request method')
 
 
-def get_exclusion_list():
-    """
-    Function that returns a list of fields to be excluded from the results
-    :rtype : Tuple
-    :return: a list of fields to be excluded from the results
-    """
-    return 'answer', 'sent'
-
-
 def get_surveyresult_meta_keys():
     """
     :rtype: List of UIField objects
-    :return: Set of keys from the surveyresult meta
+    :return: Set of keys from the surveyresult
     """
-    excluded_fields = get_exclusion_list()
-    field_keys = []
-    sorted_fields = sorted(
-        SurveyResult._meta.concrete_fields +
-        SurveyResult._meta.many_to_many +
-        SurveyResult._meta.virtual_fields
-    )
-
-    for field in sorted_fields:
-        if field.name not in excluded_fields:
-            field_keys.append(UIField(field.name, 'N'))
+    field_keys = [
+        UIField("id", "N"),
+        UIField("survey", "N"),
+        UIField("contact", "N"),
+        UIField("created_at", "N"),
+    ]
 
     return field_keys
 
@@ -335,13 +323,14 @@ def generate_json_response(content):
 
 def get_unique_keys(request):
     """
-    Function returns a unique set of fields from the meta and the hstore
+    Function returns a unique set of fields from SurveyResult and the hstore
+    Note: SurveyResult fields are not sorted, only the hstore fields are sorted
     :rtype: HttpResponse
     :return: HttpResponse with json payload
     """
     answer_keys = get_surveyresult_hstore_keys()
     field_keys = get_surveyresult_meta_keys()
-    keys = sorted(answer_keys + field_keys, key=lambda f: f.name)
+    keys = field_keys + sorted(answer_keys, key=lambda f: f.name)
 
     return generate_json_response(serialize_list_to_json(keys, UIFieldEncoder))
 
@@ -563,10 +552,10 @@ def get_surveys(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        results = Survey.objects.select_related().all()
+        results = Survey.objects.all()
 
         if 'name' in data:
-            results = results.filter(name__contains=data['name'])
+            results = results.filter(name__icontains=data['name'])
 
         if 'from' in data:
             try:
@@ -587,7 +576,7 @@ def get_surveys(request):
                 'json',
                 list(results)))
     elif request.method == 'GET':
-        results = Survey.objects.select_related().all()
+        results = Survey.objects.all()
         return generate_json_response(
             serializers.serialize(
                 'json',

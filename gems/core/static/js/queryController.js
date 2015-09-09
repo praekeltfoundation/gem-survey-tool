@@ -132,7 +132,12 @@ gems.controller('queryController', function($scope, $http){
                         break;
                     }
 
-                    if(filter.filters[y].value == null || filter.filters[y].operator == null){
+                    if(
+                        typeof(filter.filters[y].value) === "undefined"
+                        || filter.filters[y].value == null
+                        || filter.filters[y].value === ""
+                        || filter.filters[y].operator == null
+                        ){
                         valid = false;
                         break;
                     }
