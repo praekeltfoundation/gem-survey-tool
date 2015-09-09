@@ -18,7 +18,7 @@
         </div>
         <div class="row" ng-repeat="fieldFilter in filter.filters" ng-init="innerIndex = $index">
             <div class="col-md-3" ng-if="$index == 0">
-                <select class="form-control input-text" ng-model="filter.field" ng-options="field.name for field in fields">
+                <select class="form-control input-text" ng-model="filter.field" ng-options="field.name for field in fields" ng-change="getAnswers(filter.field.name, fieldFilter)">
                     <option value="">Please select question</option>
                 </select>
             </div>
@@ -29,7 +29,7 @@
                     -->
                     <div class="switch switch-green">
                         <span class="and-switch">AND</span>
-                        <input type="radio" class="switch-input" name="toggle_{$ outerIndex $}_{$ innerIndex $}" id="lop_and_{$ outerIndex $}_{$ innerIndex $}" value="and" checked ng-model="fieldFilter.loperator">
+                        <input type="radio" class="switch-input" name="toggle_{$ outerIndex $}_{$ innerIndex $}" value="and" checked ng-model="fieldFilter.loperator">
                         <label for="lop_and_{$ outerIndex $}_{$ innerIndex $}" class="switch-label switch-label-off">&nbsp;&nbsp;</label>
                         <input type="radio" class="switch-input" name="toggle_{$ outerIndex $}_{$ innerIndex $}" id="lop_or_{$ outerIndex $}_{$ innerIndex $}" value="or" ng-model="fieldFilter.loperator">
                         <label for="lop_or_{$ outerIndex $}_{$ innerIndex $}" class="switch-label switch-label-on or-switch-label">&nbsp;&nbsp;</label>
@@ -47,7 +47,17 @@
             </div>
             <div class="col-md-3" ng-model="filter.value">
                 <div class="input-wrapper-active">
-                    <input type="text" ng-model="fieldFilter.value" placeholder="Value" title="Dates are in YYYY-MM-DD format and strings are case sensitive">
+                    <input type="text" ng-model="fieldFilter.value" placeholder="Value" ng-mouseover="showToolTip(fieldFilter)" ng-mouseleave="hideToolTip(fieldFilter)">
+                    <div class="custom-tooltip white-front black-back" ng-if="fieldFilter.tooltip.items && fieldFilter.tooltip.show">
+                        <div class="custom-tooltip-head">
+                            Values:
+                        </div>
+                        <div class="custom-tooltip-body">
+                            <span ng-repeat="item in fieldFilter.tooltip.items">
+                                {$ item $}
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-md-3" ng-if="$index != 0">

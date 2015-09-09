@@ -362,6 +362,24 @@ def load_contact_groups(request):
     return render(request, 'contact-groups.html')
 
 
+def get_answer_values(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+        if 'field' in data and data['field'] is not None:
+            rs = SurveyResult.objects.values_list('answer', flat=True).distinct()
+            values = list()
+            field = data['field']
+            for item in rs:
+                if field in item:
+                    if item[field] not in values:
+                        values.append(item[field])
+            return generate_json_response(serialize_list_to_json(values, UIFieldEncoder))
+
+        return HttpResponse('BAD REQUEST TYPE')
+    return HttpResponse('BAD REQUEST TYPE')
+
+
 def delete_contactgroup(request):
     if request.method == 'POST':
         data = json.loads(request.body)
