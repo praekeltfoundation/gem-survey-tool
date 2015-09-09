@@ -20,6 +20,8 @@ gems.controller('mainController', function($scope, $http, $window){
     $scope.queryValid = false;
     $scope.showLandingStats = true;
     $scope.stats = {};
+    $scope.origColumns = [];
+    $scope.fields = [];
 
     $scope.filters = [];
     $scope.createGroup = true;
@@ -72,6 +74,7 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.filters = [];
         $scope.rows = [];
         $scope.setGroupName('');
+        $scope.fetchFields();
     };
 
     $scope.hideCreateContact = function hideCreateContact(){
@@ -214,6 +217,14 @@ gems.controller('mainController', function($scope, $http, $window){
             .success(function(data){
                 $scope.stats = data;
             });
+    };
+
+    $scope.fetchFields = function fetchFields(){
+        $http.get('/get_unique_keys/')
+            .success(function(data){
+                $scope.fields = data;
+                $scope.origColumns = $scope.fields.slice();
+            })
     };
 
     $scope.fetchStats();
