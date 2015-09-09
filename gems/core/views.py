@@ -536,10 +536,10 @@ def get_surveys(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        results = Survey.objects.select_related().all()
+        results = Survey.objects.all()
 
         if 'name' in data:
-            results = results.filter(name__contains=data['name'])
+            results = results.filter(name__icontains=data['name'])
 
         if 'from' in data:
             try:
@@ -560,7 +560,7 @@ def get_surveys(request):
                 'json',
                 list(results)))
     elif request.method == 'GET':
-        results = Survey.objects.select_related().all()
+        results = Survey.objects.all()
         return generate_json_response(
             serializers.serialize(
                 'json',
