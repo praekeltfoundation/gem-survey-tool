@@ -358,10 +358,6 @@ def get_contact_groups(request):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
-def load_contact_groups(request):
-    return render(request, 'contact-groups.html')
-
-
 def get_answer_values(request):
     if request.method == "POST":
         data = json.loads(request.body)
