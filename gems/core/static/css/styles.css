@@ -93,6 +93,10 @@ footer {
     float:right;
 }
 
+.left-margin {
+    margin-left: 10px;
+}
+
 .blue-font{
     color: rgb(36, 113, 186) !important;
 }
@@ -339,7 +343,7 @@ li.admin {
 }
 
 .container-head{
-    padding-bottom: 29px;
+    padding-bottom: 32px;
 }
 
 .container-heading{
@@ -483,11 +487,11 @@ th.created-at {
 }
 
 th.buttons {
-    width: 10%;
+    width: 20%;
 }
 
 th.rules {
-    width: 60%
+    width: 50%
 }
 
 th.survey-name {
@@ -505,11 +509,8 @@ th.general{
 .table-button {
     background-color: #D6D6D6 !important;
     width: 100%;
-    float: right;
-}
-
-.table-button:first-child {
-    margin-bottom: 5px;
+    width: 45%;
+    margin: 0px 2%;
 }
 
 td.checkbox-table-column{
@@ -816,7 +817,7 @@ p {
 }
 
 .input-align-big-label{
-    padding-top: 22px;
+    padding-top: 18px;
 }
 
 .i-align-big-label{
