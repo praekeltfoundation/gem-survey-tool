@@ -964,3 +964,7 @@ div.custom-tooltip {
 .custom-tooltip-body span {
     display: block;
 }
+
+.results-row:nth-child(even) {
+    background-color: #F0F0F0;
+}
