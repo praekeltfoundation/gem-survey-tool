@@ -36,80 +36,9 @@ gems.controller('groupController', function($scope, $http){
             .then(function(data){
                 var results = data.data;
 
-                // Construct the fields
-                for(var x = 0; x < results.length; ++x){
-                    var fields = results[x].fields;
-                    var answer = fields['answer'];
-                    var row = {
-                        selected: false,
-                        fields: []
-                    };
-
-                    fields.id = results[x].pk;
-
-                    for(var y = 0; y < $scope.columns.length; ++y){
-                        var column = $scope.columns[y];
-
-                        if(fields.hasOwnProperty(column.name)){
-                            row.fields.push(fields[column.name]);
-                        } else if(answer.hasOwnProperty(column.name)){
-                            row.fields.push(answer[column.name]);
-                        } else {
-                            row.fields.push('');
-                        }
-                    }
-
-                    $scope.rows.push(row);
-                }
-
-                // Establish what columns need to be removed
-                var foundData = new Array();
-
-                for(var x = 0; x < $scope.columns.length; ++x){
-                    foundData.push(false);
-                }
-
-                for(var x = 0; x < $scope.rows.length; ++x){
-                    for(var y = 0; y < $scope.columns.length; ++y){
-                        if(foundData[y] === false && $scope.rows[x].fields[y] !== ''){
-                            foundData[y] = true;
-                        }
-                    }
-                }
-
-                for(var x = foundData.length - 1; x > -1; --x){
-                    if(foundData[x] === false){
-                        $scope.columns.splice(x, 1);
-                    }
-                }
-
-                // Construct the fields based on the removed columns
-                $scope.rows = [];
-
-                for(var x = 0; x < results.length; ++x){
-                    var fields = results[x].fields;
-                    var answer = fields['answer'];
-                    var row = {
-                        selected: false,
-                        fields: []
-                    };
-
-                    fields.id = results[x].pk;
-
-                    for(var y = 0; y < $scope.columns.length; ++y){
-                        var column = $scope.columns[y];
-
-                        if(fields.hasOwnProperty(column.name)){
-                            row.fields.push(fields[column.name]);
-                        } else if(answer.hasOwnProperty(column.name)){
-                            row.fields.push(answer[column.name]);
-                        } else {
-                            row.fields.push('');
-                        }
-                    }
-
-                    $scope.rows.push(row);
-                }
+                var retVal = $scope.processQueryResults(results, $scope.columns);
+                $scope.columns = retVal[0];
+                $scope.rows = retVal[1];
 
                 if ($scope.queryStarted == true){
                         $scope.buttonText = "Refresh Results";

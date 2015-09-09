@@ -205,10 +205,12 @@ def build_query(payload, random=False):
             else:
                 q = q & temp_q
 
-    rs = SurveyResult.objects.filter(q)
+    rs = SurveyResult.objects.select_related("Survey", "Contact").filter(q)
 
     if random is True:
         rs = rs.order_by('?')
+    else:
+        rs = rs.order_by("id")
 
     if limit is not None:
         return rs[:limit]
