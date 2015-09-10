@@ -910,17 +910,24 @@ div.spaced {
 }
 
 .stat-block{
-    margin: 0.7em;
     width: 20em;
     height: 8em;
     float: left;
     position: relative;
     padding: 0px;
+}
 
+.stat-border{
+    margin: 11px;
+}
+
+.stat-border-top-row{
+    margin: 6px 11px 11px 11px;
 }
 
 .stat-heading {
-    margin-top: 52px;
+    margin-top: 53px;
+    margin-left: -19px;
 }
 
 .stat-sub-heading {
@@ -956,4 +963,8 @@ div.custom-tooltip {
 
 .custom-tooltip-body span {
     display: block;
+}
+
+.results-row:nth-child(even) {
+    background-color: #F0F0F0;
 }

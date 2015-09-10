@@ -42,7 +42,7 @@
                     </tr>
                 </thead>
                 <tbody class="table-rows">
-                    <tr ng-repeat="(key, data) in pagedGroups[currentPage] | orderBy:sorting.order:sorting.reverse[sorting.order]">
+                    <tr ng-repeat="(key, data) in pagedGroups[currentPage] | orderBy:sorting.order:sorting.reverse[sorting.order]" class="results-row">
                         <td>{$ data.name $}</td>
                         <td>{$ data.created_at | date:'MM-dd-yyyy'$}</td>
                         <td>{$ data.query_words $}</td>
