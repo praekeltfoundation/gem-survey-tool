@@ -194,13 +194,35 @@ footer {
 }
 
 .landing-container {
-    position: relative;
+    position: absolute;
     left: 200px;
+    right: 0px;
+    padding-right: 15px;
+    padding-left: 15px;
 }
 
 .content-container {
-    position: relative;
+    position: absolute;
     left: 400px;
+    right: 0px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.banner {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    font-family: Helvetica;
+    font-weight: normal;
+}
+
+.banner span {
+    display: block;
+}
+
+.banner-rights {
+    font-size: 11px;
 }
 
 /*MENU*/
