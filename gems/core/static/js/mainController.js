@@ -321,5 +321,22 @@ gems.controller('mainController', function($scope, $http, $window){
         return [columns, rows];
     };
 
+    $scope.showAlert = function(type, heading, message) {
+        var html =
+            '<div class="alert ' + type + '">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
+                '<strong>' + heading + '! </strong> ' + message +
+            '</div>';
+
+        $('.alerts-container').append(html);
+        $scope.alertTimeout(5000);
+    }
+
+    $scope.alertTimeout = function(wait){
+        setTimeout(function() {
+            $('.alerts-container').children('.alert:first-child').fadeOut(300, function() { $(this).remove()});
+        }, wait);
+    }
+
     $scope.fetchStats();
 });

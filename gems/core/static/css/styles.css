@@ -968,3 +968,14 @@ div.custom-tooltip {
 .results-row:nth-child(even) {
     background-color: #F0F0F0;
 }
+
+.alerts-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
+
+.alert {
+    width: 300px;
+    font-weight: normal;
+}
