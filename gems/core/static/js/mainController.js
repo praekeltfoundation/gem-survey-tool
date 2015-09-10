@@ -329,7 +329,7 @@ gems.controller('mainController', function($scope, $http, $window){
             '</div>';
 
         $('.alerts-container').append(html);
-        $scope.alertTimeout(5000);
+        $scope.alertTimeout(10000);
     }
 
     $scope.alertTimeout = function(wait){

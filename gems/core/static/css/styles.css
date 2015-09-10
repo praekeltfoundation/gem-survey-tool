@@ -186,21 +186,23 @@ footer {
     top: 0px;
     bottom: 0px;
     padding: 0px 20px;
-    width: 200px;
+    width: 12%;
 }
 
 .sub-menu {
-    left: 200px;
+    left: 12%;
 }
 
 .landing-container {
     position: relative;
-    left: 200px;
+    left: 12%;
+    width: 88%;
 }
 
 .content-container {
     position: relative;
-    left: 400px;
+    left: 24%;
+    width: 76%;
 }
 
 /*MENU*/
