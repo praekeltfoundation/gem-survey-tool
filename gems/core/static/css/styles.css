@@ -191,6 +191,7 @@ footer {
 
 .sub-menu {
     left: 200px;
+    z-index: -1;
 }
 
 .landing-container {
@@ -370,7 +371,7 @@ li.admin {
 
 .signout-item>li>a:hover {
     color: #ffffff !important;
-    background-color: #CBDB2A !important;
+    background-color: #ec2b8b !important;
 }
 
 .main-container{
