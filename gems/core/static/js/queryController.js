@@ -10,8 +10,8 @@ gems.controller('queryController', function($scope, $http){
         //{name: 'Greater than', operator: 'gt'},
         //{name: 'Greater than or equal to', operator: 'gte'},
         {name: 'Equal to', operator: 'eq'},
-        {name: 'Text contains', operator: 'co'},
         {name: 'Not equal to', operator: 'neq'},
+        {name: 'Text contains', operator: 'co'},
         {name: 'Text does not contain', operator: 'nco'},
         {name: 'Text is exactly', operator: 'ex'}
     ];
