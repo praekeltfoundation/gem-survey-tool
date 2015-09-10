@@ -6,9 +6,9 @@
                 <span class="glyphicon glyphicon-info-sign info-icon white-back pink-front" data-toggle="modal" data-target="#show_info_popup"></span>
                 {% include 'create_group_info.html' %}
             </div>
-            <div class="row form-horizontal" ng-if="!createGroup">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label h1-text text-left half-width">Edit Group:</label>
+            <div class="row container-head heading-top-margin" ng-if="!createGroup">
+                <div>
+                    <span class="h1-text">Edit Group:</span>
                     <div class="input-wrapper-active half-width right input-align-big-label no-left-margin">
                         <input id="group_name_big" type="text" ng-model="$parent.groupName" placeholder="Group Name" class="input-text-large">
                     </div>
@@ -36,8 +36,8 @@
             </div>
             <div class="row results-head" ng-if="queryStarted == true && rows.length > 0">
                 <span class="p-text">Results ({$ rows.length $})</span>
-                <button class="grey-background" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
-                <button class="pink-back white-front" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
+                <button class="pink-back white-front right left-margin" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
+                <button class="grey-background right" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0" style="overflow: auto;">
                 <table class="table contact-groups">
@@ -48,7 +48,7 @@
                         </tr>
                     </thead>
                     <tbody class="table-rows">
-                        <tr ng-repeat="row in pagedGroups[currentPage]">
+                        <tr ng-repeat="row in pagedGroups[currentPage]" class="results-row">
                             <td class="checkbox-table-column">
                                 <div>
                                     <input type="checkbox" id="checkbox_{$ $index $}" ng-model="row.selected" class='pseudo-checkbox sr-only'>

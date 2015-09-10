@@ -17,7 +17,7 @@
         <div class="container">
 			<form class="form-horizontal sign-up centered" method="post" action="/login/">
                 {% csrf_token %}
-                <img class="login-logo" src="{{ STATIC_URL }}img/ghelogo.png">
+                <img class="login-logo" src="{{ STATIC_URL }}img/ghelogo_login.png">
                 {% if request.session.wrong_password %}
                     <p class="red-front error-msg-indent">{{ request.session.error_msg_line }}</p>
                 {% endif %}

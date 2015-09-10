@@ -18,6 +18,8 @@ gems.controller('queryController', function($scope, $http){
 
     $scope.queryWords = '';
 
+    $scope.answerValues = {};
+
     $scope.queryWordOperator = function queryWordOperator(op){
         var retVal = '';
 
@@ -145,6 +147,45 @@ gems.controller('queryController', function($scope, $http){
 
         return valid;
     };
+
+    $scope.getAnswers = function getAnswers(fieldName, fieldFilters) {
+        var name = fieldName;
+        if (name === undefined || name === null)
+        {
+            fieldFilters.tooltip.items = null;
+            return;
+        }
+
+        if (name in $scope.answerValues) {
+            fieldFilters.tooltip.items = $scope.answerValues[name];
+        }
+        else {
+            var payload = { "field": name };
+            $http({
+                url: '/get_answer_values/',
+                method: 'POST',
+                data: payload
+            }).then(function(data){
+                if (data.data.length > 0) {
+                    $scope.answerValues[name] = data.data;
+                    fieldFilters.tooltip.items = $scope.answerValues[name];
+                }
+                else{
+                     fieldFilters.tooltip.items = null;
+                }
+
+            });
+        }
+    }
+
+    $scope.showToolTip = function displayToolTip(fieldFilter) {
+        fieldFilter.tooltip.show = true;
+    }
+
+    $scope.hideToolTip = function hideToolTip(fieldFilter) {
+        fieldFilter.tooltip.show = false;
+
+    }
 
     $scope.fetchFields();
     $scope.makeQueryWords();

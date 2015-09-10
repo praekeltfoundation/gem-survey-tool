@@ -33,7 +33,7 @@ gems.controller('mainController', function($scope, $http, $window){
             {
                 loperator: "and",
                 field:null,
-                filters: [{loperator: null, operator: null, value: null}]
+                filters: [{loperator: null, operator: null, value: null, tooltip: {items: null, show: false}}]
             })
     };
 

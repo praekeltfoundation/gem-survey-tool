@@ -27,7 +27,7 @@
                     </tr>
                 </thead>
                 <tbody class="table-rows">
-                    <tr ng-repeat="row in pagedGroups[currentPage]">
+                    <tr ng-repeat="row in pagedGroups[currentPage]" class="results-row">
                         <td class="checkbox-table-column">
                            <div>
                                 <input type="checkbox" id="checkbox_{$ $index $}" ng-model="row.selected" class='pseudo-checkbox sr-only'>
