@@ -13,6 +13,10 @@ gems.controller('groupController', function($scope, $http){
     $scope.maxSize = 6;
     $scope.buttonText = "Display Results";
     $scope.queryDone = true;
+    $scope.showAllResults = false;
+    $scope.dispCol = {
+        hide: false
+    };
 
     $scope.fetchResults = function fetchResults(){
         $scope.rows = [];
@@ -27,6 +31,17 @@ gems.controller('groupController', function($scope, $http){
 
         payload.filters = $scope.filters
         $scope.columns = $scope.origColumns.slice();
+
+        for(var x = 0; x < $scope.columns.length; ++x){
+            if(x > 3){
+                $scope.columns[x].noHide = false;
+                $scope.columns[x].hide = true;
+            }
+            else{
+                $scope.columns[x].noHide = true;
+                $scope.columns[x].hide = false;
+            }
+        }
 
         $http({
             url: '/query/',
@@ -180,5 +195,15 @@ gems.controller('groupController', function($scope, $http){
 
     $scope.queryValid = function queryValid(){
         return $scope.getQueryValid();
+    }
+
+    $scope.toggleShowAllResults = function toggleShowAllResults(){
+        $scope.showAllResults = !$scope.showAllResults;
+
+        for(var x = 0; x < $scope.columns.length; ++x){
+            if(!$scope.columns[x].noHide){
+                $scope.columns[x].hide = !$scope.columns[x].hide;
+            }
+        }
     }
 });
