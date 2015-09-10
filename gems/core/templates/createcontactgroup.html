@@ -1,4 +1,4 @@
-<div class="col-md-8" ng-controller="groupController" ng-if="showCreateGroup && showContactMenu">
+<div class="col-md-8 content-container" ng-controller="groupController" ng-if="showCreateGroup && showContactMenu">
     <div class="main-container">
         <form ng-submit="">
             <div class="row container-head heading-top-margin" ng-if="createGroup">
@@ -47,7 +47,7 @@
                             <th ng-repeat="column in columns">{$ column.name $}</th>
                         </tr>
                     </thead>
-                    <tbody class="table-rows">
+                    <tbody class="table-rows ">
                         <tr ng-repeat="row in pagedGroups[currentPage]" class="results-row">
                             <td class="checkbox-table-column">
                                 <div>
