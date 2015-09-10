@@ -5,10 +5,10 @@ gems.controller('queryController', function($scope, $http){
     $scope.fields = [];
 
     $scope.operators = [
-        {name: 'Less than', operator: 'lt'},
-        {name: 'Less than or equal to', operator: 'lte'},
-        {name: 'Greater than', operator: 'gt'},
-        {name: 'Greater than or equal to', operator: 'gte'},
+        //{name: 'Less than', operator: 'lt'},
+        //{name: 'Less than or equal to', operator: 'lte'},
+        //{name: 'Greater than', operator: 'gt'},
+        //{name: 'Greater than or equal to', operator: 'gte'},
         {name: 'Equal to', operator: 'eq'},
         {name: 'Text contains', operator: 'co'},
         {name: 'Not equal to', operator: 'neq'},
