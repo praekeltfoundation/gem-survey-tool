@@ -191,6 +191,7 @@ footer {
 
 .sub-menu {
     left: 200px;
+    z-index: -1;
 }
 
 .landing-container {
