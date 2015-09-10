@@ -398,8 +398,13 @@ def timing(f):
 
 
 def process_group_member(api, member, group):
+    if "value" not in member:
+        logger.info("process_group: value missing from member")
+
+    db_contact = None
+
     try:
-        db_contact = Contact.objects.filter(msisdn=member, vkey__isnull=False).first()
+        db_contact = Contact.objects.filter(msisdn=member["value"]).first()
         contact_key = db_contact.vkey
 
         # if for some reason we don't have the vumi key in the db for this contact
@@ -417,8 +422,9 @@ def process_group_member(api, member, group):
         except Exception:
             logger.info('Contact: %s update failed' % member)
 
-    group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=db_contact)
-    group_member.save()
+    if db_contact:
+        group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=db_contact)
+        group_member.save()
 
 
 def remove_group_member(api, member, group):
@@ -477,11 +483,11 @@ def create_contactgroup(request):
                             for member in members:
                                 process_group_member(api, member, contact_group)
 
-                            return HttpResponse("OK")
+                            return HttpResponse("Contact group %s created succcessfully" % group_name)
 
-        return HttpResponse("FAILED")
+        return HttpResponse("Failed to create Contact group %s" % group_name)
     else:
-        return HttpResponse("FAILED.")
+        return HttpResponse("Failed to create Contact group")
 
 
 def update_contactgroup(request):
@@ -681,6 +687,10 @@ class LandingStatsView(View):
 
         #total contact groups
         total_contact_groups = ContactGroup.objects.all().count()
+
+        #unique users
+
+        #
 
         return {
             "total_users": total_users,
