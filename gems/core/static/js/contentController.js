@@ -31,7 +31,7 @@ gems.controller('contentController', function ($scope, $http, $filter) {
                 $scope.search();
             }).
             error(function(data) {
-                alert("failed to retreive data.");
+                $scope.showAlert('alert-warning', 'Warning', 'Failed to retrieve data.');
             });
     };
 
@@ -39,21 +39,21 @@ gems.controller('contentController', function ($scope, $http, $filter) {
         $http.post('/delete_contactgroup/', {group_key : $scope.group_key}).
             success(function(status){
                 if(status  == "FAILED")
-                    alert("Failed to delete.");
+                $scope.showAlert('alert-warning', 'Failed', 'Failed to delete.');
                 $scope.getContactGroups();
             }).
             error(function(status){
-                alert("Failed to delete.");
+                $scope.showAlert('alert-warning', 'Failed', 'Failed to delete.');
             });
     };
 
     $scope.createContactGroup = function createContactGroup(g_name){
         $http.post('/create_contactgroup/', {group_name : g_name}).
             success(function(status){
-                alert(status);
+                $scope.showAlert('alert-success', 'Success', status);
             }).
             error(function(status){
-                alert("failed"  + status);
+                $scope.showAlert('alert-warning', 'Failed', status);
             });
     };
 
