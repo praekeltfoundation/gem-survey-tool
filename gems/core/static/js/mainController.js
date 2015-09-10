@@ -107,13 +107,16 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.showContactGroups = false;
         $scope.showCreateGroup = true;
         $scope.createGroup = false;
+
         if(typeof(filters) === 'string'){
             $scope.filters = JSON.parse(filters);
         } else {
             $scope.filters = filters;
         }
+
         $scope.setGroupName(name);
         $scope.groupKey = group_key;
+        $scope.fetchFields();
     };
 
     $scope.showViewExportSurvey = function showViewExportSurvey(){
