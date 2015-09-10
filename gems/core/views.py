@@ -398,9 +398,10 @@ def timing(f):
 
 
 def process_group_member(api, member, group):
-    db_contact = None
     if "value" not in member:
         logger.info("process_group: value missing from member")
+
+    db_contact = None
 
     try:
         db_contact = Contact.objects.filter(msisdn=member["value"]).first()
@@ -411,8 +412,7 @@ def process_group_member(api, member, group):
         if contact_key is None:
             contact = api.get_contact(msisdn=member)
             contact_key = contact["key"]
-    except Exception as ex:
-        print ex
+    except Exception:
         contact_key = None
         logger.info('Contact: %s not found in vumi' % member)
 
