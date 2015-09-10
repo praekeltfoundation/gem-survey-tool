@@ -137,11 +137,11 @@ gems.controller('groupController', function($scope, $http){
 
         $http.post('/create_contactgroup/', group, config={timeout: 300000}).
             success(function(status){
-                alert(status);
+                $scope.showAlert('alert-success', 'Success', status);
             }).
             error(function(data, status){
                 if(count === 0){
-                    alert("Failed to create contact group after 3 retries." + "\n\n" + status + " : " + data);
+                    $scope.showAlert('alert-warning', 'Failed', 'Failed to create contact group after 3 retries.' + '\n\n' + status + ' : ' + data);
                 } else {
                     // retry
                     $scope.saveGroup(filters, group, count - 1);
@@ -159,10 +159,10 @@ gems.controller('groupController', function($scope, $http){
 
         $http.post('/update_contactgroup/', group).
             success(function(status){
-                alert(status);
+                $scope.showAlert('alert-success', 'Success', status);
             }).
             error(function(status){
-                alert("Failed to update contact group." + "\n\n" + status);
+                $scope.showAlert('alert-warning', 'Failed', 'Failed to update contact group.'  + '\n\n' + status);
             });
 
         $scope.cancel();

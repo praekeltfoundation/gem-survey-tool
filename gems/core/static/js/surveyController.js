@@ -66,7 +66,7 @@ gems.controller('surveyController', function($scope, $http){
                 $scope.pagedGroups = $scope.groupToPages($scope.rows);
             })
             .error(function(data){
-                alert("Failed to retrieve the surveys");
+                $scope.showAlert('alert-warning', 'Failed', 'Failed to retrieve the surveys');
             });
     };
 
@@ -79,7 +79,7 @@ gems.controller('surveyController', function($scope, $http){
                 $scope.AllSurveys = data;
             })
             .error(function(data){
-                alert("Failed to retrieve the surveys");
+                $scope.showAlert('alert-warning', 'Failed', 'Failed to retrieve the surveys');
             });
     }
 
