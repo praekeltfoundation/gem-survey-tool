@@ -214,6 +214,15 @@ footer {
     left: 20px;
     bottom: 20px;
     font-family: Helvetica;
+    font-weight: normal;
+}
+
+.banner span {
+    display: block;
+}
+
+.banner-rights {
+    font-size: 11px;
 }
 
 /*MENU*/
