@@ -238,10 +238,25 @@ gems.controller('mainController', function($scope, $http, $window){
             })
     };
 
-    $scope.processQueryResults = function processQueryResults(results, _columns){
+    $scope.processQueryResults = function processQueryResults(results, _columns, _filters){
 
         var columns = _columns.slice();
+        var filters = _filters.slice();
         var rows = [];
+
+        // prep the columns with hide
+        // first 4: can't be hidden
+        // last n: can be hidden unless in the filter
+        for(var x = 0; x < columns.length; ++x){
+            if(x > 3){
+                columns[x].noHide = false;
+                columns[x].hide = true;
+            }
+            else{
+                columns[x].noHide = true;
+                columns[x].hide = false;
+            }
+        }
 
         // Construct the fields
         for(var x = 0; x < results.length; ++x){
@@ -284,9 +299,21 @@ gems.controller('mainController', function($scope, $http, $window){
             }
         }
 
+        // Remove those columns
         for(var x = foundData.length - 1; x > -1; --x){
             if(foundData[x] === false){
                 columns.splice(x, 1);
+            }
+        }
+
+        // Find columns that should not be hidden
+        for(var x = 0; x < filters.length; ++x){
+            var name = filters[x].field.name;
+            for(var x = 4; x < columns.length; ++x){
+                if(columns[x].name === name){
+                    columns[x].hide = false;
+                    columns[x].noHide = true;
+                }
             }
         }
 
@@ -305,14 +332,20 @@ gems.controller('mainController', function($scope, $http, $window){
 
             for(var y = 0; y < columns.length; ++y){
                 var column = columns[y];
+                var val = null;
 
                 if(fields.hasOwnProperty(column.name)){
-                    row.fields.push(fields[column.name]);
+                    val = fields[column.name];
                 } else if(answer.hasOwnProperty(column.name)){
-                    row.fields.push(answer[column.name]);
-                } else {
-                    row.fields.push('');
+                    val = answer[column.name];
                 }
+
+                row.fields.push(
+                    {
+                        value: val,
+                        hide: column.hide,
+                        noHide: column.noHide
+                    });
             }
 
             rows.push(row);
@@ -336,6 +369,27 @@ gems.controller('mainController', function($scope, $http, $window){
         setTimeout(function() {
             $('.alerts-container').children('.alert:first-child').fadeOut(300, function() { $(this).remove()});
         }, wait);
+    }
+
+    $scope.toggleColumnsAndRows = function toggleColumnsAndFields(_columns, _rows){
+        var columns = _columns.slice();
+        var rows = _rows.slice();
+
+        for(var x = 0; x < columns.length; ++x){
+            if(!columns[x].noHide){
+                columns[x].hide = !columns[x].hide;
+            }
+        }
+
+        for(var x = 0; x < rows.length; ++x){
+            for(var y = 0; y < rows[x].fields.length; ++y){
+                if(!rows[x].fields[y].noHide){
+                    rows[x].fields[y].hide = !rows[x].fields[y].hide;
+                }
+            }
+        }
+
+        return [columns, rows];
     }
 
     $scope.fetchStats();

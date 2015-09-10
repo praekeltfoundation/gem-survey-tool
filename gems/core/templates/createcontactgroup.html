@@ -37,14 +37,15 @@
             <div class="row results-head" ng-if="queryStarted == true && rows.length > 0">
                 <span class="p-text">Results ({$ rows.length $})</span>
                 <button class="pink-back white-front right left-margin" data-toggle="modal" data-target="#group_name_popup" ng-disabled="!anyRowsSelected()">Create Group</button>
-                <button class="grey-background right" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
+                <button class="grey-background right left-margin" ng-click="selectFunction()">{$ allRowsSelected() ? 'Deselect All' : 'Select All' $}</button>
+                <button class="grey-background right" ng-click="toggleShowAllResults()">{$ showAllResults ? 'Hide All' : 'Show All' $}</button>
             </div>
             <div class="row" ng-if="queryStarted == true && rows.length > 0" style="overflow: auto;">
                 <table class="table contact-groups">
                     <thead class="table-heading aqua-back">
                         <tr>
                             <th class="checkbox-heading"></th>
-                            <th ng-repeat="column in columns">{$ column.name $}</th>
+                            <th ng-repeat="column in columns | filter:dispCol:true">{$ column.name $}</th>
                         </tr>
                     </thead>
                     <tbody class="table-rows">
@@ -57,7 +58,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td ng-repeat="field in row.fields track by $index">{$ formatDate(field) $}</td>
+                            <td ng-repeat="field in row.fields | filter:dispCol:true track by $index">{$ formatDate(field.value) $}</td>
                         </tr>
                     </tbody>
                 </table>
