@@ -326,7 +326,7 @@ class GeneralTests(TestCase):
                          follow=True)
 
         resp = self.client.get("/create_contactgroup/")
-        self.assertContains(resp, "FAILED")
+        self.assertContains(resp, "Failed to create Contact group")
 
         resp = self.client.post('/create_contactgroup/',
                                 data='{"name": "group name", "filters": "filter", "query_words": '
@@ -338,7 +338,7 @@ class GeneralTests(TestCase):
         self.assertEquals(u'group name', group.name)
         self.assertEquals(u'filter', group.filters)
         self.assertEquals(u'age > 20', group.query_words)
-        self.assertEquals(resp.content, "OK")
+        self.assertEquals(resp.content, "Contact group group name created succcessfully")
 
     def test_update_contact_group(self):
         resp = self.client.get("/update_contactgroup/")
