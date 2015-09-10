@@ -23,6 +23,7 @@ gems.controller('groupController', function($scope, $http){
         $scope.queryStarted = true;
         $scope.queryDone = false;
         $scope.buttonText = "Loading Results";
+        $scope.showAllResults = false;
         var payload = {};
 
         if($scope.numberOfRows != null && $scope.numberOfRows > 0){
@@ -32,17 +33,6 @@ gems.controller('groupController', function($scope, $http){
         payload.filters = $scope.filters
         $scope.columns = $scope.origColumns.slice();
 
-        for(var x = 0; x < $scope.columns.length; ++x){
-            if(x > 3){
-                $scope.columns[x].noHide = false;
-                $scope.columns[x].hide = true;
-            }
-            else{
-                $scope.columns[x].noHide = true;
-                $scope.columns[x].hide = false;
-            }
-        }
-
         $http({
             url: '/query/',
             method: 'POST',
@@ -51,7 +41,7 @@ gems.controller('groupController', function($scope, $http){
             .then(function(data){
                 var results = data.data;
 
-                var retVal = $scope.processQueryResults(results, $scope.columns);
+                var retVal = $scope.processQueryResults(results, $scope.columns, payload.filters);
                 $scope.columns = retVal[0];
                 $scope.rows = retVal[1];
 
@@ -200,10 +190,8 @@ gems.controller('groupController', function($scope, $http){
     $scope.toggleShowAllResults = function toggleShowAllResults(){
         $scope.showAllResults = !$scope.showAllResults;
 
-        for(var x = 0; x < $scope.columns.length; ++x){
-            if(!$scope.columns[x].noHide){
-                $scope.columns[x].hide = !$scope.columns[x].hide;
-            }
-        }
+        var retVal = $scope.toggleColumnsAndRows($scope.columns, $scope.rows);
+        $scope.columns = retVal[0];
+        $scope.rows = retVal[1];
     }
 });
