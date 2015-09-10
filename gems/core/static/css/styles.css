@@ -199,6 +199,7 @@ footer {
     right: 0px;
     padding-right: 15px;
     padding-left: 15px;
+    z-index: -1;
 }
 
 .content-container {
@@ -207,6 +208,7 @@ footer {
     right: 0px;
     padding-right: 15px;
     padding-left: 15px;
+    z-index: -1;
 }
 
 .banner {
