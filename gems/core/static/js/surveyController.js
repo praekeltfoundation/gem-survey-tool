@@ -195,7 +195,7 @@ gems.controller('surveyController', function($scope, $http){
                 url += ',';
             }
 
-            url += data[x];
+            url += data[x].value;
         }
 
         url += ']';
