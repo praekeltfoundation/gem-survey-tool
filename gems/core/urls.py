@@ -9,12 +9,13 @@ from views import survey_csv_import, user_login, user_logout, save_data, export_
     query, get_unique_keys, view_home, delete_contactgroup, create_contactgroup, \
     update_contactgroup, get_surveys, LandingStatsView, LandingPage, get_answer_values
 from gems.core.viewsets import SurveyResultViewSet, ContactGroupMemberViewSet, ContactViewSet, SurveyViewSet, \
-    ContactGroupViewSet
+    ContactGroupViewSet, SurveyResultRawViewSet
 
 admin.autodiscover()
 
 router = routers.DefaultRouter()
 router.register(r'surveyresult', SurveyResultViewSet)
+router.register(r'rawsurveyresult', SurveyResultRawViewSet)
 router.register(r'contact', ContactViewSet)
 router.register(r'survey', SurveyViewSet)
 router.register(r'contactgroup', ContactGroupViewSet)
