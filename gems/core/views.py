@@ -249,6 +249,7 @@ def get_surveyresult_meta_keys():
         UIField("survey", "N"),
         UIField("contact", "N"),
         UIField("created_at", "N"),
+        UIField("series", "N"),
     ]
 
     return field_keys
@@ -285,7 +286,8 @@ def query(request):
                 'contact',
                 'created_at',
                 'updated_at',
-                'answer')))
+                'answer',
+                'series')))
 
 
 def get_surveyresult_hstore_keys():
