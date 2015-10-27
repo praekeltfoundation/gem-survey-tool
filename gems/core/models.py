@@ -40,6 +40,7 @@ class SurveyResultBase(HStoreModel):
     updated_at = models.DateTimeField(auto_now=True)
     answer = hstore.DictionaryField()
     sent = models.BooleanField(default=False)
+    series = models.CharField(max_length=200, null=True, blank=True)
 
     class Meta:
         abstract = True
