@@ -6,71 +6,195 @@
         <div class="row stat-data">
             <div class="row">
                 <div class="stat-block stat-border-top-row light-grey-back">
-                    <p class="stat-number pink-front">{$ stats.total_users $}</p>
-                    <!--<p class="stat-text">Total users</p>-->
+                    <p class="stat-number pink-front">{$ registered_users_total $}</p>
                     <p class="stat-text">Registered Users</p>
                 </div>
                 <div class="stat-block stat-border-top-row light-grey-back">
-                    <p class="stat-number pink-front">{$ stats.new_users_last_month $}</p>
-                    <!--<p class="stat-text">New users last month</p>-->
-                    <p class="stat-text">New Registered users this month</p>
+                    <p class="stat-number pink-front">{$ registered_users_this_quarter $}</p>
+                    <p class="stat-text">New Registered Users this quarter</p>
                 </div>
                 <div class="stat-block stat-border-top-row light-grey-back">
-                    <p class="stat-number pink-front">{$ stats.new_users_this_month $}</p>
-                    <!--<p class="stat-text">New users this month</p>-->
-                    <p class="stat-text">New Registered users this week</p>
+                    <p class="stat-number pink-front">{$ registered_users_last_month $}</p>
+                    <p class="stat-text">New Registered Users this month</p>
                 </div>
-            </div>
 
-            <div class="row ">
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number aqua-front">{$ stats.new_users_this_week $}</p>
-                    <!--<p class="stat-text">New users this week</p>-->
-                    <p class="stat-text">Unique users</p>
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ registered_users_this_week $}</p>
+                    <p class="stat-text">New Registered Users this week</p>
                 </div>
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number aqua-front">{$ stats.total_results $}</p>
-                    <!--<p class="stat-text">Total survey results</p>-->
-                    <p class="stat-text">New users this month</p>
-                </div>
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number aqua-front">{$ stats.total_results_last_month $}</p>
-                    <!--<p class="stat-text">Total survey results last month</p>-->
-                    <p class="stat-text">New users this week</p>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ unique_users_8510 $}</p>
+                    <p class="stat-text">Unique Users (8510)</p>
                 </div>
             </div>
 
             <div class="row">
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number pink-front">{$ stats.total_results_this_month $}</p>
-                    <!--<p class="stat-text">Total survey results this month</p>-->
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ unique_users_8558 $}</p>
+                    <p class="stat-text">Unique Users (8558)</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ users_sent_sms_this_quarter_8510 $}</p>
+                    <p class="stat-text">New users this quarter</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ users_sent_sms_this_quarter_8558 $}</p>
+                    <p class="stat-text">New users this quarter</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ users_sent_sms_this_month_8510 $}</p>
+                    <p class="stat-text">New users this month</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ users_sent_sms_this_month_8558 $}</p>
+                    <p class="stat-text">New users this month</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ users_sent_sms_this_week_8510 $}</p>
+                    <p class="stat-text">New users this week</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ users_sent_sms_this_week_8585 $}</p>
+                    <p class="stat-text">New users this week</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_received_total_8510 $}</p>
                     <p class="stat-text">Total SMSs received</p>
                 </div>
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number pink-front">{$ stats.total_results_this_week $}</p>
-                    <!--<p class="stat-text">Total survey results this week</p>-->
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_received_total_8558 $}</p>
+                    <p class="stat-text">Total SMSs received</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_received_this_quarter_8510 $}</p>
+                    <p class="stat-text">SMSs received this quarter</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_received_this_quarter_8558 $}</p>
+                    <p class="stat-text">SMSs received this quarter</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_received_this_month_8510 $}</p>
                     <p class="stat-text">SMSs received this month</p>
                 </div>
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number pink-front">{$ stats.total_surveys $}</p>
-                    <!--<p class="stat-text">Total surveys</p>-->
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_received_this_month_8558 $}</p>
+                    <p class="stat-text">SMSs received this month</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_received_this_week_8510 $}</p>
+                    <p class="stat-text">SMSs received this week</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_received_this_week_8585 $}</p>
                     <p class="stat-text">SMSs received this week</p>
                 </div>
             </div>
 
             <div class="row">
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number aqua-front">{$ stats.total_contact_groups $}</p>
-                    <!--<p class="stat-text">Total contract groups</p>-->
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_sent_total_8510 $}</p>
                     <p class="stat-text">Total SMSs sent</p>
                 </div>
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number aqua-front">{$ stats.total_contact_groups $}</p>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_sent_total_8558 $}</p>
+                    <p class="stat-text">Total SMSs sent</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_sent_quarter_8510 $}</p>
+                    <p class="stat-text">SMSs sent this quarter</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_sent_quarter_8585 $}</p>
+                    <p class="stat-text">SMSs sent this quarter</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_sent_this_month_8510 $}</p>
                     <p class="stat-text">SMSs sent this month</p>
                 </div>
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number aqua-front">{$ stats.total_contact_groups $}</p>
+            </div>
+
+            <div class="row">
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_sent_this_month_8585 $}</p>
+                    <p class="stat-text">SMSs sent this month</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_sent_this_week_8510 $}</p>
                     <p class="stat-text">SMSs sent this week</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ smses_sent_this_week_8585 $}</p>
+                    <p class="stat-text">SMSs sent this week</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ amharic_users_total $}</p>
+                    <p class="stat-text">Total number of Amharic Users</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ phonetic_users_total $}</p>
+                    <p class="stat-text">Total number of Phonetic Amharic Users</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ active_registered_users_this_week_total $}</p>
+                    <p class="stat-text">Total active registered users this week</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ active_registered_users_this_month_total $}</p>
+                    <p class="stat-text">Total active registered users this month</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ active_registered_users_this_quarter_total $}</p>
+                    <p class="stat-text">Total active registered users this quarter</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ active_registered_users_this_week_percentage $}</p>
+                    <p class="stat-text">Percentage active registered users this week</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ active_registered_users_this_month_percentage $}</p>
+                    <p class="stat-text">Percentage active registered users this month</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ active_registered_users_this_quarter_percentage $}</p>
+                    <p class="stat-text">Percentage active registered users this quarter </p>
                 </div>
             </div>
         </div>
