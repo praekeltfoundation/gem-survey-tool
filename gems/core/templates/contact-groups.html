@@ -12,7 +12,7 @@
                 <thead class="table-heading aqua-back">
                     <tr>
                         <th class="name">
-                            <a href="#" ng-click="sorting.order='name'; sorting.reverse.name = !sorting.reverse.name">
+                            <a href="#" ng-click="sort_contacts('name');">
                                 Name
                                 <span>
                                     <span class="glyphicon glyphicon-triangle-top right white-front" aria-hidden="true" ng-show="!sorting.reverse.name"></span>
@@ -21,7 +21,7 @@
                             </a>
                         </th>
                         <th class="created-on">
-                            <a href="#" ng-click="sorting.order='created_at'; sorting.reverse.created_at = !sorting.reverse.created_at">
+                            <a href="#" ng-click="sort_contacts('created_at');">
                                 Created On
                                 <span>
                                     <span class="glyphicon glyphicon-triangle-top right white-front" aria-hidden="true" ng-show="!sorting.reverse.created_at"></span>
@@ -30,7 +30,7 @@
                             </a>
                         </th>
                         <th class="rules">
-                            <a href="#" ng-click="sorting.order='filters'; sorting.reverse.filters = !sorting.reverse.filters">
+                            <a href="#" ng-click="sort_contacts('filters');">
                                 Rules
                                 <span>
                                     <span class="glyphicon glyphicon-triangle-top right white-front" aria-hidden="true" ng-show="!sorting.reverse.filters"></span>
