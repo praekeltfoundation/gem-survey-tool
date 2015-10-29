@@ -227,7 +227,7 @@ gems.controller('surveyController', function($scope, $http){
     };
 
     $scope.exportSelectedSurvey = function() {
-        var url = '/export_survey/?pk=' + $scope.selected.survey.id;
+        var url = '/export_survey/?pk=' + $scope.selected.survey.pk;
         window.location.assign(url);
     }
 
