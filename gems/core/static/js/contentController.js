@@ -80,6 +80,18 @@ gems.controller('contentController', function ($scope, $http, $filter) {
         $scope.groupToPages();
     };
 
+    $scope.sort_contacts = function(field) {
+        if (field !== '')
+        {
+            $scope.sorting.order = field;
+            $scope.sorting.reverse[field] = !$scope.sorting.reverse[field];
+
+            $scope.filteredGroups = $filter('orderBy')($scope.filteredGroups, $scope.sorting.order, $scope.sorting.reverse[$scope.sorting.order]);
+            $scope.currentPage = 0;
+            $scope.groupToPages();
+        }
+    };
+
     $scope.groupToPages = function(){
         $scope.pagedGroups = [];
 
