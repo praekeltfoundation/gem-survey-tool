@@ -136,22 +136,24 @@ def export_data():
 def import_contacts():
     logger.info('importing contacts :: Started')
 
+    api = None
     try:
         api = ContactsApiClient(settings.VUMI_TOKEN)
     except Exception:
         logger.info('importing contacts :: Failed to connect to VUMI')
 
-    count = 0
-    try:
-        for contact in api.contacts():
-            try:
-                Contact.objects.get(msisdn=contact['msisdn'])
-                continue
-            except Contact.DoesNotExist:
-                Contact.objects.create(msisdn=contact['msisdn'], vkey=contact['key'])
-                count += 1
+    if api:
+        count = 0
+        try:
+            for contact in api.contacts():
+                try:
+                    Contact.objects.get(msisdn=contact['msisdn'])
+                    continue
+                except Contact.DoesNotExist:
+                    Contact.objects.create(msisdn=contact['msisdn'], vkey=contact['key'])
+                    count += 1
 
-        logger.info('%s contacts imported' % count)
-        logger.info('importing contacts :: Completed')
-    except Exception:
-        logger.info('importing contacts :: Failed to fetch contacts')
+            logger.info('%s contacts imported' % count)
+            logger.info('importing contacts :: Completed')
+        except Exception:
+            logger.info('importing contacts :: Failed to fetch contacts')
