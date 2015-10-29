@@ -222,7 +222,7 @@ gems.controller('surveyController', function($scope, $http){
 
         for(var x = 0; x < data.length; ++x){
             var tempUrl = url + data[x];
-            window.location.assign(tempUrl);
+            window.open(tempUrl, '_blank', '');
         }
     };
 
