@@ -129,7 +129,7 @@ gems.controller('groupController', function($scope, $http){
                 $scope.showAlert('alert-success', 'Success', status);
             }).
             error(function(data, status){
-                $scope.showAlert('alert-warning', 'Failed', 'Failed to create contact group after 3 retries.' + '\n\n' + status + ' : ' + data);
+                $scope.showAlert('alert-warning', 'Failed', 'Failed to create contact group.' + '\n\n' + status + ' : ' + data);
             });
 
         $scope.cancel();
