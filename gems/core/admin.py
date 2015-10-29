@@ -3,8 +3,8 @@ from .models import *
 
 
 class SurveyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'survey_id', 'created_on')
-    search_fields = ("created_on", "name")
+    list_display = ('name', 'survey_id', 'created_on', "series")
+    search_fields = ("created_on", "name", "series")
 
 
 class ContactAdmin(admin.ModelAdmin):
@@ -13,8 +13,8 @@ class ContactAdmin(admin.ModelAdmin):
 
 
 class SurveyResultAdmin(admin.ModelAdmin):
-    list_display = ("survey", "contact", "created_at", "updated_at", "answer", "series", "sent")
-    search_fields = ("survey__name", "contact__msisdn", "created_at", "updated_at", "series")
+    list_display = ("survey", "contact", "created_at", "updated_at", "answer", "sent")
+    search_fields = ("survey__name", "contact__msisdn", "created_at", "updated_at")
 
 
 class RawSurveyResultAdmin(SurveyResultAdmin):
