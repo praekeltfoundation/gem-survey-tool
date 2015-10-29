@@ -16,6 +16,7 @@ class Survey(models.Model):
     survey_id = models.CharField(max_length=200, primary_key=True)
     name = models.CharField(max_length=200, db_index=True)
     created_on = models.DateField(auto_now_add=True)
+    series = models.CharField(max_length=200, null=True, blank=True)
 
     def __unicode__(self):
         return u'%s' % self.name
@@ -40,7 +41,6 @@ class SurveyResultBase(HStoreModel):
     updated_at = models.DateTimeField(auto_now=True)
     answer = hstore.DictionaryField()
     sent = models.BooleanField(default=False)
-    series = models.CharField(max_length=200, null=True, blank=True)
 
     class Meta:
         abstract = True
