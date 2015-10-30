@@ -7,7 +7,7 @@ from rest_framework import routers
 
 from views import survey_csv_import, user_login, user_logout, save_data, export_survey, export_survey_results, \
     query, get_unique_keys, view_home, delete_contactgroup, create_contactgroup, \
-    update_contactgroup, get_surveys, LandingStatsView, LandingPage, get_answer_values
+    update_contactgroup, get_surveys, LandingStatsView, LandingPage, get_answer_values, get_graph_data
 from gems.core.viewsets import SurveyResultViewSet, ContactGroupMemberViewSet, ContactViewSet, SurveyViewSet, \
     ContactGroupViewSet, SurveyResultRawViewSet
 
@@ -54,5 +54,6 @@ urlpatterns = patterns('',
 
     url(r'^robots.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")),
 
-    url(r'^get_answer_values/$', get_answer_values, name="get_answer_values")
+    url(r'^get_answer_values/$', get_answer_values, name="get_answer_values"),
+    url(r'^get_graph_data/$', get_graph_data, name='get_graph_data')
 )

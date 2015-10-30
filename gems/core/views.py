@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core import serializers
 from django.db import connection
+from django.db.models import Count
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.views.generic import View
@@ -664,6 +665,9 @@ class LandingStatsView(View):
             created_on__range=this_week
         ).count()
 
+        #new users this quarter
+        # new_users_this_quarter = Contact.objects.filter().aggregate(Count['id'])['id__count']
+
         #total survey results
         total_results = SurveyResult.objects.all().count()
 
@@ -690,9 +694,9 @@ class LandingStatsView(View):
         #total contact groups
         total_contact_groups = ContactGroup.objects.all().count()
 
-        #unique users
-
-        #
+        # surveys_this_month = SurveyResult.objects.filter().values_list('contact', flat=True,
+        #                                                                created_at__month=today.month,
+        #                                                                created_at__year=today.year)
 
         return {
             "total_users": total_users,
@@ -728,3 +732,38 @@ class LandingPage(View):
                 "pwd": pwd
             }
         )
+
+
+def get_sms_graph_data():
+    line = list()
+
+    for i in range(6, -1, -1):
+        date = datetime.now() - timedelta(days=i)
+        count = SurveyResult.objects.filter(created_at__day=date.day,
+                                            created_at__month=date.month,
+                                            created_at__year=date.year).aggregate(Count('id'))['id__count']
+        line.append((-i, count))
+
+    dataset = list()
+    dataset.append(line)
+
+    data = dict()
+    data['heading'] = 'Number of SMSes received past 7 days'
+    data['dataset'] = dataset
+
+    return data
+
+
+def get_graph_data(request):
+
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        if 'name' in data:
+
+            if data['name'] == 'SMS_GRAPH':
+                data = get_sms_graph_data()
+
+            return generate_json_response(json.dumps(data))
+
+    #return something

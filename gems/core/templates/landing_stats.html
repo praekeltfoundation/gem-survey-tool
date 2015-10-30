@@ -1,3 +1,4 @@
+<script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
 <div class="landing-container" ng-if="showLandingStats">
     <div class="main-container">
         <div class="row stat-heading">
@@ -196,6 +197,10 @@
                     <p class="stat-number pink-front">{$ active_registered_users_this_quarter_percentage $}</p>
                     <p class="stat-text">Percentage active registered users this quarter </p>
                 </div>
+            </div>
+
+            <div class="row" ng-controller="graphController">
+                <div id="sms-graph"></div>
             </div>
         </div>
     </div>
