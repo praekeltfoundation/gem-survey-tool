@@ -312,10 +312,10 @@ gems.controller('mainController', function($scope, $http, $window){
         // Find columns that should not be hidden
         for(var x = 0; x < filters.length; ++x){
             var name = filters[x].field.name;
-            for(var x = 4; x < columns.length; ++x){
-                if(columns[x].name === name){
-                    columns[x].hide = false;
-                    columns[x].noHide = true;
+            for(var y = 4; y < columns.length; ++y){
+                if(columns[y].name === name){
+                    columns[y].hide = false;
+                    columns[y].noHide = true;
                 }
             }
         }

@@ -222,12 +222,12 @@ gems.controller('surveyController', function($scope, $http){
 
         for(var x = 0; x < data.length; ++x){
             var tempUrl = url + data[x];
-            window.location.assign(tempUrl);
+            window.open(tempUrl, '_blank', '');
         }
     };
 
     $scope.exportSelectedSurvey = function() {
-        var url = '/export_survey/?pk=' + $scope.selected.survey.id;
+        var url = '/export_survey/?pk=' + $scope.selected.survey.pk;
         window.location.assign(url);
     }
 
