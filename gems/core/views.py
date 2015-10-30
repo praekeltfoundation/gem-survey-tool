@@ -768,6 +768,18 @@ class LandingStatsView(View):
 
         percent_active_this_quarter = "%s%%" % (active_users_this_quarter * 100 / total_registered_users)
 
+        #drop off this month
+        drop_off_list = [x for x in sent_sms if x not in registered_list]
+
+        drop_this_month = SurveyResult.objects.filter(contact__msisdn__in=drop_off_list,
+                                                      created_at__month=this_month,
+                                                      created_at__year=this_year).count()
+
+        #drop off last month
+        drop_last_month = SurveyResult.objects.filter(contact__msisdn__in=drop_off_list,
+                                                      created_at__month=last_month,
+                                                      created_at__year=last_month_year).count()
+
         return {
             "total_registered_users": total_registered_users,
             "new_registered_users_last_month": new_registered_users_last_month,
@@ -790,7 +802,9 @@ class LandingStatsView(View):
             "active_users_this_quarter": active_users_this_quarter,
             "percent_active_this_month": percent_active_this_month,
             "percent_active_this_week": percent_active_this_week,
-            "percent_active_this_quarter": percent_active_this_quarter
+            "percent_active_this_quarter": percent_active_this_quarter,
+            "drop_this_month": drop_this_month,
+            "drop_last_month": drop_last_month
         }
 
     def get(self, request):
