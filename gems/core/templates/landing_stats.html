@@ -1,3 +1,4 @@
+<script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
 <div class="landing-container" ng-if="showLandingStats">
     <div class="main-container">
         <div class="row stat-heading">
@@ -6,72 +7,113 @@
         <div class="row stat-data">
             <div class="row">
                 <div class="stat-block stat-border-top-row light-grey-back">
-                    <p class="stat-number pink-front">{$ stats.total_users $}</p>
-                    <!--<p class="stat-text">Total users</p>-->
+                    <p class="stat-number pink-front">{$ stats.total_registered_users $}</p>
                     <p class="stat-text">Registered Users</p>
                 </div>
                 <div class="stat-block stat-border-top-row light-grey-back">
-                    <p class="stat-number pink-front">{$ stats.new_users_last_month $}</p>
-                    <!--<p class="stat-text">New users last month</p>-->
-                    <p class="stat-text">New Registered users this month</p>
+                    <p class="stat-number pink-front">{$ stats.new_registered_users_this_quarter $}</p>
+                    <p class="stat-text">New Registered Users this quarter</p>
                 </div>
                 <div class="stat-block stat-border-top-row light-grey-back">
-                    <p class="stat-number pink-front">{$ stats.new_users_this_month $}</p>
-                    <!--<p class="stat-text">New users this month</p>-->
-                    <p class="stat-text">New Registered users this week</p>
+                    <p class="stat-number pink-front">{$ stats.new_registered_users_this_month $}</p>
+                    <p class="stat-text">New Registered Users this month</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ stats.new_registered_users_this_week $}</p>
+                    <p class="stat-text">New Registered Users this week</p>
                 </div>
             </div>
 
-            <div class="row ">
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number aqua-front">{$ stats.new_users_this_week $}</p>
-                    <!--<p class="stat-text">New users this week</p>-->
-                    <p class="stat-text">Unique users</p>
+            <div class="row">
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number aqua-front">{$ stats.unique_users $}</p>
+                    <p class="stat-text">Unique Users</p>
                 </div>
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number aqua-front">{$ stats.total_results $}</p>
-                    <!--<p class="stat-text">Total survey results</p>-->
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number aqua-front">{$ stats.new_users_this_quarter $}</p>
+                    <p class="stat-text">New users this quarter</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number aqua-front">{$ stats.new_users_this_month $}</p>
                     <p class="stat-text">New users this month</p>
                 </div>
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number aqua-front">{$ stats.total_results_last_month $}</p>
-                    <!--<p class="stat-text">Total survey results last month</p>-->
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number aqua-front">{$ stats.new_users_this_week $}</p>
                     <p class="stat-text">New users this week</p>
                 </div>
             </div>
 
             <div class="row">
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number pink-front">{$ stats.total_results_this_month $}</p>
-                    <!--<p class="stat-text">Total survey results this month</p>-->
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ stats.total_results $}</p>
                     <p class="stat-text">Total SMSs received</p>
                 </div>
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number pink-front">{$ stats.total_results_this_week $}</p>
-                    <!--<p class="stat-text">Total survey results this week</p>-->
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ stats.total_results_this_quarter $}</p>
+                    <p class="stat-text">SMSs received this quarter</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ stats.total_results_this_month $}</p>
                     <p class="stat-text">SMSs received this month</p>
                 </div>
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number pink-front">{$ stats.total_surveys $}</p>
-                    <!--<p class="stat-text">Total surveys</p>-->
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ stats.total_results_this_week $}</p>
                     <p class="stat-text">SMSs received this week</p>
                 </div>
             </div>
 
             <div class="row">
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number aqua-front">{$ stats.total_contact_groups $}</p>
-                    <!--<p class="stat-text">Total contract groups</p>-->
-                    <p class="stat-text">Total SMSs sent</p>
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number aqua-front">{$ stats.active_users_this_week $}</p>
+                    <p class="stat-text">Total active registered users this week</p>
                 </div>
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number aqua-front">{$ stats.total_contact_groups $}</p>
-                    <p class="stat-text">SMSs sent this month</p>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number aqua-front">{$ stats.active_users_this_month $}</p>
+                    <p class="stat-text">Total active registered users this month</p>
                 </div>
-                <div class="stat-block stat-border light-grey-back">
-                    <p class="stat-number aqua-front">{$ stats.total_contact_groups $}</p>
-                    <p class="stat-text">SMSs sent this week</p>
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number aqua-front">{$ stats.drop_this_month $}</p>
+                    <p class="stat-text">Drop off this month</p>
                 </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number aqua-front">{$ stats.drop_last_month $}</p>
+                    <p class="stat-text">Drop off last month</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ stats.active_users_this_quarter $}</p>
+                    <p class="stat-text">Total active registered users this quarter</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ stats.percent_active_this_week $}</p>
+                    <p class="stat-text">Percentage active registered users this week</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ stats.percent_active_this_month $}</p>
+                    <p class="stat-text">Percentage active registered users this month</p>
+                </div>
+
+                <div class="stat-block stat-border-top-row light-grey-back">
+                    <p class="stat-number pink-front">{$ stats.percent_active_this_quarter $}</p>
+                    <p class="stat-text">Percentage active registered users this quarter </p>
+                </div>
+            </div>
+
+            <div class="row" ng-controller="graphController">
+                <div id="sms-graph"></div>
             </div>
         </div>
     </div>

@@ -5,6 +5,8 @@ from django.conf import settings
 import logging
 import json
 import requests
+from go_http.contacts import ContactsApiClient
+from gems.core.models import Contact
 
 logger = logging.getLogger(__name__)
 
@@ -128,3 +130,30 @@ def export_data():
         logger.error('export_data[Task] failed: %s' % ex.message)
 
     logger.info('export_data[Task] :: Completed')
+
+
+@task(bind=True)
+def import_contacts():
+    logger.info('importing contacts :: Started')
+
+    api = None
+    try:
+        api = ContactsApiClient(settings.VUMI_TOKEN)
+    except Exception:
+        logger.info('importing contacts :: Failed to connect to VUMI')
+
+    if api:
+        count = 0
+        try:
+            for contact in api.contacts():
+                try:
+                    Contact.objects.get(msisdn=contact['msisdn'])
+                    continue
+                except Contact.DoesNotExist:
+                    Contact.objects.create(msisdn=contact['msisdn'], vkey=contact['key'])
+                    count += 1
+
+            logger.info('%s contacts imported' % count)
+            logger.info('importing contacts :: Completed')
+        except Exception:
+            logger.info('importing contacts :: Failed to fetch contacts')

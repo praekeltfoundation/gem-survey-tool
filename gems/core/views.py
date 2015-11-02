@@ -635,6 +635,31 @@ class LandingStatsView(View):
         today = self.get_today().replace(day=1) - timedelta(days=1)
         return today
 
+    def get_this_quarter(self):
+        quarter_1 = (1, 2, 3)
+        quarter_2 = (4, 5, 6)
+        quarter_3 = (7, 8, 9)
+        # quarter_4 = ("October", "November", "December")
+
+        today = self.get_today()
+
+        if today.month in quarter_1:
+            start = today.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+            end = today.replace(month=3, day=31, hour=23, minute=59, second=59, microsecond=999999)
+            return [start, end]
+        elif today in quarter_2:
+            start = today.replace(month=4, day=1, hour=0, minute=0, second=0, microsecond=0)
+            end = today.replace(month=6, day=31, hour=23, minute=59, second=59, microsecond=999999)
+            return [start, end]
+        elif today in quarter_3:
+            start = today.replace(month=7, day=1, hour=0, minute=0, second=0, microsecond=0)
+            end = today.replace(month=9, day=31, hour=23, minute=59, second=59, microsecond=999999)
+            return [start, end]
+        else:
+            start = today.replace(month=10, day=1, hour=0, minute=0, second=0, microsecond=0)
+            end = today.replace(month=12, day=31, hour=23, minute=59, second=59, microsecond=999999)
+            return [start, end]
+
     def get_stats(self):
         today = self.get_today()
         this_week = self.get_this_week()
@@ -643,26 +668,51 @@ class LandingStatsView(View):
         day_in_last_month = self.get_day_in_last_month()
         last_month = day_in_last_month.month
         last_month_year = day_in_last_month.year
+        this_quarter = self.get_this_quarter()
 
         #total users
-        total_users = Contact.objects.all().count()
+        total_registered_users = Contact.objects.all().count()
 
         #new users last month
-        new_users_last_month = Contact.objects.filter(
+        new_registered_users_last_month = Contact.objects.filter(
             created_on__month=last_month,
             created_on__year=last_month_year
         ).count()
 
-        #new users this month
-        new_users_this_month = Contact.objects.filter(
+        #new _registered users this month
+        new_registered_users_this_month = Contact.objects.filter(
             created_on__month=this_month,
             created_on__year=this_year
         ).count()
 
-        #new users this week
-        new_users_this_week = Contact.objects.filter(
+        #new _registered users this week
+        new_registered_users_this_week = Contact.objects.filter(
             created_on__range=this_week
         ).count()
+
+        #new _registered users this quarter
+        new_registered_users_this_quarter = Contact.objects.filter(
+            created_on__range=this_quarter
+        ).count()
+
+        #unique users
+        sent_sms = SurveyResult.objects.all().values_list('contact__msisdn', flat=True)
+        registered_list = Contact.objects.all().values_list('msisdn', flat=True)
+        all_users_id_list = list(sent_sms) + list(registered_list)
+        unique_users = Contact.objects.filter(msisdn__in=all_users_id_list).count()
+
+        #new users this quarter
+        new_users_this_quarter = Contact.objects.filter(msisdn__in=all_users_id_list,
+                                                        created_on__range=this_quarter).count()
+
+        #new users this month
+        new_users_this_month = Contact.objects.filter(msisdn__in=all_users_id_list,
+                                                      created_on__month=this_month,
+                                                      created_on__year=this_year).count()
+
+        #new users this week
+        new_users_this_week = Contact.objects.filter(msisdn__in=all_users_id_list,
+                                                     created_on__range=this_week).count()
 
         #total survey results
         total_results = SurveyResult.objects.all().count()
@@ -684,27 +734,80 @@ class LandingStatsView(View):
             created_at__range=this_week
         ).count()
 
+        #survey results this quarter
+        total_results_this_quarter = SurveyResult.objects.filter(
+            created_at__range=this_quarter
+        ).count()
+
         #total surveys
         total_surveys = Survey.objects.all().count()
 
         #total contact groups
         total_contact_groups = ContactGroup.objects.all().count()
 
-        #unique users
+        sent_this_month = SurveyResult.objects.filter(created_at__month=this_month,
+                                                      created_at__year=this_year)\
+            .values_list('contact__msisdn', flat=True)
 
-        #
+        active_users_list = [x for x in registered_list if x in sent_this_month]
+        active_users_this_month = Contact.objects.filter(msisdn__in=active_users_list).count()
+
+        sent_this_week = SurveyResult.objects.filter(created_at__range=this_week)\
+            .values_list('contact__msisdn', flat=True)
+        active_users_list = [x for x in registered_list if x in sent_this_week]
+        active_users_this_week = Contact.objects.filter(msisdn__in=active_users_list).count()
+
+        sent_this_quarter = SurveyResult.objects.filter(created_at__range=this_quarter)\
+            .values_list('contact__msisdn', flat=True)
+        active_users_list = [x for x in registered_list if x in sent_this_quarter]
+        active_users_this_quarter = Contact.objects.filter(msisdn__in=active_users_list).count()
+
+        if total_registered_users > 0:
+            percent_active_this_month = "%s%%" % (active_users_this_quarter * 100 / total_registered_users)
+            percent_active_this_week = "%s%%" % (active_users_this_week * 100 / total_registered_users)
+            percent_active_this_quarter = "%s%%" % (active_users_this_quarter * 100 / total_registered_users)
+        else:
+            percent_active_this_month = "0%%"
+            percent_active_this_week = "0%%"
+            percent_active_this_quarter ="0%%"
+
+        #drop off this month
+        drop_off_list = [x for x in sent_sms if x not in registered_list]
+
+        drop_this_month = SurveyResult.objects.filter(contact__msisdn__in=drop_off_list,
+                                                      created_at__month=this_month,
+                                                      created_at__year=this_year).count()
+
+        #drop off last month
+        drop_last_month = SurveyResult.objects.filter(contact__msisdn__in=drop_off_list,
+                                                      created_at__month=last_month,
+                                                      created_at__year=last_month_year).count()
 
         return {
-            "total_users": total_users,
-            "new_users_last_month": new_users_last_month,
+            "total_registered_users": total_registered_users,
+            "new_registered_users_last_month": new_registered_users_last_month,
+            "new_registered_users_this_month": new_registered_users_this_month,
+            "new_registered_users_this_week": new_registered_users_this_week,
+            "new_registered_users_this_quarter": new_registered_users_this_quarter,
+            "unique_users": unique_users,
+            "new_users_this_quarter": new_users_this_quarter,
             "new_users_this_month": new_users_this_month,
             "new_users_this_week": new_users_this_week,
             "total_results": total_results,
             "total_results_last_month": total_results_last_month,
             "total_results_this_month": total_results_this_month,
             "total_results_this_week": total_results_this_week,
+            "total_results_this_quarter": total_results_this_quarter,
             "total_surveys": total_surveys,
-            "total_contact_groups": total_contact_groups
+            "total_contact_groups": total_contact_groups,
+            "active_users_this_month": active_users_this_month,
+            "active_users_this_week": active_users_this_week,
+            "active_users_this_quarter": active_users_this_quarter,
+            "percent_active_this_month": percent_active_this_month,
+            "percent_active_this_week": percent_active_this_week,
+            "percent_active_this_quarter": percent_active_this_quarter,
+            "drop_this_month": drop_this_month,
+            "drop_last_month": drop_last_month
         }
 
     def get(self, request):
@@ -728,3 +831,38 @@ class LandingPage(View):
                 "pwd": pwd
             }
         )
+
+
+def get_sms_graph_data():
+    line = list()
+
+    for i in range(6, -1, -1):
+        date = datetime.now() - timedelta(days=i)
+        count = SurveyResult.objects.filter(created_at__day=date.day,
+                                            created_at__month=date.month,
+                                            created_at__year=date.year).count()
+        line.append((-i, count))
+
+    dataset = list()
+    dataset.append(line)
+
+    data = dict()
+    data['heading'] = 'Number of SMSes received past 7 days'
+    data['dataset'] = dataset
+
+    return data
+
+
+def get_graph_data(request):
+
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        if 'name' in data:
+
+            if data['name'] == 'SMS_GRAPH':
+                data = get_sms_graph_data()
+
+            return generate_json_response(json.dumps(data))
+
+    #return something
