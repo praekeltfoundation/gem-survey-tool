@@ -143,28 +143,5 @@ gems.controller('graphController', function($scope, $http){
             .attr("x", 20)
             .attr("y", 20)
             .text(heading);
-
-//                Draw a grid
-//        var numberOfTicks = 8;
-//
-//        var yAxisGrid = yAxis.ticks(numberOfTicks)
-//            .tickSize(w, 0)
-//            .tickFormat("")
-//            .orient("right");
-//
-//        var xAxisGrid = xAxis.ticks(numberOfTicks)
-//            .tickSize(-h+50, 0)
-//            .tickFormat("")
-//            .orient("top");
-//
-//        svg.append("g")
-//            .classed('y', true)
-//            .classed('grid', true)
-//            .call(yAxisGrid);
-//
-//        svg.append("g")
-//            .classed('x', true)
-//            .classed('grid', true)
-//            .call(xAxisGrid);
     };
 });
