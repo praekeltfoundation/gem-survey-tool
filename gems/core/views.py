@@ -762,11 +762,14 @@ class LandingStatsView(View):
         active_users_list = [x for x in registered_list if x in sent_this_quarter]
         active_users_this_quarter = Contact.objects.filter(msisdn__in=active_users_list).count()
 
-        percent_active_this_month = "%s%%" % (active_users_this_quarter * 100 / total_registered_users)
-
-        percent_active_this_week = "%s%%" % (active_users_this_week * 100 / total_registered_users)
-
-        percent_active_this_quarter = "%s%%" % (active_users_this_quarter * 100 / total_registered_users)
+        if total_registered_users > 0:
+            percent_active_this_month = "%s%%" % (active_users_this_quarter * 100 / total_registered_users)
+            percent_active_this_week = "%s%%" % (active_users_this_week * 100 / total_registered_users)
+            percent_active_this_quarter = "%s%%" % (active_users_this_quarter * 100 / total_registered_users)
+        else:
+            percent_active_this_month = "0%%"
+            percent_active_this_week = "0%%"
+            percent_active_this_quarter ="0%%"
 
         #drop off this month
         drop_off_list = [x for x in sent_sms if x not in registered_list]
