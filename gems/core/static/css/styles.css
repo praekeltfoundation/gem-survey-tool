@@ -314,6 +314,14 @@ li.survey {
     background-image: url("../img/icn_survey_builder_white.png");
 }
 
+li.yenga {
+    background-image: url("../img/icn_yenga.png");
+}
+
+.item:hover li.yenga {
+    background-image: url("../img/icn_yenga_white.png");
+}
+
 li.contact-management {
     background-image: url("../img/icn_contact_management.png");
 }
