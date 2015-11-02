@@ -10,7 +10,7 @@ gems.controller('graphController', function($scope, $http){
         $http.get('/get_graph_data/')
             .success(function(data){
                 $scope.drawGraph("#sms-day-graph", data.sms_day_data, "pink");
-                $scope.drawDayGraph("#sms-time-graph", data.sms_day_data, "aqua-front");
+                $scope.drawDayGraph("#sms-time-graph", data.sms_time_data, "aqua-front");
             })
     };
 
