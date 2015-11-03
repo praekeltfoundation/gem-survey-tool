@@ -55,5 +55,5 @@ urlpatterns = patterns('',
     url(r'^robots.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")),
 
     url(r'^get_answer_values/$', get_answer_values, name="get_answer_values"),
-    url(r'^get_graph_data/$', get_graph_data, name='get_graph_data')
+    url(r'^get_graph_data/$', get_graph_data, name='get_graph_data'),
 )

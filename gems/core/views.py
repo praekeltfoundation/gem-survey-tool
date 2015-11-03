@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core import serializers
 from django.db import connection
+from django.db.models import Count
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.views.generic import View
@@ -833,7 +834,8 @@ class LandingPage(View):
         )
 
 
-def get_sms_graph_data():
+def get_sms_day_data():
+
     line = list()
 
     for i in range(6, -1, -1):
@@ -853,16 +855,30 @@ def get_sms_graph_data():
     return data
 
 
+def get_sms_time_data():
+
+    all_surveys = SurveyResult.objects.all().order_by('created_at')
+
+    line = list()
+
+    for _ in range(0, 24):
+        line.append((_, all_surveys.filter(created_at__hour=_).aggregate(Count('id'))['id__count']))
+
+    dataset = list()
+    dataset.append(line)
+
+    data = dict()
+    data['heading'] = 'Time of day SMSes received'
+    data['dataset'] = dataset
+
+    return data
+
+
 def get_graph_data(request):
 
-    if request.method == 'POST':
-        data = json.loads(request.body)
+    if request.method == 'GET':
+        data = dict()
+        data['sms_day_data'] = get_sms_day_data()
+        data['sms_time_data'] = get_sms_time_data()
 
-        if 'name' in data:
-
-            if data['name'] == 'SMS_GRAPH':
-                data = get_sms_graph_data()
-
-            return generate_json_response(json.dumps(data))
-
-    #return something
+        return generate_json_response(json.dumps(data))

@@ -8,6 +8,7 @@ from csv_utils import process_header, process_line, split_line, survey_lookup, p
 from datetime import datetime
 import os
 import json
+import random
 
 
 class RESTTestCase(TestCase):
@@ -705,16 +706,63 @@ class AdminTests(TestCase):
 
 class LandingPageStatsTests(TestCase):
 
+    def create_survey(self, survey_id="0928309402384908203423", name="Test"):
+        return Survey.objects.create(
+            name=name,
+            survey_id=survey_id
+        )
+
+    def create_contact(self, msisdn="123456789", vkey="234598274987l", **kwargs):
+        return Contact.objects.create(
+            msisdn=msisdn,
+            vkey=vkey,
+            **kwargs
+        )
+
+    def create_survey_result(self, survey, contact, answers):
+        return SurveyResult.objects.create(
+            survey=survey,
+            contact=contact,
+            answer=answers
+        )
+
     def test_landing_page_stats(self):
         User.objects.create_user("admin", "admin@admin.com", "admin")
         c = Client()
         c.login(username="admin", password="admin")
 
+        gender_list = ("male", "female")
+        race_list = ("white", "black", "coloured", "indian")
+        age_list = range(14, 80)
+        yes_no_list = ("yes", "no")
+
+        survey_result_list = list()
+        contacts_list = list()
+
+        survey = self.create_survey(survey_id="0928309402384908203499", name="Landing Testing")
+        for i in range(0, 5):
+            contact = self.create_contact(msisdn='071234567%d' % i, vkey='11223344556%dl' % i)
+            contacts_list.append(contact)
+            answers = dict()
+            answers['gender'] = random.choice(gender_list)
+            answers['race'] = random.choice(race_list)
+            answers['age'] = random.choice(age_list)
+            answers['own_cellphone'] = random.choice(yes_no_list)
+            survey_result_list.append(self.create_survey_result(survey=survey, contact=contact,
+                                                                answers=answers))
+
         resp = c.get("/get_stats/")
+        json_acceptable_string = resp.content.replace("'", "\"")
+        json_resp = json.loads(json_acceptable_string)
+
         self.assertContains(resp, "total_registered_users")
+        self.assertEquals(json_resp['total_registered_users'], 5)
         self.assertContains(resp, "new_registered_users_last_month")
+        self.assertEquals(json_resp['new_registered_users_last_month'], 0)
         self.assertContains(resp, "new_registered_users_this_month")
+        self.assertEquals(json_resp['new_registered_users_this_month'], 5)
         self.assertContains(resp, "new_registered_users_this_week")
+        self.assertEquals(json_resp['new_registered_users_this_week'], 5)
         self.assertContains(resp, "new_registered_users_this_quarter")
         self.assertContains(resp, "unique_users")
         self.assertContains(resp, "new_users_this_quarter")
@@ -722,8 +770,11 @@ class LandingPageStatsTests(TestCase):
         self.assertContains(resp, "new_users_this_week")
         self.assertContains(resp, "total_results")
         self.assertContains(resp, "total_results_last_month")
+        self.assertEquals(json_resp['total_results_last_month'], 0)
         self.assertContains(resp, "total_results_this_month")
+        self.assertEquals(json_resp['total_results_this_month'], 5)
         self.assertContains(resp, "total_results_this_week")
+        self.assertEquals(json_resp['total_results_this_week'], 5)
         self.assertContains(resp, "total_results_this_quarter")
         self.assertContains(resp, "total_surveys")
         self.assertContains(resp, "total_contact_groups")
@@ -735,3 +786,9 @@ class LandingPageStatsTests(TestCase):
         self.assertContains(resp, "percent_active_this_quarter")
         self.assertContains(resp, "drop_this_month")
         self.assertContains(resp, "drop_last_month")
+
+        resp = c.get("/get_graph_data/")
+        self.assertContains(resp, 'sms_time_data')
+        self.assertContains(resp, 'sms_day_data')
+        self.assertContains(resp, 'heading', 2)
+        self.assertContains(resp, 'dataset', 2)
