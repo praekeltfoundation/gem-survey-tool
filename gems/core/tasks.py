@@ -142,12 +142,15 @@ def import_contacts():
     count = 0
     try:
         for contact in api.contacts():
-            contact, created = Contact.objects.get_or_create(msisdn=contact['msisdn'])
-            if not created:
-                continue
-            contact.vkey = contact['key']
-            contact.save()
-            count += 1
+            try:
+                contact, created = Contact.objects.get_or_create(msisdn=contact['msisdn'])
+                if not created:
+                    continue
+                contact.vkey = contact['key']
+                contact.save()
+                count += 1
+            except Exception:
+                logger.info('creating contact :: Failed to create a contact %s' % contact['msisdn'])
 
         logger.info('%s contacts imported' % count)
         logger.info('importing contacts :: Completed')
