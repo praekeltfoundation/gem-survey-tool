@@ -356,12 +356,15 @@ def get_answer_values(request):
 
         if 'field' in data and data['field'] is not None:
             rs = SurveyResult.objects.values_list('answer', flat=True).distinct()
+            s = Survey.objects.values('series').distinct()
             values = list()
+            all_fields = list(rs) + list(s)
             field = data['field']
-            for item in rs:
+            for item in all_fields:
                 if field in item:
                     if item[field] not in values:
                         values.append(item[field])
+
             return generate_json_response(serialize_list_to_json(values, UIFieldEncoder))
 
         return HttpResponse('BAD REQUEST TYPE')
