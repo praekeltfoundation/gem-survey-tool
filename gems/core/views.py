@@ -355,11 +355,15 @@ def get_answer_values(request):
         data = json.loads(request.body)
 
         if 'field' in data and data['field'] is not None:
-            rs = SurveyResult.objects.values_list('answer', flat=True).distinct()
+            rs = SurveyResult.objects.values('answer', 'survey__name').distinct()
             s = Survey.objects.values('series').distinct()
             values = list()
             all_fields = list(rs) + list(s)
-            field = data['field']
+            if data['field'] == 'survey':
+                field = 'survey__name'
+            else:
+                field = data['field']
+
             for item in all_fields:
                 if field in item:
                     if item[field] not in values:
