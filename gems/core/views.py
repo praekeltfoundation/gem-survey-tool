@@ -205,8 +205,11 @@ def build_query(payload, random=False):
             else:
                 q = q & temp_q
 
-    rs = SurveyResult.objects.filter(q).values('id', 'survey', 'contact', 'created_at', 'updated_at', 'answer',
-                                               'survey__series')
+    try:
+        rs = SurveyResult.objects.filter(q).values('id', 'survey__name', 'contact', 'created_at', 'updated_at',
+                                                   'answer', 'survey__series')
+    except Exception:
+        rs = SurveyResult.objects.none()
 
     if random is True:
         rs = rs.order_by('?')
@@ -215,6 +218,7 @@ def build_query(payload, random=False):
 
     for item in rs:
         item['series'] = item.pop('survey__series')
+        item['survey'] = item.pop('survey__name')
 
     if limit is not None:
         return rs[:limit]
