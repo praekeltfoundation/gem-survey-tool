@@ -218,6 +218,7 @@ def build_query(payload, random=False):
 
     for item in rs:
         item['series'] = item.pop('survey__series')
+        item['survey'] = item.pop('survey__name')
 
     if limit is not None:
         return rs[:limit]
