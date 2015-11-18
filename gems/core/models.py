@@ -22,7 +22,7 @@ class Survey(models.Model):
         return u'%s' % self.name
 
     def natural_key(self):
-        return (self.name)
+        return (self.name, )
 
 
 class Contact(models.Model):
