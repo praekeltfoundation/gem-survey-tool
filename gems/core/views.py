@@ -435,21 +435,24 @@ def process_group_member(api, member, group):
 
 def remove_group_member(api, member, group):
     try:
-        contact = api.get_contact(msisdn=member)
+        contact = api.get_contact(msisdn=member.msisdn)
     except Exception:
         contact = None
         logger.info('Contact: %s not found in vumi' % member)
 
     if contact:
-        if group.group_key in contact['groups']:
-            updated_groups = contact['groups'].remove(group.group_key)
+        groups = contact['groups']
+        if group.group_key in groups:
+            updated_groups = groups.remove(group.group_key)
 
             try:
+                if updated_groups is None:
+                    updated_groups = ''
                 api.update_contact(contact['key'], {u'groups': updated_groups})
             except Exception:
                 logger.info('Contact: %s update failed' % member)
 
-    local_contact = Contact.objects.get(msisdn=member)
+    local_contact = Contact.objects.get(msisdn=member.msisdn)
     ContactGroupMember.objects.filter(group=group, contact=local_contact).delete()
 
 
@@ -531,7 +534,7 @@ def update_contactgroup(request):
 
                 new_list = []
                 for c in members:
-                    new_list.append(Contact.objects.get(msisdn=c))
+                    new_list.append(Contact.objects.get(msisdn=c['value']))
 
                 o = set(old_list)
                 add_list = [x for x in new_list if x not in o]
@@ -540,18 +543,18 @@ def update_contactgroup(request):
                 remove_list = [x for x in old_list if x not in n]
 
                 if add_list:
-                    print "Adding:"
+                    logger.info('Adding new contacts to group %s: STARTED' % group.name)
                     for member in add_list:
-                        print member
-                        print type(member) is Contact
+                        logger.info('Adding contact: %s' % member.msisdn)
                         process_group_member(api, member, group)
+                    logger.info('Adding new contacts to group %s: COMPLETED' % group.name)
 
                 if remove_list:
-                    print "Removing:"
+                    logger.info('Removing contacts from group %s: START' % group.name)
                     for member in remove_list:
-                        print member
-                        print type(member) is Contact
+                        logger.info('Removing contact: %s' % member.msisdn)
                         remove_group_member(api, member, group)
+                    logger.info('Removing contacts from group %s: COMPLETED' % group.name)
 
             return HttpResponse("OK")
         else:
