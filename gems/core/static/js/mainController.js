@@ -263,7 +263,7 @@ gems.controller('mainController', function($scope, $http, $window){
 
         // Construct the fields
         for(var x = 0; x < results.length; ++x){
-            var fields = results[x].fields;
+            var fields = results[x];
             var answer = fields['answer'];
             var row = {
                 selected: false,
@@ -324,7 +324,7 @@ gems.controller('mainController', function($scope, $http, $window){
         rows = [];
 
         for(var x = 0; x < results.length; ++x){
-            var fields = results[x].fields;
+            var fields = results[x];
             var answer = fields['answer'];
             var row = {
                 selected: false,

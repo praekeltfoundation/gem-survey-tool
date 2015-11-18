@@ -20,6 +20,9 @@ class FieldFilter:
             if field.name == 'survey':
                 field.name = 'survey__name'
 
+            if field.name == 'series':
+                field.name = 'survey__series'
+
             if field.name == 'contact':
                 field.name = 'contact__msisdn'
 

@@ -22,7 +22,6 @@ from datetime import datetime, timedelta
 import time
 import traceback
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -206,12 +205,16 @@ def build_query(payload, random=False):
             else:
                 q = q & temp_q
 
-    rs = SurveyResult.objects.select_related("Survey", "Contact").filter(q)
+    rs = SurveyResult.objects.filter(q).values('id', 'survey', 'contact', 'created_at', 'updated_at', 'answer',
+                                               'survey__series')
 
     if random is True:
         rs = rs.order_by('?')
     else:
         rs = rs.order_by("id")
+
+    for item in rs:
+        item['series'] = item.pop('survey__series')
 
     if limit is not None:
         return rs[:limit]
@@ -267,6 +270,15 @@ def serialize_list_to_json(data, encoder):
     return json.dumps(data, cls=encoder)
 
 
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+
+    if isinstance(obj, datetime):
+        serial = obj.isoformat()
+        return serial
+    raise TypeError("Type not serializable")
+
+
 def query(request):
     try:
         payload = json.loads(request.body)
@@ -276,19 +288,7 @@ def query(request):
 
     results = build_query(payload, True)
 
-    return generate_json_response(
-        serializers.serialize(
-            'json',
-            list(results),
-            use_natural_keys=True,
-            fields=(
-                'id',
-                'survey',
-                'contact',
-                'created_at',
-                'updated_at',
-                'answer',
-                'series')))
+    return generate_json_response(json.dumps(list(results), default=json_serial))
 
 
 def get_surveyresult_hstore_keys():
@@ -355,11 +355,15 @@ def get_answer_values(request):
         data = json.loads(request.body)
 
         if 'field' in data and data['field'] is not None:
-            rs = SurveyResult.objects.values_list('answer', flat=True).distinct()
+            rs = SurveyResult.objects.values('answer', 'survey__name').distinct()
             s = Survey.objects.values('series').distinct()
             values = list()
             all_fields = list(rs) + list(s)
-            field = data['field']
+            if data['field'] == 'survey':
+                field = 'survey__name'
+            else:
+                field = data['field']
+
             for item in all_fields:
                 if field in item:
                     if item[field] not in values:
