@@ -753,27 +753,29 @@ class LandingStatsView(View):
         #total contact groups
         total_contact_groups = ContactGroup.objects.all().count()
 
+        #active this month
         sent_this_month = SurveyResult.objects.filter(created_at__month=this_month,
                                                       created_at__year=this_year)\
             .values_list('contact__msisdn', flat=True)
-
         active_users_list = [x for x in registered_list if x in sent_this_month]
         active_users_this_month = Contact.objects.filter(msisdn__in=active_users_list).count()
 
+        #active this week
         sent_this_week = SurveyResult.objects.filter(created_at__range=this_week)\
             .values_list('contact__msisdn', flat=True)
         active_users_list = [x for x in registered_list if x in sent_this_week]
         active_users_this_week = Contact.objects.filter(msisdn__in=active_users_list).count()
 
+        #active this quarter
         sent_this_quarter = SurveyResult.objects.filter(created_at__range=this_quarter)\
             .values_list('contact__msisdn', flat=True)
         active_users_list = [x for x in registered_list if x in sent_this_quarter]
         active_users_this_quarter = Contact.objects.filter(msisdn__in=active_users_list).count()
 
         if total_registered_users > 0:
-            percent_active_this_month = "%s%%" % (active_users_this_quarter * 100 / total_registered_users)
-            percent_active_this_week = "%s%%" % (active_users_this_week * 100 / total_registered_users)
-            percent_active_this_quarter = "%s%%" % (active_users_this_quarter * 100 / total_registered_users)
+            percent_active_this_month = "%s%%" % round(float(active_users_this_month * 100) / total_registered_users, 1)
+            percent_active_this_week = "%s%%" % round(float(active_users_this_week * 100) / total_registered_users, 1)
+            percent_active_this_quarter = "%s%%" % round(float(active_users_this_quarter * 100) / total_registered_users, 1)
         else:
             percent_active_this_month = "0%%"
             percent_active_this_week = "0%%"
