@@ -777,7 +777,7 @@ class LandingStatsView(View):
         else:
             percent_active_this_month = "0%%"
             percent_active_this_week = "0%%"
-            percent_active_this_quarter ="0%%"
+            percent_active_this_quarter = "0%%"
 
         #drop off this month
         drop_off_list = [x for x in sent_sms if x not in registered_list]
