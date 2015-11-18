@@ -131,7 +131,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'rest_framework',
     'south',
-    'djcelery'
+    'djcelery',
+    'raven.contrib.django.raven_compat'
 )
 
 LOGIN_URL = 'login/'
