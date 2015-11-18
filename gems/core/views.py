@@ -780,16 +780,17 @@ class LandingStatsView(View):
             percent_active_this_quarter = "0%%"
 
         #drop off this month
-        drop_off_list = [x for x in sent_sms if x not in registered_list]
-
-        drop_this_month = SurveyResult.objects.filter(contact__msisdn__in=drop_off_list,
-                                                      created_at__month=this_month,
-                                                      created_at__year=this_year).count()
+        sent_this_month = SurveyResult.objects.filter(created_at__month=today.month, created_at__year=today.year)\
+            .values_list('contact__msisdn', flat=True)
+        drop_off_this_month = len([x for x in registered_list if x not in sent_this_month])
 
         #drop off last month
-        drop_last_month = SurveyResult.objects.filter(contact__msisdn__in=drop_off_list,
-                                                      created_at__month=last_month,
-                                                      created_at__year=last_month_year).count()
+        reg_bef_this_month = Contact.objects\
+            .filter(created_on__lt=today.replace(day=1, hour=0, minute=0, second=0, microsecond=0))\
+            .values_list('msisdn', flat=True)
+        sent_last_month = SurveyResult.objects.filter(created_at__month=last_month, created_at__year=last_month_year)\
+            .values_list('contact__msisdn', flat=True)
+        drop_off_last_month = len([x for x in reg_bef_this_month if x not in sent_last_month])
 
         return {
             "total_registered_users": total_registered_users,
@@ -814,8 +815,8 @@ class LandingStatsView(View):
             "percent_active_this_month": percent_active_this_month,
             "percent_active_this_week": percent_active_this_week,
             "percent_active_this_quarter": percent_active_this_quarter,
-            "drop_this_month": drop_this_month,
-            "drop_last_month": drop_last_month
+            "drop_this_month": drop_off_this_month,
+            "drop_last_month": drop_off_last_month
         }
 
     def get(self, request):
