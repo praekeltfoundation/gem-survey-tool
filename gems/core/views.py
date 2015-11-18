@@ -773,9 +773,9 @@ class LandingStatsView(View):
         active_users_this_quarter = Contact.objects.filter(msisdn__in=active_users_list).count()
 
         if total_registered_users > 0:
-            percent_active_this_month = "%s%%" % round(float(active_users_this_month * 100) / total_registered_users, 1)
-            percent_active_this_week = "%s%%" % round(float(active_users_this_week * 100) / total_registered_users, 1)
-            percent_active_this_quarter = "%s%%" % round(float(active_users_this_quarter * 100) / total_registered_users, 1)
+            percent_active_this_month = "%s%%" % round(active_users_this_month * 100.0 / total_registered_users, 1)
+            percent_active_this_week = "%s%%" % round(active_users_this_week * 100.0 / total_registered_users, 1)
+            percent_active_this_quarter = "%s%%" % round(active_users_this_quarter * 100.0 / total_registered_users, 1)
         else:
             percent_active_this_month = "0%%"
             percent_active_this_week = "0%%"
