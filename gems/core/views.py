@@ -412,33 +412,25 @@ def timing(f):
 
 
 def process_group_member(api, member, group):
-    if "value" not in member:
-        logger.info("process_group: value missing from member")
-
-    db_contact = None
-
     try:
-        db_contact = Contact.objects.filter(msisdn=member["value"]).first()
-        contact_key = db_contact.vkey
-
         # if for some reason we don't have the vumi key in the db for this contact
         # fetch the contact from vumi
-        if contact_key is None:
-            contact = api.get_contact(msisdn=member)
-            contact_key = contact["key"]
+        if member.vkey is None:
+            contact = api.get_contact(msisdn=member.msisdn)
+            member.vkey = contact["key"]
+            member.save()
     except Exception:
-        contact_key = None
         logger.info('Contact: %s not found in vumi' % member)
+        return
 
-    if contact_key:
-        try:
-            api.update_contact(contact_key, {u'groups': (group.group_key, )})
-        except Exception:
-            logger.info('Contact: %s update failed' % member)
+    try:
+        api.update_contact(member.vkey, {u'groups': (group.group_key, )})
+    except Exception:
+        logger.info('Contact: %s update failed' % member)
+        return
 
-    if db_contact:
-        group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=db_contact)
-        group_member.save()
+    group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=member)
+    group_member.save()
 
 
 def remove_group_member(api, member, group):
