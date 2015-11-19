@@ -215,6 +215,13 @@ class GeneralTests(TestCase):
             answer=answers
         )
 
+    def create_contact_group(self, group_key, name, created_by, filters='filter', query_words='query_words'):
+        return ContactGroup.objects.create(group_key=group_key, name=name, created_by=created_by, filters=filters,
+                                           query_words=query_words)
+
+    def create_contact_group_member(self, group, contact):
+        return ContactGroupMember.objects.create(group=group, contact=contact)
+
     def setUp(self):
         self.f = {
             'filters': [
@@ -313,16 +320,17 @@ class GeneralTests(TestCase):
         # TODO: Complete Test
 
     def fake_create_group(self, name):
-        return {'key': 'abc', 'filters': "{'a':'a', 'b':'b'}", 'query_words': 'age > 20'}
+        return {'key': '%sabc' % name, 'filters': "{'a':'a', 'b':'b'}", 'query_words': 'age > 20', 'name': name}
 
     def fake_process_group_member(api, member, contact_group):
         pass
 
-    @patch('gems.core.views.process_group_member', fake_process_group_member)
-    @patch('go_http.contacts.ContactsApiClient.create_group', fake_create_group)
-    def test_create_contact_group(self):
+    @patch('gems.core.views.ContactsApiClient.update_contact')
+    @patch('gems.core.views.ContactsApiClient.get_contact')
+    @patch('gems.core.views.ContactsApiClient.create_group')
+    def test_create_contact_group(self, fake_create_group, fake_get_contact, fake_update_contact):
+        # create user and login
         User.objects.create_user("admin", "admin@admin.com", "admin")
-
         self.client.post(reverse('login'),
                          {
                              'username': "admin",
@@ -330,26 +338,122 @@ class GeneralTests(TestCase):
                          },
                          follow=True)
 
-        resp = self.client.get("/create_contactgroup/")
-        self.assertContains(resp, "Failed to create Contact group")
+        # get call
+        resp = self.client.get(reverse('group.create'))
+        self.assertContains(resp, "Bad Request!", status_code=400)
 
-        resp = self.client.post('/create_contactgroup/',
-                                data='{"name": "group name", "filters": "filter", "query_words": '
-                                     '"age > 20", "members": "members"}',
+        # post call with no data passed or invalid json
+        resp = self.client.post(reverse('group.create'),
+                                data={},
+                                follow=True)
+        self.assertContains(resp, 'Bad Request!', status_code=400)
+
+        resp = self.client.post(reverse('group.create'),
+                                data={'{name:'},
                                 content_type="application/json",
                                 follow=True)
-        group = ContactGroup.objects.all().first()
+        self.assertContains(resp, 'Bad Request!', status_code=400)
 
-        self.assertEquals(u'group name', group.name)
-        self.assertEquals(u'filter', group.filters)
-        self.assertEquals(u'age > 20', group.query_words)
-        self.assertEquals(resp.content, "Contact group group name created succcessfully")
+        # post call with no group name passed
+        resp = self.client.post(reverse('group.create'),
+                                data='{"name": ""}',
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Bad Request!', status_code=400)
 
-    def test_update_contact_group(self):
-        resp = self.client.get("/update_contactgroup/")
-        self.assertContains(resp, "FAILED")
+        # post with valid data with no members passed
+        group_name = 'group_1'
+        filter_words = 'filter'
+        query_words = 'age > 20'
+        fake_create_group.return_value = {'key': '%sabc' % group_name, 'filters': "{'a':'a', 'b':'b'}",
+                                          'query_words': 'age > 20', 'name': group_name}
 
-        User.objects.create_user("admin", "admin@admin.com", "admin")
+        resp = self.client.post('/create_contactgroup/',
+                                data='{"name": "%s", "filters": "%s", "query_words": "%s"}' % (group_name, filter_words,
+                                                                                               query_words),
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Contact group %s successfully created.' % group_name)
+        group = ContactGroup.objects.get(name=group_name)
+        self.assertEquals(group_name, group.name)
+        self.assertEquals(filter_words, group.filters)
+        self.assertEquals(query_words, group.query_words)
+
+        # post - contact not found in vumi
+        group_name = 'group_2'
+        filter_words = 'filter 2'
+        query_words = 'gender = male'
+        fake_create_group.return_value = {'key': '%sabc' % group_name, 'filters': "{'a':'a', 'b':'b'}",
+                                          'query_words': 'age > 20', 'name': group_name}
+
+        member_1 = self.create_contact('+27701234567', vkey='')
+        member_2 = '+270801234567'
+
+        fake_get_contact.side_effect = Exception
+        resp = self.client.post('/create_contactgroup/',
+                                data='{"name": "%s", "filters": "%s", "query_words": "%s", "members": '
+                                     '[{"value": "%s"}, {"value": "%s"}]''}' %
+                                     (group_name, filter_words, query_words, member_1.msisdn, member_2),
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Contact group %s successfully created.' % group_name)
+        group = ContactGroup.objects.get(name=group_name)
+        self.assertEquals(group_name, group.name)
+        self.assertEquals(filter_words, group.filters)
+        self.assertEquals(query_words, group.query_words)
+        count = ContactGroupMember.objects.all().count()
+        self.assertEquals(count, 0)
+
+        # post update failed
+        group_name = 'group_3'
+        filter_words = 'filter 3'
+        query_words = 'gender = female'
+        fake_create_group.return_value = {'key': '%sabc' % group_name, 'filters': "{'a':'a', 'b':'b'}",
+                                          'query_words': 'age > 20', 'name': group_name}
+
+        fake_get_contact.side_effect = None
+        fake_get_contact.return_value = {'key': 'abcde'}
+        fake_update_contact.side_effect = Exception
+        resp = self.client.post('/create_contactgroup/',
+                                data='{"name": "%s", "filters": "%s", "query_words": "%s", "members": '
+                                     '[{"value": "%s"}, {"value": "%s"}]''}' %
+                                     (group_name, filter_words, query_words, member_1.msisdn, member_2),
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Contact group %s successfully created.' % group_name)
+        group = ContactGroup.objects.get(name=group_name)
+        self.assertEquals(group_name, group.name)
+        self.assertEquals(filter_words, group.filters)
+        self.assertEquals(query_words, group.query_words)
+        count = ContactGroupMember.objects.all().count()
+        self.assertEquals(count, 0)
+
+        # #post - updated
+        group_name = 'group_4'
+        filter_words = 'filter 4'
+        query_words = 'age > 30'
+        fake_create_group.return_value = {'key': '%sabc' % group_name, 'filters': "{'a':'a', 'b':'b'}",
+                                          'query_words': 'age > 20', 'name': group_name}
+        fake_update_contact.side_effect = None
+        resp = self.client.post('/create_contactgroup/',
+                                data='{"name": "%s", "filters": "%s", "query_words": "%s", "members": '
+                                     '[{"value": "%s"}, {"value": "%s"}]''}' %
+                                     (group_name, filter_words, query_words, member_1.msisdn, member_2),
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Contact group %s successfully created.' % group_name)
+        group = ContactGroup.objects.get(name=group_name)
+        self.assertEquals(group_name, group.name)
+        self.assertEquals(filter_words, group.filters)
+        self.assertEquals(query_words, group.query_words)
+        count = ContactGroupMember.objects.all().count()
+        self.assertEquals(count, 1)
+
+    @patch('gems.core.views.ContactsApiClient.update_contact')
+    @patch('gems.core.views.ContactsApiClient.get_contact')
+    @patch('gems.core.views.ContactsApiClient.update_group')
+    def test_update_contact_group(self, fake_update_group, fake_get_contact, fake_update_contact):
+        user = User.objects.create_user("admin", "admin@admin.com", "admin")
 
         self.client.post(reverse('login'),
                          {
@@ -358,14 +462,86 @@ class GeneralTests(TestCase):
                          },
                          follow=True)
 
-        mock_create_group = patch('ContactsAPIClient.update_group')
-        r = {'key': 'abc', 'filters': "{'a':'a', 'b':'b'}", 'query_words': 'age > 20'}
-        mock_create_group.return_value = r
+        # get call
+        resp = self.client.get(reverse('group.update'))
+        self.assertContains(resp, 'Bad Request!', status_code=400)
 
-        patch('gems.core.views.process_group_member')
-        patch('gems.core.views.remove_group_member')
+        # post call with no data passed or invalid json
+        resp = self.client.post(reverse('group.update'),
+                                data={},
+                                follow=True)
+        self.assertContains(resp, 'Bad Request!', status_code=400)
 
-        # TODO: Complete Test
+        resp = self.client.post(reverse('group.update'),
+                                data={'{group_key:'},
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Bad Request!', status_code=400)
+
+        # no group key
+        resp = self.client.post(reverse('group.update'),
+                                data='{group_key: ""}',
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Bad Request!', status_code=400)
+
+        # valid post
+        group_key = 'asdf'
+        group_name = 'funky'
+        new_name = 'dinky'
+        filters = 'filters'
+        query_words = 'age < 18'
+        contact_group = self.create_contact_group(group_key, group_name, user)
+        existing_contact_1 = self.create_contact('+27711234567', vkey='')
+        self.create_contact_group_member(contact_group, existing_contact_1)
+        existing_contact_2 = self.create_contact('+27711234566', '1234566788')
+        self.create_contact_group_member(contact_group, existing_contact_2)
+        new_contact = self.create_contact('+27711234565', '1234566787')
+
+
+        # exception
+        fake_get_contact.side_effect = Exception
+        resp = self.client.post(reverse('group.update'),
+                                data='{"group_key": "%s", "name": "%s", "filters": "%s", "query_words": "%s", '
+                                     '"members": [{"value": "%s"}, {"value": "%s"}, {"value": "+123456789"}]''}'
+                                     % (group_key, new_name, filters, query_words, existing_contact_2, new_contact),
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Contact group updated!')
+        count = ContactGroupMember.objects.filter(group=contact_group).count()
+        self.assertEquals(count, 3)
+
+        #update exception
+        fake_update_contact.side_effect = Exception
+        g_list = list()
+        g_list.append(group_key)
+        fake_get_contact.return_value = {'key': 'abcde', 'groups': g_list}
+        fake_get_contact.side_effect = None
+        resp = self.client.post(reverse('group.update'),
+                                data='{"group_key": "%s", "name": "%s", "filters": "%s", "query_words": "%s", '
+                                     '"members": [{"value": "%s"}, {"value": "%s"}]''}'
+                                     % (group_key, new_name, filters, query_words, existing_contact_2, new_contact),
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Contact group updated!')
+        count = ContactGroupMember.objects.filter(group=contact_group).count()
+        self.assertEquals(count, 3)
+
+        #update exception
+        fake_update_contact.side_effect = None
+        g_list = list()
+        g_list.append(group_key)
+        fake_get_contact.return_value = {'key': 'abcde', 'groups': g_list}
+        fake_get_contact.side_effect = None
+        resp = self.client.post(reverse('group.update'),
+                                data='{"group_key": "%s", "name": "%s", "filters": "%s", "query_words": "%s", '
+                                     '"members": [{"value": "%s"}, {"value": "%s"}]''}'
+                                     % (group_key, new_name, filters, query_words, existing_contact_2, new_contact),
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Contact group updated!')
+        count = ContactGroupMember.objects.filter(group=contact_group).count()
+        self.assertEquals(count, 2)
 
     def test_get_surveys(self):
         self.create_survey_result(self.survey, self.contact, {"age": 21})
