@@ -45,9 +45,9 @@ urlpatterns = patterns('',
     url(r'^get_unique_keys/', get_unique_keys, name='get_unique_keys'),
     url(r'^home/$', view_home, name='home'),
 
-    url(r'^delete_contactgroup/', delete_contactgroup),
-    url(r'^create_contactgroup/', create_contactgroup),
-    url(r'^update_contactgroup/', update_contactgroup),
+    url(r'^delete_contactgroup/', delete_contactgroup, name='group.delete'),
+    url(r'^create_contactgroup/', create_contactgroup, name='group.create'),
+    url(r'^update_contactgroup/', update_contactgroup, name='group.update'),
     url(r'^get_surveys/$', get_surveys),
 
     url(r"^get_stats/$", login_required(LandingStatsView.as_view())),
