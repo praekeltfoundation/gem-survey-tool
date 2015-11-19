@@ -347,16 +347,12 @@ def view_home(request):
     return render(request, 'home.html')
 
 
-def get_contact_groups(request):
-    #return HttpResponse("hello")
-    contact_groups = ContactGroup.objects.all()
-    data = serializers.serialize("json", contact_groups)
-    return HttpResponse(json.dumps(data), content_type="application/json")
-
-
 def get_answer_values(request):
     if request.method == "POST":
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+        except ValueError:
+            return HttpResponseBadRequest("Bad Request!")
 
         if 'field' in data and data['field'] is not None:
             rs = SurveyResult.objects.values('answer', 'survey__name').distinct()
@@ -375,8 +371,7 @@ def get_answer_values(request):
 
             return generate_json_response(serialize_list_to_json(values, UIFieldEncoder))
 
-        return HttpResponse('BAD REQUEST TYPE')
-    return HttpResponse('BAD REQUEST TYPE')
+    return HttpResponseBadRequest('Bad Request!')
 
 
 def delete_contactgroup(request):
