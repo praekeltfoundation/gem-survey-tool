@@ -121,15 +121,15 @@ gems.controller('groupController', function($scope, $http){
         return group;
     };
 
-    $scope.saveGroup = function saveGroup(filters, group, count){
-        group = typeof group !== 'undefined' ? group : $scope.getGroup(filters);
+    $scope.saveGroup = function saveGroup(filters){
+        var group = $scope.getGroup(filters);
 
         $http.post('/create_contactgroup/', group, config={timeout: 300000}).
             success(function(status){
-                $scope.showAlert('alert-success', 'Success', status);
+                $scope.showAlert('alert-success', 'Success:', status);
             }).
             error(function(data, status){
-                $scope.showAlert('alert-warning', 'Failed', 'Failed to create contact group.' + '\n\n' + status + ' : ' + data);
+                $scope.showAlert('alert-warning', 'Failed:', status + ' : ' + data);
             });
 
         $scope.cancel();

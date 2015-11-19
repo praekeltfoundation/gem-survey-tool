@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core import serializers
@@ -412,101 +412,100 @@ def timing(f):
 
 
 def process_group_member(api, member, group):
-    if "value" not in member:
-        logger.info("process_group: value missing from member")
-
-    db_contact = None
+    # if for some reason we don't have the vumi key in the db for this contact, fetch the contact from vumi
+    if member.vkey is None or member.vkey == '':
+        try:
+            contact = api.get_contact(msisdn=member.msisdn)
+            member.vkey = contact['key']
+            member.save()
+        except Exception:
+            logger.info('Contact: %s not found in vumi' % member)
+            return
 
     try:
-        db_contact = Contact.objects.filter(msisdn=member["value"]).first()
-        contact_key = db_contact.vkey
-
-        # if for some reason we don't have the vumi key in the db for this contact
-        # fetch the contact from vumi
-        if contact_key is None:
-            contact = api.get_contact(msisdn=member)
-            contact_key = contact["key"]
+        api.update_contact(member.vkey, {u'groups': (group.group_key, )})
     except Exception:
-        contact_key = None
-        logger.info('Contact: %s not found in vumi' % member)
+        logger.info('Contact: %s update failed' % member)
+        return
 
-    if contact_key:
-        try:
-            api.update_contact(contact_key, {u'groups': (group.group_key, )})
-        except Exception:
-            logger.info('Contact: %s update failed' % member)
-
-    if db_contact:
-        group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=db_contact)
-        group_member.save()
+    group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=member)
+    group_member.save()
 
 
 def remove_group_member(api, member, group):
     try:
-        contact = api.get_contact(msisdn=member)
+        contact = api.get_contact(msisdn=member.msisdn)
+        if member.vkey is None or member.vkey == '':
+            member.vkey = contact['key']
+            member.save()
     except Exception:
-        contact = None
         logger.info('Contact: %s not found in vumi' % member)
+        return
+    groups = contact['groups']
+    if group.group_key in groups:
+        updated_groups = groups.remove(group.group_key)
 
-    if contact:
-        if group.group_key in contact['groups']:
-            updated_groups = contact['groups'].remove(group.group_key)
+        if updated_groups is None:
+            updated_groups = ''
+        try:
+            api.update_contact(member.vkey, {u'groups': updated_groups})
+        except Exception:
+            logger.info('Contact: %s update failed' % member)
+            return
 
-            try:
-                api.update_contact(contact['key'], {u'groups': updated_groups})
-            except Exception:
-                logger.info('Contact: %s update failed' % member)
-
-    local_contact = Contact.objects.get(msisdn=member)
-    ContactGroupMember.objects.filter(group=group, contact=local_contact).delete()
+    ContactGroupMember.objects.filter(group=group, contact=member).delete()
 
 
 def create_contactgroup(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+        except ValueError:
+            return HttpResponseBadRequest("Bad Request!")
 
-        if 'name' in data:
+        if 'name' in data and data['name'] is not None and 'filters' in data and 'query_words' in data:
             group_name = data['name']
+            group_filters = data['filters']
+            group_query_words = data['query_words']
 
             api = ContactsApiClient(settings.VUMI_TOKEN)
             data_returned = api.create_group({u'name': group_name, })
 
             if 'key' in data_returned:
                 group_key = data_returned['key']
+                date_created = datetime.now()
 
-                if 'filters' in data:
-                    group_filters = data['filters']
+                contact_group = ContactGroup.objects.create(
+                    group_key=group_key,
+                    name=group_name,
+                    created_by=request.user,
+                    created_at=date_created,
+                    filters=group_filters,
+                    query_words=group_query_words
+                )
 
-                    if 'query_words' in data:
-                        group_query_words = data['query_words']
+                if 'members' in data:
+                    members = data['members']
 
-                        date_created = datetime.now()
+                    for member in members:
+                        try:
+                            contact = Contact.objects.get(msisdn=member['value'])
+                        except Contact.DoesNotExist:
+                            logger.info('Contact with msisdn %s does not exist' % member['value'])
+                            continue
+                        process_group_member(api, contact, contact_group)
 
-                        contact_group = ContactGroup.objects.create(
-                            group_key=group_key,
-                            name=group_name,
-                            created_by=request.user,
-                            created_at=date_created,
-                            filters=group_filters,
-                            query_words=group_query_words
-                        )
+                return HttpResponse("Contact group %s successfully created." % group_name)
 
-                        if 'members' in data:
-                            members = data['members']
-
-                            for member in members:
-                                process_group_member(api, member, contact_group)
-
-                            return HttpResponse("Contact group %s created succcessfully" % group_name)
-
-        return HttpResponse("Failed to create Contact group %s" % group_name)
-    else:
-        return HttpResponse("Failed to create Contact group")
+    return HttpResponseBadRequest("Bad Request!")
 
 
 def update_contactgroup(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+        except ValueError:
+            return HttpResponseBadRequest("Bad Request!")
 
         if 'group_key' in data:
             group_key = data['group_key']
@@ -539,7 +538,10 @@ def update_contactgroup(request):
 
                 new_list = []
                 for c in members:
-                    new_list.append(Contact.objects.get(msisdn=c))
+                    try:
+                        new_list.append(Contact.objects.get(msisdn=c['value']))
+                    except Contact.DoesNotExist:
+                        continue
 
                 o = set(old_list)
                 add_list = [x for x in new_list if x not in o]
@@ -548,24 +550,22 @@ def update_contactgroup(request):
                 remove_list = [x for x in old_list if x not in n]
 
                 if add_list:
-                    print "Adding:"
+                    logger.info('Adding new contacts to group %s: STARTED' % group.name)
                     for member in add_list:
-                        print member
-                        print type(member) is Contact
+                        logger.info('Adding contact: %s' % member.msisdn)
                         process_group_member(api, member, group)
+                    logger.info('Adding new contacts to group %s: COMPLETED' % group.name)
 
                 if remove_list:
-                    print "Removing:"
+                    logger.info('Removing contacts from group %s: START' % group.name)
                     for member in remove_list:
-                        print member
-                        print type(member) is Contact
+                        logger.info('Removing contact: %s' % member.msisdn)
                         remove_group_member(api, member, group)
+                    logger.info('Removing contacts from group %s: COMPLETED' % group.name)
 
-            return HttpResponse("OK")
-        else:
-            return HttpResponse("FAILED")
-    else:
-        return HttpResponse("FAILED")
+            return HttpResponse("Contact group updated!")
+
+    return HttpResponseBadRequest("Bad Request!")
 
 
 def get_surveys(request):

@@ -68,7 +68,7 @@ class ContactGroup(HStoreModel):
     query_words = models.CharField(max_length=8000)
 
     def __unicode__(self):
-        return u'%s' % (self.name)
+        return u'%s' % self.name
 
 
 class ContactGroupMember(models.Model):
