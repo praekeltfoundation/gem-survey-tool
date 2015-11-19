@@ -347,16 +347,12 @@ def view_home(request):
     return render(request, 'home.html')
 
 
-def get_contact_groups(request):
-    #return HttpResponse("hello")
-    contact_groups = ContactGroup.objects.all()
-    data = serializers.serialize("json", contact_groups)
-    return HttpResponse(json.dumps(data), content_type="application/json")
-
-
 def get_answer_values(request):
     if request.method == "POST":
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+        except ValueError:
+            return HttpResponseBadRequest("Bad Request!")
 
         if 'field' in data and data['field'] is not None:
             rs = SurveyResult.objects.values('answer', 'survey__name').distinct()
@@ -375,30 +371,31 @@ def get_answer_values(request):
 
             return generate_json_response(serialize_list_to_json(values, UIFieldEncoder))
 
-        return HttpResponse('BAD REQUEST TYPE')
-    return HttpResponse('BAD REQUEST TYPE')
+    return HttpResponseBadRequest('Bad Request!')
 
 
 def delete_contactgroup(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+        except ValueError:
+            return HttpResponseBadRequest("Bad Request!")
 
-        if 'group_key' in data:
+        if 'group_key' in data and data['group_key'] != '':
             group_key = data['group_key']
 
-            group = ContactGroup.objects.filter(group_key=group_key).first()
-            api = ContactsApiClient(settings.VUMI_TOKEN)
-            deleted_group = api.delete_group(group_key)
+            try:
+                group = ContactGroup.objects.get(group_key=group_key)
+                api = ContactsApiClient(settings.VUMI_TOKEN)
+                deleted_group = api.delete_group(group_key)
+            except (Exception, ContactGroup.DoesNotExist):
+                return HttpResponseBadRequest('Bad Request!')
 
             if deleted_group['key'] == group_key:
                 group.delete()
-                return HttpResponse('OK')
-            else:
-                return HttpResponse('FAILED')
-        else:
-            return HttpResponse('FAILED')
+                return HttpResponse('Contact group deleted!')
 
-    return HttpResponse('BAD REQUEST TYPE')
+    return HttpResponseBadRequest('Bad Request!')
 
 
 def timing(f):

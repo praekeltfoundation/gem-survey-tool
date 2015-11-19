@@ -196,10 +196,11 @@ class RESTTestCase(TestCase):
 
 class GeneralTests(TestCase):
 
-    def create_survey(self, survey_id="0928309402384908203423", name="Test"):
+    def create_survey(self, survey_id="0928309402384908203423", name="Test", series="1"):
         return Survey.objects.create(
             name=name,
-            survey_id=survey_id
+            survey_id=survey_id,
+            series=series
         )
 
     def create_contact(self, msisdn="123456789", vkey="234598274987l"):
@@ -315,15 +316,86 @@ class GeneralTests(TestCase):
         resp = self.client.get("/contactgroup/")
         self.assertEquals(resp.status_code, 200)
 
-    def test_delete_contact_group(self):
-        resp = self.client.get("/delete_contactgroup/")
-        # TODO: Complete Test
+    @patch('gems.core.views.ContactsApiClient.delete_group')
+    def test_delete_contact_group(self, fake_delete_contact):
+        # create user and login
+        user = User.objects.create_user("admin", "admin@admin.com", "admin")
+        self.client.post(reverse('login'),
+                         {
+                             'username': "admin",
+                             'password': "admin"
+                         },
+                         follow=True)
 
-    def fake_create_group(self, name):
-        return {'key': '%sabc' % name, 'filters': "{'a':'a', 'b':'b'}", 'query_words': 'age > 20', 'name': name}
+        group_key = 'asdfg'
+        group_name = 'group_1'
+        contact_group = self.create_contact_group(group_key, group_name, user)
+        contact = self.create_contact('+270911234567', '12345679123456')
+        self.create_contact_group_member(contact_group, contact)
 
-    def fake_process_group_member(api, member, contact_group):
-        pass
+        resp = self.client.get(reverse('group.delete'))
+        self.assertContains(resp, "Bad Request!", status_code=400)
+
+        # post call with no data passed or invalid json
+        resp = self.client.post(reverse('group.delete'),
+                                data={},
+                                follow=True)
+        self.assertContains(resp, 'Bad Request!', status_code=400)
+
+        resp = self.client.post(reverse('group.delete'),
+                                data={'{group_key:'},
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Bad Request!', status_code=400)
+
+        # post call with no group name passed
+        resp = self.client.post(reverse('group.delete'),
+                                data='{"group_key": ""}',
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Bad Request!', status_code=400)
+
+        # wrong group key
+        resp = self.client.post(reverse('group.delete'),
+                                data='{"group_key": "147852"}',
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Bad Request!', status_code=400)
+
+        #exception
+        fake_delete_contact.side_effect = Exception
+        resp = self.client.post(reverse('group.delete'),
+                                data='{"group_key": "%s"}' % group_key,
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Bad Request!', status_code=400)
+        count = ContactGroup.objects.all().count()
+        self.assertEquals(count, 1)
+        fake_delete_contact.side_effect = None
+
+        #group_keys not matching
+        fake_delete_contact.return_value = {'key': '135468'}
+        resp = self.client.post(reverse('group.delete'),
+                                data='{"group_key": "%s"}' % group_key,
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Bad Request!', status_code=400)
+        count = ContactGroup.objects.all().count()
+        self.assertEquals(count, 1)
+        count = ContactGroupMember.objects.all().count()
+        self.assertEquals(count, 1)
+
+        #valid
+        fake_delete_contact.return_value = {'key': group_key}
+        resp = self.client.post(reverse('group.delete'),
+                                data='{"group_key": "%s"}' % group_key,
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Contact group deleted!')
+        count = ContactGroup.objects.all().count()
+        self.assertEquals(count, 0)
+        count = ContactGroupMember.objects.all().count()
+        self.assertEquals(count, 0)
 
     @patch('gems.core.views.ContactsApiClient.update_contact')
     @patch('gems.core.views.ContactsApiClient.get_contact')
@@ -569,21 +641,47 @@ class GeneralTests(TestCase):
         # TODO: Complete Test
 
     def test_get_answer_values(self):
-        self.create_survey_result(self.survey, self.contact, {"age": 21})
-        resp = self.client.get("get_unique_keys")
-        self.assertEquals(resp.status_code, 404)
+        user = User.objects.create_user("admin", "admin@admin.com", "admin")
+        self.create_survey_result(self.survey, self.contact, {"age": 21, "gender": "male"})
+        contact_2 = self.create_contact('+27711234567', '789456123')
+        self.create_survey_result(self.survey, contact_2, {"age": 25, "gender": "female", "married": "yes"})
 
-        resp = self.client.post("get_unique_keys")
-        self.assertEquals(resp.status_code, 404)
+        self.client.post(reverse('login'),
+                         {
+                             'username': "admin",
+                             'password': "admin"
+                         },
+                         follow=True)
 
-        resp = self.client.post("get_unique_keys",
-                                data=
-                                {
-                                    "field": 'blah'
-                                })
-        self.assertEquals(resp.status_code, 404)
+        # get call
+        resp = self.client.get(reverse('get_answer_values'))
+        self.assertContains(resp, 'Bad Request!', status_code=400)
 
-        #TODO: Complete Test
+        # post no data
+        resp = self.client.post(reverse('get_answer_values'),
+                                data={},
+                                follow=True)
+        self.assertContains(resp, 'Bad Request!', status_code=400)
+
+        #no field
+        resp = self.client.post(reverse('get_answer_values'),
+                                data='{field: ""}',
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, 'Bad Request!', status_code=400)
+
+        #valid
+        resp = self.client.post(reverse('get_answer_values'),
+                                data='{"field": "survey"}',
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, self.survey.name)
+
+        resp = self.client.post(reverse('get_answer_values'),
+                                data='{"field": "series"}',
+                                content_type="application/json",
+                                follow=True)
+        self.assertContains(resp, self.survey.series)
 
 
 class ModelTests(TestCase):
