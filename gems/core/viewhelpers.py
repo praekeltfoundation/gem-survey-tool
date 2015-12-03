@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.db import connection
 import json
 
 
@@ -150,3 +151,29 @@ class UIFieldEncoder(json.JSONEncoder):
             return retval
         else:
             return json.JSONEncoder.default(self, obj)
+
+
+def get_surveyresult_hstore_keys(ui_field=True):
+    """
+    :rtype: List of UIField objects
+    :return: Unique set of keys from the answer hstore field in the
+             surveyresult table
+    """
+    sql = 'select distinct hKey ' \
+          'from (select skeys(answer) as hKey ' \
+          'from core_surveyresult) as dt'
+    cursor = connection.cursor()
+    answer_keys = []
+
+    cursor.execute(sql)
+
+    for answer_key in cursor.fetchall():
+        if ui_field:
+            answer_keys.append(UIField(answer_key, 'H'))
+        else:
+            if type(answer_key) is tuple:
+                answer_keys.append(answer_key[0])
+            else:
+                answer_keys.append(answer_key)
+
+    return answer_keys
