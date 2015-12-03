@@ -1,8 +1,12 @@
+# coding: UTF-8
+
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test import Client
+from django.db import connection
 from gems.core.models import Contact, ContactGroup, ContactGroupMember, Survey, SurveyResult, RawSurveyResult, \
     IncomingSurvey, User, Setting
+from gems.core.tasks import construct_summary_table_sql
 from mock import patch
 from csv_utils import process_header, process_line, split_line, survey_lookup, process_file
 from datetime import datetime
@@ -1066,3 +1070,91 @@ class LandingPageStatsTests(TestCase):
         self.assertContains(resp, 'sms_day_data')
         self.assertContains(resp, 'heading', 2)
         self.assertContains(resp, 'dataset', 2)
+
+
+class BimeTableTests(TestCase):
+
+    def setUp(self):
+        self.j = {
+            'user': {
+                'answers': {'age': '14'}
+            },
+            'contact': {
+                'extra': {
+                },
+                'groups': [],
+                'subscription': {},
+                'key': '61a036aa272341c78c0d34b74092885e',
+                'surname': None,
+                'user_account': '8a410f412f0b4010ab88e1362518994f',
+                'bbm_pin': None,
+                'mxit_id': None,
+                'twitter_handle': None,
+                'wechat_id': None,
+                'email_address': None,
+                'facebook_id': None,
+                'msisdn': '+27822247336',
+                'gtalk_id': None,
+                'name': None,
+                'dob': None,
+                'created_at': '2015-02-25 07:19:39.505567',
+                '$VERSION': 2
+            },
+            'conversation_key': 'dbb13e9a55874a8d84165bde05c0ad52'
+        }
+
+    def test_table_creation(self):
+
+        # create some data
+        self.client.post('/save_data/', content_type='application/json', data=json.dumps(self.j))
+
+        construct_summary_table_sql()
+
+        cursor = connection.cursor()
+        cursor.execute('select count(1) from dashboard_survey_results')
+        row = cursor.fetchone()
+
+        self.assertEquals(row[0], 1)
+
+        cursor.execute('select age from dashboard_survey_results')
+        row = cursor.fetchone()
+
+        self.assertEquals(row[0], '14')
+
+    def test_table_with_actual_names(self):
+
+        # create some data
+        real_data_1 = "{\"user\":{\"answers\":{\"baselineamhnov15\":\"yes\"}},\"contact\":{\"extra\":{\"ep11lemlem-early-marriageeng-1\":\"yes-i-know-someone-who-did\",\"registration-screenlanguage-2\":\"english\",\"registration-screenlanguage-1\":\"\",\"ep6q2mlfemaleeng-1\":\"yes\",\"ep6q2mlfemaleeng\":\"yes\",\"ep6q1gendermleng-1\":\"female\",\"ep6q1gendermleng\":\"female\",\"registration-screenlanguage\":\"english\",\"ep11lemlem-early-marriageeng\":\"yes-i-know-someone-who-did\",\"registration-screenwelcome-page\":\"1\",\"registration-screenwelcome-page-1\":\"1\",\"registration-screenwelcome-page-2\":\"1\",\"baselineamhnov15\":\"yes\",\"baselineamhnov15-1\":\"yes\"},\"groups\":[\"d3eee2c60155485f85d6d026be23dab9\",\"ce1caddf184a452989afdc1f986b57b7\",\"4f9d380135c7491c8471a03a030bc1dc\",\"cd68b1d9a9d74f26943604cdebd5f2c2\",\"3f71aa3cedd1483da837adb366858de2\",\"75e137230248494e8d9bedce48826560\",\"eb595c452e3b4ffe8258b54df9454676\",\"3ee0c069e05b43638b5b09dfdba67410\",\"3e7d667935ad4f11989e577f7afc40e7\",\"1c85ad36dc5c47bfaaabafd0ba5689ba\",\"3ee5089330d0438a9a1d17e3b779cc65\",\"3430cdc770b041608ea1446eada4e9d7\"],\"subscription\":{},\"key\":\"043943a660114f83837821bc61c6190c\",\"twitter_handle\":null,\"user_account\":\"1249b7548d464198b9b10cbb0c3b6415\",\"bbm_pin\":null,\"mxit_id\":null,\"wechat_id\":null,\"email_address\":null,\"facebook_id\":null,\"msisdn\":\"+251924978096\",\"$VERSION\":2,\"gtalk_id\":null,\"name\":null,\"dob\":null,\"created_at\":\"2015-04-20 18:23:56.714918\",\"surname\":null},\"conversation_key\":\"75d0d7d6859347198f4286b2134a6506\"}"
+        real_data_2 = "{\"user\":{\"answers\":{\"s6baselinephoamnov15\":\"yes\"}},\"contact\":{\"extra\":{\"ep7agedemographicphoam-1\":\"24\",\"ep12episode-resonance-1phoam-1\":\"very-realistic\",\"ep12episode-resonance-1phoam-2\":\"early-marriage\",\"ep7marriage-viewphoam\":\"yes-completely\",\"ep13episode-inspiredphoam\":\"i-didnt-listen\",\"ep13episode-inspiredphoam-1\":\"i-didnt-listen\",\"agephoam\":\"2\",\"locationphoam\":\"ደብረብረሀን\",\"welcome-and-registration-request\":\"T¡C\",\"question-1-group-d\":\"hulunem\",\"genderphoam\":\"1\",\"question-1-group-d-3\":\"awo\",\"question-1-group-d-3-1\":\"awo\",\"question-1-group-d-1\":\"hulunem\",\"registration\":\"አማርኛ ነዉ\",\"question-1-group-d-2\":\"bekefil-\",\"question-1-group-d-2-1\":\"bekefil-\",\"ep12episode-resonance-1phoam\":\"early-marriage\",\"language\":\"2\",\"ep7agedemographicphoam\":\"24\",\"ep7marriage-viewphoam-1\":\"yes-completely\",\"s6baselinephoamnov15\":\"yes\",\"s6baselinephoamnov15-1\":\"yes\"},\"groups\":[\"5cb9d0195c824aaab4f0983e16fa2172\",\"fffc93e29815442397901e57ef15b311\",\"5f60dfb5c01e4ce1a887e9981e6d47f5\",\"8af6f184df7640899f2849dc5d0aa59c\",\"4f9d380135c7491c8471a03a030bc1dc\",\"cd68b1d9a9d74f26943604cdebd5f2c2\",\"41a0ee4171714538b51a5ee6ff62a8d1\",\"4be1dd04eacc4789910645b8404c19ec\",\"3e7d667935ad4f11989e577f7afc40e7\",\"0a0475ccad194fc8b99425cfe059a328\",\"5bee065a644b4831a6aeea16afb06985\",\"880941dd49b248388226620e4632e913\",\"1d992cd6918c4a5580cbb57b6ef521af\"],\"subscription\":{},\"key\":\"c19d78a9359a4b5b8a7ed2bef3ced0de\",\"twitter_handle\":null,\"user_account\":\"1249b7548d464198b9b10cbb0c3b6415\",\"bbm_pin\":null,\"mxit_id\":null,\"surname\":null,\"wechat_id\":null,\"email_address\":null,\"facebook_id\":null,\"msisdn\":\"+251918255085\",\"gtalk_id\":null,\"name\":null,\"dob\":null,\"created_at\":\"2014-05-30 14:11:50.843054\",\"$VERSION\":2},\"conversation_key\":\"0ab996a154e24918acc8556e6ce44661\"}"
+        real_data_3 = "{\"user\":{\"answers\":{\"s6brandquizwk3amh\":\"6\"}},\"contact\":{\"extra\":{\"ep11lemlem-early-marriageamh\":\"yes-i-have\",\"registration-screenlanguage-1\":\"\",\"ep9describe-episodeamh\":\"other\",\"ep9describe-episodeamh-1\":\"other\",\"registration-screenlanguage\":\"\",\"ep11lemlem-early-marriageamh-1\":\"yes-i-have\",\"registration-screenwelcome-page\":\"1\",\"registration-screenwelcome-page-1\":\"1\",\"s6brandquizwk3amh\":\"6\",\"s6brandquizwk3amh-1\":\"6\"},\"groups\":[\"d3eee2c60155485f85d6d026be23dab9\",\"3ee0c069e05b43638b5b09dfdba67410\",\"4c6a42e89b99448fad256a0aaf861b9f\",\"1c85ad36dc5c47bfaaabafd0ba5689ba\",\"3ee5089330d0438a9a1d17e3b779cc65\"],\"subscription\":{},\"key\":\"72641f0fcf1b4e429f66f83c33dd67b0\",\"twitter_handle\":null,\"user_account\":\"1249b7548d464198b9b10cbb0c3b6415\",\"bbm_pin\":null,\"mxit_id\":null,\"surname\":null,\"wechat_id\":null,\"email_address\":\"+251912232001\",\"facebook_id\":null,\"msisdn\":\"+251912232001\",\"$VERSION\":2,\"gtalk_id\":null,\"name\":null,\"dob\":null,\"created_at\":\"2015-06-07 20:30:57.701668\"},\"conversation_key\":\"aaab7a3d25614a32a706f3e118977e40\"}"
+
+        self.client.post('/save_data/', content_type='application/json', data=json.dumps(real_data_1))
+        self.client.post('/save_data/', content_type='application/json', data=json.dumps(real_data_2))
+        self.client.post('/save_data/', content_type='application/json', data=json.dumps(real_data_3))
+
+        construct_summary_table_sql()
+
+        cursor = connection.cursor()
+        cursor.execute('select count(1) from dashboard_survey_results')
+        row = cursor.fetchone()
+
+        self.assertEquals(row[0], 3)
+
+        cursor.execute('select baselineamhnov15, s6baselinephoamnov15, s6brandquizwk3amh from dashboard_survey_results')
+        row = cursor.fetchone()
+
+        self.assertEquals(row[0], 'yes')
+        self.assertEquals(row[1], None)
+        self.assertEquals(row[2], None)
+
+        row = cursor.fetchone()
+
+        self.assertEquals(row[0], None)
+        self.assertEquals(row[1], 'yes')
+        self.assertEquals(row[2], None)
+
+        row = cursor.fetchone()
+
+        self.assertEquals(row[0], None)
+        self.assertEquals(row[1], None)
+        self.assertEquals(row[2], '6')

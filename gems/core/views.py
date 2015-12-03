@@ -3,7 +3,6 @@ from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadReque
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core import serializers
-from django.db import connection
 from django.db.models import Count
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
@@ -11,7 +10,7 @@ from django.views.generic import View
 from django.shortcuts import render
 from go_http.contacts import ContactsApiClient
 from forms import SurveyImportForm
-from viewhelpers import Filter, UIField, UIFieldEncoder
+from viewhelpers import Filter, UIField, UIFieldEncoder, get_surveyresult_hstore_keys
 from csv_utils import process_file
 from models import Survey, SurveyResult, IncomingSurvey, Contact, ContactGroupMember, ContactGroup, RawSurveyResult, \
     Setting
@@ -293,26 +292,6 @@ def query(request):
     results = build_query(payload, True)
 
     return generate_json_response(json.dumps(list(results), default=json_serial))
-
-
-def get_surveyresult_hstore_keys():
-    """
-    :rtype: List of UIField objects
-    :return: Unique set of keys from the answer hstore field in the
-             surveyresult table
-    """
-    sql = 'select distinct hKey ' \
-          'from (select skeys(answer) as hKey ' \
-          'from core_surveyresult) as dt'
-    cursor = connection.cursor()
-    answer_keys = []
-
-    cursor.execute(sql)
-
-    for answer_key in cursor.fetchall():
-        answer_keys.append(UIField(answer_key, 'H'))
-
-    return answer_keys
 
 
 def generate_json_response(content):

@@ -2,11 +2,13 @@ from __future__ import absolute_import
 from celery import task
 from gems.core.models import SurveyResult, ExportTypeMapping
 from django.conf import settings
+from django.db import connection
 import logging
 import json
 import requests
 from go_http.contacts import ContactsApiClient
 from gems.core.models import Contact
+from gems.core.viewhelpers import get_surveyresult_hstore_keys
 
 logger = logging.getLogger(__name__)
 
@@ -156,3 +158,34 @@ def import_contacts():
         logger.info('importing contacts :: Completed')
     except Exception:
         logger.info('importing contacts :: Failed to fetch contacts')
+
+
+@task
+def construct_dashboard_survey_results_table():
+    construct_summary_table_sql()
+    
+
+def construct_summary_table_sql():
+    keys = get_surveyresult_hstore_keys(False)
+    key_columns = ''
+
+    for key in keys:
+        if len(key_columns) > 0:
+            key_columns += ', '
+
+        key_columns += "answer->'%s' \"%s\"" % (key, key)
+
+    sql = '''
+    select s.survey_id, s.name, s.created_on "survey_created_on", c.vkey, %s, sr.created_at "result_created_on"
+    into dashboard_survey_results
+    from core_surveyresult sr
+      inner join core_survey s
+        on s.survey_id = sr.survey_id
+      inner join core_contact c
+        on c.msisdn = sr.contact_id
+    ''' % key_columns
+
+    cursor = connection.cursor()
+
+    cursor.execute('drop table if exists dashboard_survey_results')
+    cursor.execute(sql)
