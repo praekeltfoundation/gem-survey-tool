@@ -163,7 +163,7 @@ def import_contacts():
 @task
 def construct_dashboard_survey_results_table():
     construct_summary_table_sql()
-    
+
 
 def construct_summary_table_sql():
     keys = get_surveyresult_hstore_keys(False)
@@ -176,7 +176,8 @@ def construct_summary_table_sql():
         key_columns += "answer->'%s' \"%s\"" % (key, key)
 
     sql = '''
-    select s.survey_id, s.name, s.created_on "survey_created_on", c.vkey, %s, sr.created_at "result_created_on"
+    select s.survey_id, s.name "survey_name", s.series, s.created_on "survey_created_on",
+      c.vkey "contact_vkey", %s, sr.created_at "result_created_on"
     into dashboard_survey_results
     from core_surveyresult sr
       inner join core_survey s
