@@ -370,7 +370,7 @@ gems.controller('mainController', function($scope, $http, $window){
 
     $scope.alertTimeout = function(wait){
         setTimeout(function() {
-            $('.alerts-container').children('.alert:first-child').fadeOut(300, function() { $(this).remove()});
+            $('.alerts-container').children('.timed-message:first-child').fadeOut(300, function() { $(this).remove()});
         }, wait);
     }
 
