@@ -368,6 +368,21 @@ gems.controller('mainController', function($scope, $http, $window){
         $scope.alertTimeout(10000);
     }
 
+    $scope.showMessage = function(heading, message) {
+        var html =
+            '<div class="alert message alert-info">' +
+                '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
+                '<strong>' + heading + '! </strong> ' + message +
+            '</div>';
+        $('.alerts-container').append(html);
+    }
+
+    $scope.hideMessage = function() {
+        if ( $('.alerts-container').children('.message').length ) {
+            $('.alerts-container').children('.message').remove();
+        }
+    }
+
     $scope.alertTimeout = function(wait){
         setTimeout(function() {
             $('.alerts-container').children('.timed-message:first-child').fadeOut(300, function() { $(this).remove()});
