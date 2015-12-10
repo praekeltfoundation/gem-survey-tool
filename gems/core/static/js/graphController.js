@@ -107,7 +107,8 @@ gems.controller('graphController', function($scope, $http){
         var xAxis = d3.svg.axis()
             .scale(xScale)
             .orient("bottom")
-            .ticks(5);
+            .ticks(5)
+            .tickFormat(d3.time.format('%a %e'));;
 
         //Define Y axis
         var yAxis = d3.svg.axis()
