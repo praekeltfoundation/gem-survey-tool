@@ -359,7 +359,7 @@ gems.controller('mainController', function($scope, $http, $window){
 
     $scope.showAlert = function(type, heading, message) {
         var html =
-            '<div class="alert ' + type + '">' +
+            '<div class="alert timed-message ' + type + '">' +
                 '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
                 '<strong>' + heading + '! </strong> ' + message +
             '</div>';
