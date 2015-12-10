@@ -124,11 +124,14 @@ gems.controller('groupController', function($scope, $http){
     $scope.saveGroup = function saveGroup(filters){
         var group = $scope.getGroup(filters);
 
+        $scope.showMessage('Busy', 'Creating Group');
         $http.post('/create_contactgroup/', group, config={timeout: 300000}).
             success(function(status){
+                $scope.hideMessage();
                 $scope.showAlert('alert-success', 'Success:', status);
             }).
             error(function(data, status){
+                $scope.hideMessage();
                 $scope.showAlert('alert-warning', 'Failed:', status + ' : ' + data);
             });
 
