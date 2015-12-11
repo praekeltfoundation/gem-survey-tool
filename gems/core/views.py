@@ -683,24 +683,7 @@ class LandingStatsView(View):
             created_on__range=this_quarter
         ).count()
 
-        #unique users
-        sent_sms = SurveyResult.objects.all().values_list('contact__msisdn', flat=True)
         registered_list = Contact.objects.all().values_list('msisdn', flat=True)
-        all_users_id_list = list(sent_sms) + list(registered_list)
-        unique_users = Contact.objects.filter(msisdn__in=all_users_id_list).count()
-
-        #new users this quarter
-        new_users_this_quarter = Contact.objects.filter(msisdn__in=all_users_id_list,
-                                                        created_on__range=this_quarter).count()
-
-        #new users this month
-        new_users_this_month = Contact.objects.filter(msisdn__in=all_users_id_list,
-                                                      created_on__month=this_month,
-                                                      created_on__year=this_year).count()
-
-        #new users this week
-        new_users_this_week = Contact.objects.filter(msisdn__in=all_users_id_list,
-                                                     created_on__range=this_week).count()
 
         #total survey results
         total_results = SurveyResult.objects.all().count()
@@ -780,10 +763,6 @@ class LandingStatsView(View):
             "new_registered_users_this_month": new_registered_users_this_month,
             "new_registered_users_this_week": new_registered_users_this_week,
             "new_registered_users_this_quarter": new_registered_users_this_quarter,
-            "unique_users": unique_users,
-            "new_users_this_quarter": new_users_this_quarter,
-            "new_users_this_month": new_users_this_month,
-            "new_users_this_week": new_users_this_week,
             "total_results": total_results,
             "total_results_last_month": total_results_last_month,
             "total_results_this_month": total_results_this_month,
