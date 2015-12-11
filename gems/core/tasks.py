@@ -178,7 +178,7 @@ def construct_summary_table_sql():
     sql = '''
     select s.survey_id, s.name "survey_name", s.series, s.created_on "survey_created_on",
       c.vkey "contact_vkey", %s, sr.created_at "result_created_on"
-    into dashboard_survey_results
+    into gems_reporting.dashboard_survey_results
     from core_surveyresult sr
       inner join core_survey s
         on s.survey_id = sr.survey_id
@@ -188,5 +188,5 @@ def construct_summary_table_sql():
 
     cursor = connection.cursor()
 
-    cursor.execute('drop table if exists dashboard_survey_results')
+    cursor.execute('drop table if exists gems_reporting.dashboard_survey_results')
     cursor.execute(sql)
