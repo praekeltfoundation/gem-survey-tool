@@ -1104,15 +1104,21 @@ class BimeTableTests(TestCase):
         # create some data
         self.client.post('/save_data/', content_type='application/json', data=json.dumps(self.j))
 
+        cursor = connection.cursor()
+
+        try:
+            cursor.execute('create schema gems_reporting')
+        except Exception:
+            pass
+
         construct_summary_table_sql()
 
-        cursor = connection.cursor()
-        cursor.execute('select count(1) from dashboard_survey_results')
+        cursor.execute('select count(1) from gems_reporting.dashboard_survey_results')
         row = cursor.fetchone()
 
         self.assertEquals(row[0], 1)
 
-        cursor.execute('select age from dashboard_survey_results')
+        cursor.execute('select age from gems_reporting.dashboard_survey_results')
         row = cursor.fetchone()
 
         self.assertEquals(row[0], '14')
@@ -1128,15 +1134,21 @@ class BimeTableTests(TestCase):
         self.client.post('/save_data/', content_type='application/json', data=json.dumps(real_data_2))
         self.client.post('/save_data/', content_type='application/json', data=json.dumps(real_data_3))
 
-        construct_summary_table_sql()
-
         cursor = connection.cursor()
-        cursor.execute('select count(1) from dashboard_survey_results')
+
+        try:
+            cursor.execute('create schema gems_reporting')
+        except Exception:
+            pass
+
+        construct_summary_table_sql()
+       
+        cursor.execute('select count(1) from gems_reporting.dashboard_survey_results')
         row = cursor.fetchone()
 
         self.assertEquals(row[0], 3)
 
-        cursor.execute('select baselineamhnov15, s6baselinephoamnov15, s6brandquizwk3amh from dashboard_survey_results')
+        cursor.execute('select baselineamhnov15, s6baselinephoamnov15, s6brandquizwk3amh from gems_reporting.dashboard_survey_results')
         row = cursor.fetchone()
 
         self.assertEquals(row[0], 'yes')
