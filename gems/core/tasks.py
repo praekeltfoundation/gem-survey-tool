@@ -114,7 +114,7 @@ def update_results(results):
 
 
 @task(bind=True)
-def export_data():
+def export_data(self):
 
     logger.info('export_data[Task] :: Started')
 
@@ -135,7 +135,7 @@ def export_data():
 
 
 @task(bind=True)
-def import_contacts():
+def import_contacts(self):
 
     logger.info('importing contacts :: Started')
 
