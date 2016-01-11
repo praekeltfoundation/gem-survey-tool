@@ -155,7 +155,7 @@ def import_contacts(self):
                 contact, created = Contact.objects.get_or_create(msisdn=item['msisdn'])
                 if not created:
                     continue
-                contact.vkey = contact['key']
+                contact.vkey = item['key']
                 contact.save()
                 count += 1
             except Exception:
