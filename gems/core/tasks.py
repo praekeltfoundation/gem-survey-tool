@@ -149,16 +149,17 @@ def import_contacts(self):
         logger.exception('importing contacts :: Failed to fetch contacts')
 
     count = 0
-    try:
-        for contact in all_contacts:
-            contact, created = Contact.objects.get_or_create(msisdn=contact['msisdn'])
-            if not created:
-                continue
-            contact.vkey = contact['key']
-            contact.save()
-            count += 1
-    except Exception:
-        logger.exception('creating contact :: Failed to create a contact %s' % contact['msisdn'])
+    for item in all_contacts:
+        if 'msisdn' in item:
+            try:
+                contact, created = Contact.objects.get_or_create(msisdn=item['msisdn'])
+                if not created:
+                    continue
+                contact.vkey = contact['key']
+                contact.save()
+                count += 1
+            except Exception:
+                logger.exception('creating contact :: Failed to create a contact %s' % item['msisdn'])
 
     logger.info('%s contacts imported' % count)
     logger.info('importing contacts :: Completed')
