@@ -141,8 +141,8 @@ def import_contacts(self):
 
     api = ContactsApiClient(settings.VUMI_TOKEN)
 
+    all_contacts = list()
     try:
-        all_contacts = list()
         for contact in api.contacts():
             all_contacts.append(contact)
     except Exception:
