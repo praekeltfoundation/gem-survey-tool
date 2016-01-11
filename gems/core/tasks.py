@@ -160,6 +160,8 @@ def import_contacts(self):
                 count += 1
             except Exception:
                 logger.exception('creating contact :: Failed to create a contact %s' % item['msisdn'])
+        else:
+            logger.info('Contact does not contain msisdn')
 
     logger.info('%s contacts imported' % count)
     logger.info('importing contacts :: Completed')
