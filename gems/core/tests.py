@@ -632,8 +632,8 @@ class GeneralTests(TestCase):
             data=json.dumps(
                 {
                     "name": "Test",
-                    "from": "2015/01/01",
-                    "to": "2015/12/31"
+                    "from": "%s/01/01" % datetime.now().year,
+                    "to": "%s/12/31" % datetime.now().year
                 }
             )
         )
