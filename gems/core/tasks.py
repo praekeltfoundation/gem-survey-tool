@@ -213,3 +213,9 @@ def add_members_to_group(api, group, members):
     logger.info('Adding members to %s group :: COMPLETED' % group.name)
 
 
+@task(bind=True)
+def sync_group_members(self):
+    unsynced_members = ContactGroupMember.objects.filter(synced=False)
+    api = ContactsApiClient(settings.VUMI_TOKEN)
+    for member in unsynced_members:
+        process_group_member(api, member.contact, member.group)
