@@ -229,4 +229,7 @@ def remove_group_member(api, member, group):
             logger.info('Contact: %s update failed' % member)
             return
 
-    ContactGroupMember.objects.filter(group=group, contact=member).delete()
+    try:
+        ContactGroupMember.objects.filter(group=group, contact=member).delete()
+    except Exception:
+        logger.exception('Failed to delete %s contact in %s group' % (member.msisdn, group.name))
