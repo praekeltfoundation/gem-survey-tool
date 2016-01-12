@@ -21,7 +21,7 @@ import logging
 from datetime import datetime, timedelta
 import time
 import traceback
-from gems.core.tasks import add_members_to_group
+from gems.core.tasks import add_members_to_group, remove_members_from_group
 
 
 logger = logging.getLogger(__name__)
@@ -480,11 +480,7 @@ def update_contactgroup(request):
                     add_members_to_group.delay(api, group, add_list)
 
                 if remove_list:
-                    logger.info('Removing contacts from group %s: START' % group.name)
-                    for member in remove_list:
-                        logger.info('Removing contact: %s' % member.msisdn)
-                        remove_group_member(api, member, group)
-                    logger.info('Removing contacts from group %s: COMPLETED' % group.name)
+                    remove_members_from_group(api, group, remove_list)
 
             return HttpResponse("Contact group updated!")
 
