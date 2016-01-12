@@ -214,6 +214,14 @@ def add_members_to_group(api, group, members):
 
 
 @task
+def add_new_members_to_group(api, group, members):
+    logger.info('Adding members to %s group :: STARTED' % group.name)
+    for member in members:
+        process_group_member(api, member, group)
+    logger.info('Adding members to %s group :: COMPLETED' % group.name)
+
+
+@task
 def remove_members_from_group(api, group, members):
     logger.info('Removing members from %s group :: STARTED' % group.name)
     for member in members:
