@@ -13,6 +13,8 @@ from datetime import datetime
 import os
 import json
 import random
+from django.conf import settings
+from celery import current_app
 
 
 class RESTTestCase(TestCase):
@@ -265,6 +267,9 @@ class GeneralTests(TestCase):
 
         self.survey = self.create_survey()
         self.contact = self.create_contact()
+
+        settings.CELERY_ALWAYS_EAGER = True
+        current_app.conf.CELERY_ALWAYS_EAGER = True
 
     def test_login(self):
         usr = User.objects.create_user("admin", "admin@admin.com", "admin")
