@@ -477,11 +477,7 @@ def update_contactgroup(request):
                 remove_list = [x for x in old_list if x not in n]
 
                 if add_list:
-                    logger.info('Adding new contacts to group %s: STARTED' % group.name)
-                    for member in add_list:
-                        logger.info('Adding contact: %s' % member.msisdn)
-                        process_group_member(api, member, group)
-                    logger.info('Adding new contacts to group %s: COMPLETED' % group.name)
+                    add_members_to_group.delay(api, group, add_list)
 
                 if remove_list:
                     logger.info('Removing contacts from group %s: START' % group.name)
