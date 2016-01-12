@@ -7,8 +7,9 @@ import logging
 import json
 import requests
 from go_http.contacts import ContactsApiClient
-from gems.core.models import Contact
+from gems.core.models import Contact, ContactGroupMember
 from gems.core.viewhelpers import get_surveyresult_hstore_keys
+from gems.core.viewhelpers import process_group_member, remove_group_member
 
 logger = logging.getLogger(__name__)
 
@@ -197,3 +198,40 @@ def construct_summary_table_sql():
 
     cursor.execute('drop table if exists gems_reporting.dashboard_survey_results')
     cursor.execute(sql)
+
+
+@task
+def add_members_to_group(api, group, members):
+    logger.info('Adding members to %s group :: STARTED' % group.name)
+    for member in members:
+        try:
+            contact = Contact.objects.get(msisdn=member['value'])
+        except Contact.DoesNotExist:
+            logger.info('Contact with msisdn %s does not exist' % member['value'])
+            continue
+        process_group_member(api, contact, group)
+    logger.info('Adding members to %s group :: COMPLETED' % group.name)
+
+
+@task
+def add_new_members_to_group(api, group, members):
+    logger.info('Adding members to %s group :: STARTED' % group.name)
+    for member in members:
+        process_group_member(api, member, group)
+    logger.info('Adding members to %s group :: COMPLETED' % group.name)
+
+
+@task
+def remove_members_from_group(api, group, members):
+    logger.info('Removing members from %s group :: STARTED' % group.name)
+    for member in members:
+        remove_group_member(api, member, group)
+    logger.info('Removing members from %s group :: COMPLETED' % group.name)
+
+
+@task(bind=True)
+def sync_group_members(self):
+    unsynced_members = ContactGroupMember.objects.filter(synced=False)
+    api = ContactsApiClient(settings.VUMI_TOKEN)
+    for member in unsynced_members:
+        process_group_member(api, member.contact, member.group)

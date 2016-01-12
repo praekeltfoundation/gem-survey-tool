@@ -1,6 +1,10 @@
 from django.db.models import Q
 from django.db import connection
 import json
+from gems.core.models import ContactGroupMember
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class FieldFilter:
@@ -177,3 +181,55 @@ def get_surveyresult_hstore_keys(ui_field=True):
                 answer_keys.append(answer_key)
 
     return answer_keys
+
+
+def process_group_member(api, member, group):
+    # if for some reason we don't have the vumi key in the db for this contact, fetch the contact from vumi
+    if member.vkey is None or member.vkey == '':
+        try:
+            contact = api.get_contact(msisdn=member.msisdn)
+            member.vkey = contact['key']
+            member.save()
+        except Exception:
+            logger.info('Contact: %s not found in vumi' % member)
+            return
+
+    try:
+        api.update_contact(member.vkey, {u'groups': (group.group_key, )})
+    except Exception:
+        logger.info('Contact: %s update failed' % member)
+        return
+
+    try:
+        group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=member)
+        group_member.synced = True
+        group_member.save()
+    except Exception:
+        logger.exception('Failed to add %s contact to %s group' % (contact.msisdn, group.name))
+
+
+def remove_group_member(api, member, group):
+    try:
+        contact = api.get_contact(msisdn=member.msisdn)
+        if member.vkey is None or member.vkey == '':
+            member.vkey = contact['key']
+            member.save()
+    except Exception:
+        logger.info('Contact: %s not found in vumi' % member)
+        return
+    groups = contact['groups']
+    if group.group_key in groups:
+        updated_groups = groups.remove(group.group_key)
+
+        if updated_groups is None:
+            updated_groups = ''
+        try:
+            api.update_contact(member.vkey, {u'groups': updated_groups})
+        except Exception:
+            logger.info('Contact: %s update failed' % member)
+            return
+
+    try:
+        ContactGroupMember.objects.filter(group=group, contact=member).delete()
+    except Exception:
+        logger.exception('Failed to delete %s contact in %s group' % (member.msisdn, group.name))

@@ -20,6 +20,8 @@ import logging
 from datetime import datetime, timedelta
 import time
 import traceback
+from gems.core.tasks import add_members_to_group, remove_members_from_group, add_new_members_to_group
+
 
 logger = logging.getLogger(__name__)
 
@@ -387,51 +389,6 @@ def timing(f):
     return wrap
 
 
-def process_group_member(api, member, group):
-    # if for some reason we don't have the vumi key in the db for this contact, fetch the contact from vumi
-    if member.vkey is None or member.vkey == '':
-        try:
-            contact = api.get_contact(msisdn=member.msisdn)
-            member.vkey = contact['key']
-            member.save()
-        except Exception:
-            logger.info('Contact: %s not found in vumi' % member)
-            return
-
-    try:
-        api.update_contact(member.vkey, {u'groups': (group.group_key, )})
-    except Exception:
-        logger.info('Contact: %s update failed' % member)
-        return
-
-    group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=member)
-    group_member.save()
-
-
-def remove_group_member(api, member, group):
-    try:
-        contact = api.get_contact(msisdn=member.msisdn)
-        if member.vkey is None or member.vkey == '':
-            member.vkey = contact['key']
-            member.save()
-    except Exception:
-        logger.info('Contact: %s not found in vumi' % member)
-        return
-    groups = contact['groups']
-    if group.group_key in groups:
-        updated_groups = groups.remove(group.group_key)
-
-        if updated_groups is None:
-            updated_groups = ''
-        try:
-            api.update_contact(member.vkey, {u'groups': updated_groups})
-        except Exception:
-            logger.info('Contact: %s update failed' % member)
-            return
-
-    ContactGroupMember.objects.filter(group=group, contact=member).delete()
-
-
 def create_contactgroup(request):
     if request.method == 'POST':
         try:
@@ -462,16 +419,9 @@ def create_contactgroup(request):
 
                 if 'members' in data:
                     members = data['members']
-
-                    for member in members:
-                        try:
-                            contact = Contact.objects.get(msisdn=member['value'])
-                        except Contact.DoesNotExist:
-                            logger.info('Contact with msisdn %s does not exist' % member['value'])
-                            continue
-                        process_group_member(api, contact, contact_group)
-
-                return HttpResponse("Contact group %s successfully created." % group_name)
+                    add_members_to_group.delay(api, contact_group, members)
+                return HttpResponse("Contact group %s successfully created. Members will be added to the group shortly."
+                                    % group_name)
 
     return HttpResponseBadRequest("Bad Request!")
 
@@ -506,7 +456,6 @@ def update_contactgroup(request):
 
             if 'members' in data:
                 members = data['members']
-
                 cgm = ContactGroupMember.objects.filter(group=group)
                 old_list = []
                 for c in cgm:
@@ -526,20 +475,12 @@ def update_contactgroup(request):
                 remove_list = [x for x in old_list if x not in n]
 
                 if add_list:
-                    logger.info('Adding new contacts to group %s: STARTED' % group.name)
-                    for member in add_list:
-                        logger.info('Adding contact: %s' % member.msisdn)
-                        process_group_member(api, member, group)
-                    logger.info('Adding new contacts to group %s: COMPLETED' % group.name)
+                    add_new_members_to_group.delay(api, group, add_list)
 
                 if remove_list:
-                    logger.info('Removing contacts from group %s: START' % group.name)
-                    for member in remove_list:
-                        logger.info('Removing contact: %s' % member.msisdn)
-                        remove_group_member(api, member, group)
-                    logger.info('Removing contacts from group %s: COMPLETED' % group.name)
+                    remove_members_from_group.delay(api, group, remove_list)
 
-            return HttpResponse("Contact group updated!")
+            return HttpResponse("Contact group details updated. Group members will be updated shortly.")
 
     return HttpResponseBadRequest("Bad Request!")
 
