@@ -20,7 +20,7 @@ import logging
 from datetime import datetime, timedelta
 import time
 import traceback
-from gems.core.tasks import add_members_to_group, remove_members_from_group
+from gems.core.tasks import add_members_to_group, remove_members_from_group, add_new_members_to_group
 
 
 logger = logging.getLogger(__name__)
@@ -456,7 +456,6 @@ def update_contactgroup(request):
 
             if 'members' in data:
                 members = data['members']
-
                 cgm = ContactGroupMember.objects.filter(group=group)
                 old_list = []
                 for c in cgm:
@@ -476,7 +475,7 @@ def update_contactgroup(request):
                 remove_list = [x for x in old_list if x not in n]
 
                 if add_list:
-                    add_members_to_group.delay(api, group, add_list)
+                    add_new_members_to_group.delay(api, group, add_list)
 
                 if remove_list:
                     remove_members_from_group(api, group, remove_list)
