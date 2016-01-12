@@ -10,7 +10,8 @@ from django.views.generic import View
 from django.shortcuts import render
 from go_http.contacts import ContactsApiClient
 from forms import SurveyImportForm
-from viewhelpers import Filter, UIField, UIFieldEncoder, get_surveyresult_hstore_keys
+from viewhelpers import Filter, UIField, UIFieldEncoder, get_surveyresult_hstore_keys, remove_group_member,\
+    process_group_member
 from csv_utils import process_file
 from models import Survey, SurveyResult, IncomingSurvey, Contact, ContactGroupMember, ContactGroup, RawSurveyResult, \
     Setting
@@ -385,51 +386,6 @@ def timing(f):
         print '%s function took %0.3f ms' % (f.func_name, (time2-time1)*1000.0)
         return ret
     return wrap
-
-
-def process_group_member(api, member, group):
-    # if for some reason we don't have the vumi key in the db for this contact, fetch the contact from vumi
-    if member.vkey is None or member.vkey == '':
-        try:
-            contact = api.get_contact(msisdn=member.msisdn)
-            member.vkey = contact['key']
-            member.save()
-        except Exception:
-            logger.info('Contact: %s not found in vumi' % member)
-            return
-
-    try:
-        api.update_contact(member.vkey, {u'groups': (group.group_key, )})
-    except Exception:
-        logger.info('Contact: %s update failed' % member)
-        return
-
-    group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=member)
-    group_member.save()
-
-
-def remove_group_member(api, member, group):
-    try:
-        contact = api.get_contact(msisdn=member.msisdn)
-        if member.vkey is None or member.vkey == '':
-            member.vkey = contact['key']
-            member.save()
-    except Exception:
-        logger.info('Contact: %s not found in vumi' % member)
-        return
-    groups = contact['groups']
-    if group.group_key in groups:
-        updated_groups = groups.remove(group.group_key)
-
-        if updated_groups is None:
-            updated_groups = ''
-        try:
-            api.update_contact(member.vkey, {u'groups': updated_groups})
-        except Exception:
-            logger.info('Contact: %s update failed' % member)
-            return
-
-    ContactGroupMember.objects.filter(group=group, contact=member).delete()
 
 
 def create_contactgroup(request):
