@@ -478,7 +478,7 @@ def update_contactgroup(request):
                     add_new_members_to_group.delay(api, group, add_list)
 
                 if remove_list:
-                    remove_members_from_group(api, group, remove_list)
+                    remove_members_from_group.delay(api, group, remove_list)
 
             return HttpResponse("Contact group details updated. Group members will be updated shortly.")
 
