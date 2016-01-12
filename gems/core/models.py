@@ -74,6 +74,7 @@ class ContactGroup(HStoreModel):
 class ContactGroupMember(models.Model):
     group = models.ForeignKey(ContactGroup)
     contact = models.ForeignKey(Contact)
+    synced = models.BooleanField(default=False)
 
 
 class ExportTypeMapping(models.Model):
