@@ -588,7 +588,7 @@ class GeneralTests(TestCase):
                                      % (group_key, new_name, filters, query_words, existing_contact_2, new_contact),
                                 content_type="application/json",
                                 follow=True)
-        self.assertContains(resp, 'Contact group updated!')
+        self.assertContains(resp, 'Contact group details updated. Group members will be updated shortly.')
         count = ContactGroupMember.objects.filter(group=contact_group).count()
         self.assertEquals(count, 3)
 
@@ -604,7 +604,7 @@ class GeneralTests(TestCase):
                                      % (group_key, new_name, filters, query_words, existing_contact_2, new_contact),
                                 content_type="application/json",
                                 follow=True)
-        self.assertContains(resp, 'Contact group updated!')
+        self.assertContains(resp, 'Contact group details updated. Group members will be updated shortly.')
         count = ContactGroupMember.objects.filter(group=contact_group).count()
         self.assertEquals(count, 3)
 
@@ -620,7 +620,7 @@ class GeneralTests(TestCase):
                                      % (group_key, new_name, filters, query_words, existing_contact_2, new_contact),
                                 content_type="application/json",
                                 follow=True)
-        self.assertContains(resp, 'Contact group updated!')
+        self.assertContains(resp, 'Contact group details updated. Group members will be updated shortly.')
         count = ContactGroupMember.objects.filter(group=contact_group).count()
         self.assertEquals(count, 2)
 
