@@ -200,9 +200,12 @@ def process_group_member(api, member, group):
         logger.info('Contact: %s update failed' % member)
         return
 
-    group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=member)
-    group_member.synced = True
-    group_member.save()
+    try:
+        group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=member)
+        group_member.synced = True
+        group_member.save()
+    except Exception:
+        logger.exception('Failed to add %s contact to %s group' % (contact.msisdn, group.name))
 
 
 def remove_group_member(api, member, group):
