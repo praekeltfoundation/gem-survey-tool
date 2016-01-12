@@ -482,7 +482,7 @@ def update_contactgroup(request):
                 if remove_list:
                     remove_members_from_group(api, group, remove_list)
 
-            return HttpResponse("Contact group updated!")
+            return HttpResponse("Contact group details updated. Group members will be updated shortly.")
 
     return HttpResponseBadRequest("Bad Request!")
 
