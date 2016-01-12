@@ -21,6 +21,8 @@ import logging
 from datetime import datetime, timedelta
 import time
 import traceback
+from gems.core.tasks import add_members_to_group
+
 
 logger = logging.getLogger(__name__)
 
@@ -418,16 +420,9 @@ def create_contactgroup(request):
 
                 if 'members' in data:
                     members = data['members']
-
-                    for member in members:
-                        try:
-                            contact = Contact.objects.get(msisdn=member['value'])
-                        except Contact.DoesNotExist:
-                            logger.info('Contact with msisdn %s does not exist' % member['value'])
-                            continue
-                        process_group_member(api, contact, contact_group)
-
-                return HttpResponse("Contact group %s successfully created." % group_name)
+                    add_members_to_group.delay(api, contact_group, members)
+                return HttpResponse("Contact group %s successfully created. Members will be added to the group shortly."
+                                    % group_name)
 
     return HttpResponseBadRequest("Bad Request!")
 
