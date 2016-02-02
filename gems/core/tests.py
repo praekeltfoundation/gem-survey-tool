@@ -506,8 +506,8 @@ class GeneralTests(TestCase):
         self.assertEquals(group_name, group.name)
         self.assertEquals(filter_words, group.filters)
         self.assertEquals(query_words, group.query_words)
-        count = ContactGroupMember.objects.all().count()
-        self.assertEquals(count, 0)
+        count = ContactGroupMember.objects.filter(synced=False).count()
+        self.assertEquals(count, 1)
 
         # #post - updated
         group_name = 'group_4'
@@ -527,7 +527,8 @@ class GeneralTests(TestCase):
         self.assertEquals(group_name, group.name)
         self.assertEquals(filter_words, group.filters)
         self.assertEquals(query_words, group.query_words)
-        count = ContactGroupMember.objects.all().count()
+        count = ContactGroupMember.objects.filter(synced=False).count()
+        a = ContactGroupMember.objects.all()
         self.assertEquals(count, 1)
 
     @patch('gems.core.views.ContactsApiClient.update_contact')

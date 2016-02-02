@@ -195,17 +195,16 @@ def process_group_member(api, member, group):
             return
 
     try:
-        api.update_contact(member.vkey, {u'groups': (group.group_key, )})
+        group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=member)
     except Exception:
-        logger.info('Contact: %s update failed' % member)
-        return
+        logger.exception('Failed to add %s contact to %s group' % (contact.msisdn, group.name))
 
     try:
-        group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=member)
+        api.update_contact(member.vkey, {u'groups': (group.group_key, )})
         group_member.synced = True
         group_member.save()
     except Exception:
-        logger.exception('Failed to add %s contact to %s group' % (contact.msisdn, group.name))
+        logger.info('Contact: %s update failed' % member)
 
 
 def remove_group_member(api, member, group):
