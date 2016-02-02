@@ -15,6 +15,7 @@ import json
 import random
 from django.conf import settings
 from celery import current_app
+from django.db.models.manager import Manager
 
 
 class RESTTestCase(TestCase):
@@ -528,8 +529,30 @@ class GeneralTests(TestCase):
         self.assertEquals(filter_words, group.filters)
         self.assertEquals(query_words, group.query_words)
         count = ContactGroupMember.objects.filter(synced=False).count()
-        a = ContactGroupMember.objects.all()
         self.assertEquals(count, 1)
+
+        with patch.object(Manager, 'get_or_create') as mock_method:
+            mock_method.side_effect = Exception("test error")
+
+            group_name = 'group_5'
+            filter_words = 'filter 4'
+            query_words = 'age > 30'
+            fake_create_group.return_value = {'key': '%sabc' % group_name, 'filters': "{'a':'a', 'b':'b'}",
+                                              'query_words': 'age > 20', 'name': group_name}
+            fake_update_contact.side_effect = None
+            resp = self.client.post('/create_contactgroup/',
+                                    data='{"name": "%s", "filters": "%s", "query_words": "%s", "members": '
+                                         '[{"value": "%s"}, {"value": "%s"}]''}' %
+                                         (group_name, filter_words, query_words, member_1.msisdn, member_2),
+                                    content_type="application/json",
+                                    follow=True)
+            self.assertContains(resp, 'Contact group %s successfully created.' % group_name)
+            group = ContactGroup.objects.get(name=group_name)
+            self.assertEquals(group_name, group.name)
+            self.assertEquals(filter_words, group.filters)
+            self.assertEquals(query_words, group.query_words)
+            count = ContactGroupMember.objects.filter(synced=False).count()
+            self.assertEquals(count, 1)
 
     @patch('gems.core.views.ContactsApiClient.update_contact')
     @patch('gems.core.views.ContactsApiClient.get_contact')

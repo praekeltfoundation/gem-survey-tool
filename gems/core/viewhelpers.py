@@ -197,7 +197,7 @@ def process_group_member(api, member, group):
     try:
         group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=member)
     except Exception:
-        logger.exception('Failed to add %s contact to %s group' % (contact.msisdn, group.name))
+        logger.exception('Failed to add %s contact to %s group' % (member.msisdn, group.name))
 
     try:
         api.update_contact(member.vkey, {u'groups': (group.group_key, )})
