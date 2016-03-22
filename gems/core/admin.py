@@ -46,6 +46,8 @@ class SettingAdmin(admin.ModelAdmin):
 
 
 class SentMessageAdmin(admin.ModelAdmin):
+    list_display = ('created_at', 'total')
+
     def has_add_permission(self, request):
         return False
 
