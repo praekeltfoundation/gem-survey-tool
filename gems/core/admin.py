@@ -45,6 +45,11 @@ class SettingAdmin(admin.ModelAdmin):
     search_fields = ("name", "value")
 
 
+class SentMessageAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        return False
+
+
 admin.site.register(Survey, SurveyAdmin)
 admin.site.register(Contact, ContactAdmin)
 admin.site.register(SurveyResult, SurveyResultAdmin)
@@ -54,3 +59,4 @@ admin.site.register(ExportTypeMapping, ExportTypeMappingAdmin)
 admin.site.register(RawSurveyResult, RawSurveyResultAdmin)
 admin.site.register(IncomingSurvey, IncomingSurveyAdmin)
 admin.site.register(Setting, SettingAdmin)
+admin.site.register(SentMessage, SentMessageAdmin)

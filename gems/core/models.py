@@ -99,3 +99,13 @@ class Setting(models.Model):
                 return rs.value
 
         return None
+
+
+class SentMessage(models.Model):
+    created_at = models.DateField("Date", auto_now_add=True)
+    total = models.IntegerField("Number of Sent SMSes", blank=False, null=False)
+
+    class Meta:
+        verbose_name = 'Sent Messages'
+        verbose_name_plural = 'Sent Messages'
+
