@@ -3,17 +3,18 @@ from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadReque
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core import serializers
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.views.generic import View
 from django.shortcuts import render
 from go_http.contacts import ContactsApiClient
+from go_http.metrics import MetricsApiClient
 from forms import SurveyImportForm
 from viewhelpers import Filter, UIField, UIFieldEncoder, get_surveyresult_hstore_keys
 from csv_utils import process_file
 from models import Survey, SurveyResult, IncomingSurvey, Contact, ContactGroupMember, ContactGroup, RawSurveyResult, \
-    Setting
+    Setting, SentMessage
 import json
 import djqscsv
 import logging
@@ -698,6 +699,14 @@ class LandingStatsView(View):
             .values_list('contact__msisdn', flat=True)
         drop_off_last_month = len([x for x in reg_bef_this_month if x not in sent_last_month])
 
+        sms_sent_total = SentMessage.objects.all().aggregate(Sum('total'))['total__count']
+        sms_sent_this_quarter = SentMessage.objects.filter(created_at__range=this_quarter)\
+            .aggregate(Sum('total'))['total__count']
+        sms_sent_this_month = SentMessage.objects.filter(created_at__range=this_month)\
+            .aggregate(Sum('total'))['total__count']
+        sms_sent_this_week = SentMessage.objects.filter(created_at__range=this_week)\
+            .aggregate(Sum('total'))['total__count']
+
         return {
             "total_registered_users": total_registered_users,
             "new_registered_users_last_month": new_registered_users_last_month,
@@ -718,7 +727,11 @@ class LandingStatsView(View):
             "percent_active_this_week": percent_active_this_week,
             "percent_active_this_quarter": percent_active_this_quarter,
             "drop_this_month": drop_off_this_month,
-            "drop_last_month": drop_off_last_month
+            "drop_last_month": drop_off_last_month,
+            "sms_sent_total": sms_sent_total,
+            "sms_sent_this_quarter": sms_sent_this_quarter,
+            "sms_sent_this_month": sms_sent_this_month,
+            "sms_sent_this_week": sms_sent_this_week
         }
 
     def get(self, request):
