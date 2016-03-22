@@ -699,13 +699,13 @@ class LandingStatsView(View):
             .values_list('contact__msisdn', flat=True)
         drop_off_last_month = len([x for x in reg_bef_this_month if x not in sent_last_month])
 
-        sms_sent_total = SentMessage.objects.all().aggregate(Sum('total'))['total__count']
+        sms_sent_total = SentMessage.objects.all().aggregate(Sum('total'))['total__sum']
         sms_sent_this_quarter = SentMessage.objects.filter(created_at__range=this_quarter)\
-            .aggregate(Sum('total'))['total__count']
-        sms_sent_this_month = SentMessage.objects.filter(created_at__range=this_month)\
-            .aggregate(Sum('total'))['total__count']
+            .aggregate(Sum('total'))['total__sum']
+        sms_sent_this_month = SentMessage.objects.filter(created_at__month=this_month)\
+            .aggregate(Sum('total'))['total__sum']
         sms_sent_this_week = SentMessage.objects.filter(created_at__range=this_week)\
-            .aggregate(Sum('total'))['total__count']
+            .aggregate(Sum('total'))['total__sum']
 
         return {
             "total_registered_users": total_registered_users,
