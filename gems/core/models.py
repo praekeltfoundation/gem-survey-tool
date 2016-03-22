@@ -109,3 +109,13 @@ class SentMessage(models.Model):
         verbose_name = 'Sent Messages'
         verbose_name_plural = 'Sent Messages'
 
+
+class VumiChannel(models.Model):
+    name = models.CharField(max_length=100)
+    key = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Vumi Channels'
+        verbose_name_plural = 'Vumi Channels'
