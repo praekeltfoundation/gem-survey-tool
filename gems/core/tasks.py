@@ -7,9 +7,10 @@ import logging
 import json
 import requests
 from go_http.contacts import ContactsApiClient
-from gems.core.models import Contact, ContactGroupMember
+from gems.core.models import Contact, ContactGroupMember, SentMessage
 from gems.core.viewhelpers import get_surveyresult_hstore_keys
 from gems.core.viewhelpers import process_group_member, remove_group_member
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -235,3 +236,18 @@ def sync_group_members(self):
     api = ContactsApiClient(settings.VUMI_TOKEN)
     for member in unsynced_members:
         process_group_member(api, member.contact, member.group)
+
+
+@task
+def fetch_total_sent_smses():
+    # start_date = end_date = datetime.now() - timedelta(days=1)
+    # start_date.replace(hour=0, minute=0, second=0)
+    # end_date.replace(hour=23, minute=59, second=59)
+
+    logger.info('Fetching TOTAL SENT SMSES::STARTED')
+    #TODO: fetch data from VUMI
+    total = 0
+
+    SentMessage.objects.create(total=total)
+
+    logger.info('Fetching TOTAL SENT SMSES::COMPLETED')
