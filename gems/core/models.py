@@ -102,7 +102,7 @@ class Setting(models.Model):
 
 
 class SentMessage(models.Model):
-    created_at = models.DateField("Date", auto_now_add=True)
+    created_at = models.DateField("Date", blank=False, null=False)
     total = models.IntegerField("Number of Sent SMSes", blank=False, null=False)
 
     class Meta:
