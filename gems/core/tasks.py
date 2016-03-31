@@ -1,15 +1,17 @@
 from __future__ import absolute_import
 from celery import task
-from gems.core.models import SurveyResult, ExportTypeMapping
+from gems.core.models import SurveyResult, ExportTypeMapping, Survey
 from django.conf import settings
 from django.db import connection
 import logging
 import json
 import requests
 from go_http.contacts import ContactsApiClient
-from gems.core.models import Contact, ContactGroupMember
+from go_http.metrics import MetricsApiClient
+from gems.core.models import Contact, ContactGroupMember, SentMessage
 from gems.core.viewhelpers import get_surveyresult_hstore_keys
 from gems.core.viewhelpers import process_group_member, remove_group_member
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -235,3 +237,65 @@ def sync_group_members(self):
     api = ContactsApiClient(settings.VUMI_TOKEN)
     for member in unsynced_members:
         process_group_member(api, member.contact, member.group)
+
+
+def date_construct_helper(today, delta):
+    t = today
+
+    if delta is not None:
+        t = today - delta
+
+    t = t.replace(hour=0, minute=0, second=0, microsecond=0)
+    return t
+
+
+@task
+def fetch_total_sent_smses():
+    logger.info('Fetching TOTAL SENT SMSES::STARTED')
+    api = MetricsApiClient(settings.VUMI_TOKEN)
+    surveys = Survey.objects.values('survey_id').distinct()
+    totals = [0, 0, 0, 0, 0, 0, 0]
+    today = datetime.now()
+    total_dates = [
+        date_construct_helper(today, timedelta(days=6)),
+        date_construct_helper(today, timedelta(days=5)),
+        date_construct_helper(today, timedelta(days=4)),
+        date_construct_helper(today, timedelta(days=3)),
+        date_construct_helper(today, timedelta(days=2)),
+        date_construct_helper(today, timedelta(days=1)),
+        date_construct_helper(today, None)
+    ]
+
+    for survey in surveys:
+        metric = 'conversations.' + survey[str('survey_id')] + '.outbound_unique_addresses.avg'
+        logger.info('Fetching metric: ' + metric + ' for channel: ' + survey[str('survey_id')])
+
+        try:
+            results = api.get_metric(metric=metric, start='-7d', interval='1d', nulls='omit')
+
+            if metric in results:
+                for result in results[metric]:
+                    d = datetime.fromtimestamp(result['x']/1000)
+                    v = result['y']
+
+                    if d in total_dates:
+                        totals[total_dates.index(d)] = v
+
+        except Exception as e:
+            print('Fetching metric failed. Reason: ', e.message)
+            logger.error('Fetching metric failed. Reason: ', e.message)
+
+    logger.info('Results')
+
+    for index, v in enumerate(totals):
+        d = total_dates[index]
+        logger.info('Result: %s : %s' % (d, v))
+
+        try:
+            msg, created = SentMessage.objects.get_or_create(created_at=d, defaults={'total': v})
+            msg.total = v
+            msg.save()
+        except Exception as e:
+            logger.error('Saving result failed. Reason: ', e.message)
+
+    logger.info('Fetching TOTAL SENT SMSES::COMPLETED')
