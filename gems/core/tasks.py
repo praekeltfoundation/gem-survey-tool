@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 from celery import task
-from gems.core.models import SurveyResult, ExportTypeMapping, VumiChannel
+from gems.core.models import SurveyResult, ExportTypeMapping, Survey
 from django.conf import settings
 from django.db import connection
 import logging
@@ -253,7 +253,7 @@ def date_construct_helper(today, delta):
 def fetch_total_sent_smses():
     logger.info('Fetching TOTAL SENT SMSES::STARTED')
     api = MetricsApiClient(settings.VUMI_TOKEN)
-    vumi_channels = VumiChannel.objects.all()
+    surveys = Survey.objects.values('survey_id').distinct()
     totals = [0, 0, 0, 0, 0, 0, 0]
     today = datetime.now()
     total_dates = [
@@ -266,9 +266,9 @@ def fetch_total_sent_smses():
         date_construct_helper(today, None)
     ]
 
-    for vumi_channel in vumi_channels:
-        metric = 'conversations.' + vumi_channel.key + '.outbound_unique_addresses.avg'
-        logger.info('Fetching metric: ' + metric + ' for channel: ' + vumi_channel.name)
+    for survey in surveys:
+        metric = 'conversations.' + survey[str('survey_id')] + '.outbound_unique_addresses.avg'
+        logger.info('Fetching metric: ' + metric + ' for channel: ' + survey[str('survey_id')])
 
         try:
             results = api.get_metric(metric=metric, start='-7d', interval='1d', nulls='omit')
@@ -293,7 +293,6 @@ def fetch_total_sent_smses():
 
         try:
             msg, created = SentMessage.objects.get_or_create(created_at=d, defaults={'total': v})
-            print('msg.d: %s' % msg.created_at)
             msg.total = v
             msg.save()
         except Exception as e:
