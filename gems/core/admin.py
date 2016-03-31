@@ -52,10 +52,6 @@ class SentMessageAdmin(admin.ModelAdmin):
         return False
 
 
-class VumiChannelAdmin(admin.ModelAdmin):
-    list_display = ('name', 'key')
-
-
 admin.site.register(Survey, SurveyAdmin)
 admin.site.register(Contact, ContactAdmin)
 admin.site.register(SurveyResult, SurveyResultAdmin)
@@ -66,4 +62,3 @@ admin.site.register(RawSurveyResult, RawSurveyResultAdmin)
 admin.site.register(IncomingSurvey, IncomingSurveyAdmin)
 admin.site.register(Setting, SettingAdmin)
 admin.site.register(SentMessage, SentMessageAdmin)
-admin.site.register(VumiChannel, VumiChannelAdmin)
