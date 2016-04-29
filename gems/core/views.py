@@ -9,7 +9,6 @@ from django.conf import settings
 from django.views.generic import View
 from django.shortcuts import render
 from go_http.contacts import ContactsApiClient
-from go_http.metrics import MetricsApiClient
 from forms import SurveyImportForm
 from viewhelpers import Filter, UIField, UIFieldEncoder, get_surveyresult_hstore_keys
 from csv_utils import process_file
