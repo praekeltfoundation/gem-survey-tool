@@ -267,8 +267,8 @@ def fetch_total_sent_smses():
     ]
 
     for survey in surveys:
-        metric = 'conversations.' + survey[str('survey_id')] + '.outbound_unique_addresses.avg'
-        logger.info('Fetching metric: ' + metric + ' for channel: ' + survey[str('survey_id')])
+        metric = 'conversations.' + survey['survey_id'] + '.outbound_unique_addresses.avg'
+        logger.info('Fetching metric: ' + metric + ' for channel: ' + survey['survey_id'])
 
         try:
             results = api.get_metric(metric=metric, start='-7d', interval='1d', nulls='omit')
