@@ -577,13 +577,13 @@ class LandingStatsView(View):
             start = today.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
             end = today.replace(month=3, day=31, hour=23, minute=59, second=59, microsecond=999999)
             return [start, end]
-        elif today in quarter_2:
+        elif today.month in quarter_2:
             start = today.replace(month=4, day=1, hour=0, minute=0, second=0, microsecond=0)
-            end = today.replace(month=6, day=31, hour=23, minute=59, second=59, microsecond=999999)
+            end = today.replace(month=6, day=30, hour=23, minute=59, second=59, microsecond=999999)
             return [start, end]
-        elif today in quarter_3:
+        elif today.month in quarter_3:
             start = today.replace(month=7, day=1, hour=0, minute=0, second=0, microsecond=0)
-            end = today.replace(month=9, day=31, hour=23, minute=59, second=59, microsecond=999999)
+            end = today.replace(month=9, day=30, hour=23, minute=59, second=59, microsecond=999999)
             return [start, end]
         else:
             start = today.replace(month=10, day=1, hour=0, minute=0, second=0, microsecond=0)
