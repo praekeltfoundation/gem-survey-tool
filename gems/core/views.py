@@ -700,12 +700,16 @@ class LandingStatsView(View):
         drop_off_last_month = len([x for x in reg_bef_this_month if x not in sent_last_month])
 
         sms_sent_total = SentMessage.objects.all().aggregate(Sum('total'))['total__sum']
+        sms_sent_total = 0 if sms_sent_total is None else sms_sent_total
         sms_sent_this_quarter = SentMessage.objects.filter(created_at__range=this_quarter)\
             .aggregate(Sum('total'))['total__sum']
+        sms_sent_this_quarter = 0 if sms_sent_this_quarter is None else sms_sent_this_quarter
         sms_sent_this_month = SentMessage.objects.filter(created_at__month=this_month)\
             .aggregate(Sum('total'))['total__sum']
+        sms_sent_this_month = 0 if sms_sent_this_month is None else sms_sent_this_month
         sms_sent_this_week = SentMessage.objects.filter(created_at__range=this_week)\
             .aggregate(Sum('total'))['total__sum']
+        sms_sent_this_week = 0 if sms_sent_this_week is None else sms_sent_this_week
 
         return {
             "total_registered_users": total_registered_users,
