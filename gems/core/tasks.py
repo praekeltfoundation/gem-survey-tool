@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 from celery import task
-from gems.core.models import SurveyResult, ExportTypeMapping, Survey
+from gems.core.models import SurveyResult, ExportTypeMapping, Survey, TaskLogger
 from django.conf import settings
 from django.db import connection
 import logging
@@ -139,35 +139,65 @@ def export_data(self):
 
 @task(bind=True)
 def import_contacts(self):
+    task_name = 'import_contacts'
+    msg = 'Importing contacts :: STARTED'
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+    logger.info(msg)
 
-    logger.info('importing contacts :: Started')
-
+    msg = 'Getting Vumi API :: STARTED'
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     api = ContactsApiClient(settings.VUMI_TOKEN)
+    msg = 'Getting Vumi API :: COMPLETED'
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
 
     all_contacts = list()
     try:
+        msg = 'Fetching contacts from Vumi :: STARTED'
+        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         for contact in api.contacts():
+            msg = 'Appending contact. msisdn: %s, vkey: %s :: STARTED' % (contact['msisdn'], contact['vkey'])
+            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
             all_contacts.append(contact)
-    except Exception:
-        logger.exception('importing contacts :: Failed to fetch contacts')
+            msg = 'Appending contact. msisdn: %s, vkey: %s :: STARTED' % (contact['msisdn'], contact['vkey'])
+            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+    except Exception as e:
+        msg = 'importing contacts :: Failed to fetch contacts. %s' % e
+        TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+        logger.exception(msg)
 
     count = 0
     for item in all_contacts:
         if 'msisdn' in item:
             try:
+                msg = 'Getting contact. msisdn: %s :: STARTED' % item['msisdn']
+                TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
                 contact, created = Contact.objects.get_or_create(msisdn=item['msisdn'])
+                msg = 'Getting contact. msisdn: %s :: COMPELTED' % item['msisdn']
+                TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
                 if not created:
                     continue
                 contact.vkey = item['key']
+                msg = 'Updating contact. msisdn: %s, vkey: %s :: STARTED' % (item['msisdn'], item['key'])
+                TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
                 contact.save()
+                msg = 'Updating contact. msisdn: %s, vkey: %s :: COMPLETED' % (item['msisdn'], item['key'])
+                TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
                 count += 1
-            except Exception:
-                logger.exception('creating contact :: Failed to create a contact %s' % item['msisdn'])
+            except Exception as e:
+                msg = 'creating contact :: Failed to create a contact %s. %s' % (item['msisdn'], e)
+                TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+                logger.exception(msg)
         else:
-            logger.info('Contact does not contain msisdn %s' % item)
+            msg = 'Contact does not contain msisdn. vkey: %s' % item['vkey']
+            TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+            logger.info(msg)
 
-    logger.info('%s contacts imported' % count)
-    logger.info('importing contacts :: Completed')
+    msg = '%s contacts imported' % count
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+    logger.info(msg)
+    msg = 'Importing contacts :: COMPLETED'
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+    logger.info(msg)
 
 
 @task
@@ -204,23 +234,47 @@ def construct_summary_table_sql():
 
 @task
 def add_members_to_group(api, group, members):
-    logger.info('Adding members to %s group :: STARTED' % group.name)
+    task_name = 'add_members_to_group'
+    msg = 'Adding members to %s group :: STARTED' % group.name
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+    logger.info(msg)
     for member in members:
         try:
+            msg = 'Getting contact: msisdn %s' % member['value']
+            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
             contact = Contact.objects.get(msisdn=member['value'])
+            msg = 'Contact with msisdn %s found' % member['value']
+            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         except Contact.DoesNotExist:
-            logger.info('Contact with msisdn %s does not exist' % member['value'])
+            msg = 'Contact with msisdn %s does not exist' % member['value']
+            TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+            logger.info(msg)
             continue
+        msg = 'Processing group member :: STARTED'
+        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         process_group_member(api, contact, group)
-    logger.info('Adding members to %s group :: COMPLETED' % group.name)
+        msg = 'Processing group member :: COMPLETED'
+        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+    msg = 'Adding members to %s group :: COMPLETED' % group.name
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+    logger.info(msg)
 
 
 @task
 def add_new_members_to_group(api, group, members):
-    logger.info('Adding members to %s group :: STARTED' % group.name)
+    task_name = 'add_new_members_to_group'
+    msg = 'Adding members to %s group :: STARTED' % group.name
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+    logger.info(msg)
     for member in members:
+        msg = 'Processing group member :: STARTED'
+        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         process_group_member(api, member, group)
-    logger.info('Adding members to %s group :: COMPLETED' % group.name)
+        msg = 'Processing group member :: COMPLETED'
+        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+    msg = 'Adding members to %s group :: COMPLETED' % group.name
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+    logger.info(msg)
 
 
 @task
@@ -233,10 +287,15 @@ def remove_members_from_group(api, group, members):
 
 @task(bind=True)
 def sync_group_members(self):
+    task_name = 'sync_group_members'
+    msg = 'Syncing group members :: STARTED'
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     unsynced_members = ContactGroupMember.objects.filter(synced=False)
     api = ContactsApiClient(settings.VUMI_TOKEN)
     for member in unsynced_members:
         process_group_member(api, member.contact, member.group)
+    msg = 'Syncing group members :: COMPLETED'
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
 
 
 def date_construct_helper(today, delta):
