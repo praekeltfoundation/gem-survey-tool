@@ -108,3 +108,14 @@ class SentMessage(models.Model):
     class Meta:
         verbose_name = 'Sent Messages'
         verbose_name_plural = 'Sent Messages'
+
+
+class TaskLogger(models.Model):
+    created_at = models.DateTimeField('Date', auto_now_add=True)
+    task_name = models.CharField(max_length=64)
+    success = models.BooleanField()
+    message = models.TextField()
+
+    class Meta:
+        verbose_name = 'Task Logger'
+        verbose_name_plural = 'Task Logger'

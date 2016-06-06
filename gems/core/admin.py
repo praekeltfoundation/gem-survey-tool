@@ -52,6 +52,19 @@ class SentMessageAdmin(admin.ModelAdmin):
         return False
 
 
+class TaskLoggerAdmin(admin.ModelAdmin):
+    list_display = ('created_at', 'task_name', 'success', 'message')
+    search_fields = ('task_name',)
+    list_filter = ('created_at', 'task_name', 'success')
+    readonly_fields = ('created_at', 'task_name', 'success', 'message')
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 admin.site.register(Survey, SurveyAdmin)
 admin.site.register(Contact, ContactAdmin)
 admin.site.register(SurveyResult, SurveyResultAdmin)
@@ -62,3 +75,4 @@ admin.site.register(RawSurveyResult, RawSurveyResultAdmin)
 admin.site.register(IncomingSurvey, IncomingSurveyAdmin)
 admin.site.register(Setting, SettingAdmin)
 admin.site.register(SentMessage, SentMessageAdmin)
+admin.site.register(TaskLogger, TaskLoggerAdmin)
