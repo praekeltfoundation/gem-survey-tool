@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.views.generic import View
 from django.shortcuts import render
+from django.db import connection
 from go_http.contacts import ContactsApiClient
 from go_http.metrics import MetricsApiClient
 from forms import SurveyImportForm
@@ -25,6 +26,8 @@ from gems.core.tasks import add_members_to_group, remove_members_from_group, add
 
 
 logger = logging.getLogger(__name__)
+
+max_display_values = 100
 
 
 def user_login(request):
@@ -337,21 +340,29 @@ def get_answer_values(request):
             return HttpResponseBadRequest("Bad Request!")
 
         if 'field' in data and data['field'] is not None:
-            rs = SurveyResult.objects.values('answer', 'survey__name').distinct()
-            s = Survey.objects.values('series').distinct()
-            values = list()
-            all_fields = list(rs) + list(s)
+            cursor = connection.cursor()
+
             if data['field'] == 'survey':
-                field = 'survey__name'
+                sql = 'select distinct name from core_survey limit %s'
+            elif data['field'] == 'series':
+                sql = 'select distinct series from core_survey where series is not null limit %s'
+            elif data['field'] == 'contact':
+                sql = 'select distinct msisdn from core_contact limit %s'
+            elif data['field'] == 'id':
+                sql = 'select distinct id from core_surveyresult limit %s'
+            elif data['field'] == 'created_at':
+                sql = "select distinct to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') from core_surveyresult limit %s"
             else:
-                field = data['field']
+                sql = "select distinct answer -> '" + data['field'] + "' " + \
+                      "from core_surveyresult " + \
+                      "where answer ? '" + data['field'] + "' limit %s"
 
-            for item in all_fields:
-                if field in item:
-                    if item[field] not in values:
-                        values.append(item[field])
+            sql = sql % max_display_values
 
-            return generate_json_response(serialize_list_to_json(values, UIFieldEncoder))
+            cursor.execute(sql)
+            rs = cursor.fetchall()
+
+            return generate_json_response(serialize_list_to_json(rs, UIFieldEncoder))
 
     return HttpResponseBadRequest('Bad Request!')
 
