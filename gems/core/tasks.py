@@ -279,10 +279,15 @@ def add_new_members_to_group(api, group, members):
 
 @task
 def remove_members_from_group(api, group, members):
-    logger.info('Removing members from %s group :: STARTED' % group.name)
+    task_name = 'remove_members_from_group'
+    msg = 'Removing members from %s group :: STARTED' % group.name
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+    logger.info(msg)
     for member in members:
         remove_group_member(api, member, group)
-    logger.info('Removing members from %s group :: COMPLETED' % group.name)
+    msg = 'Removing members from %s group :: COMPLETED' % group.name
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+    logger.info(msg)
 
 
 @task(bind=True)

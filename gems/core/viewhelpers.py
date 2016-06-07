@@ -237,13 +237,22 @@ def process_group_member(api, member, group):
 
 
 def remove_group_member(api, member, group):
+    task_name = 'remove_group_member'
     try:
+        msg = 'Getting contact from Vumi. msisdn: %s' % member.msisdn
+        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         contact = api.get_contact(msisdn=member.msisdn)
         if member.vkey is None or member.vkey == '':
             member.vkey = contact['key']
+            msg = 'Updating vkey :: STARTED'
+            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
             member.save()
-    except Exception:
-        logger.info('Contact: %s not found in vumi' % member)
+            msg = 'Updating vkey :: COMPLETED'
+            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+    except Exception as e:
+        msg = 'Contact: %s not found in vumi. %s' % (member, e)
+        TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+        logger.info(msg)
         return
     groups = contact['groups']
     if group.group_key in groups:
@@ -252,12 +261,20 @@ def remove_group_member(api, member, group):
         if updated_groups is None:
             updated_groups = ''
         try:
+            msg = 'Updating contact groups :: STARTED'
+            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
             api.update_contact(member.vkey, {u'groups': updated_groups})
-        except Exception:
-            logger.info('Contact: %s update failed' % member)
+            msg = 'Updating contact groups :: COMPLETED'
+            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+        except Exception as e:
+            msg = 'Contact: %s update failed. %s' % (member, e)
+            TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+            logger.info(msg)
             return
 
     try:
         ContactGroupMember.objects.filter(group=group, contact=member).delete()
-    except Exception:
-        logger.exception('Failed to delete %s contact in %s group' % (member.msisdn, group.name))
+    except Exception as e:
+        msg = 'Failed to delete %s contact in %s group. %s' % (member.msisdn, group.name, e)
+        TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+        logger.exception(msg)
