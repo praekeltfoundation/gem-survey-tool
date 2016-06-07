@@ -32,8 +32,9 @@ class ContactGroupAdmin(admin.ModelAdmin):
 
 
 class ContactGroupMemberAdmin(admin.ModelAdmin):
-    list_display = ('group', 'contact')
+    list_display = ('group', 'contact', 'synced')
     search_fields = ("group__name", "contact__msisdn")
+    list_filter = ('group', 'contact', 'synced')
 
 
 class ExportTypeMappingAdmin(admin.ModelAdmin):
