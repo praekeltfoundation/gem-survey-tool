@@ -111,8 +111,8 @@ class SentMessage(models.Model):
 
 
 class TaskLogger(models.Model):
-    created_at = models.DateTimeField('Date', auto_now_add=True)
-    task_name = models.CharField(max_length=64)
+    created_at = models.DateTimeField('Date', auto_now_add=True, db_index=True)
+    task_name = models.CharField(max_length=64, db_index=True)
     success = models.BooleanField()
     message = models.TextField()
 
