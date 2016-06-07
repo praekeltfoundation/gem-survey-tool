@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.db import connection
 import json
-from gems.core.models import ContactGroupMember
+from gems.core.models import ContactGroupMember, TaskLogger
 import logging
 
 logger = logging.getLogger(__name__)
@@ -185,36 +185,48 @@ def get_surveyresult_hstore_keys(ui_field=True):
 
 def process_group_member(api, member, group):
     # if for some reason we don't have the vumi key in the db for this contact, fetch the contact from vumi
+    task_name = 'process_group_member'
+    msg = 'Processing member. msisdn: %s' % member.msisdn
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     if member.vkey is None or member.vkey == '':
         try:
             contact = api.get_contact(msisdn=member.msisdn)
             member.vkey = contact['key']
             member.save()
-        except Exception:
-            logger.info('Contact: %s not found in vumi' % member)
+        except Exception as e:
+            msg = 'Contact: %s not found in vumi. %s' % (member, e)
+            TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+            logger.info(msg)
             return
 
     try:
         group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=member)
-    except Exception:
-        logger.exception('Failed to add %s contact to %s group' % (member.msisdn, group.name))
+    except Exception as e:
+        msg = 'Failed to add %s contact to %s group. %s' % (member.msisdn, group.name, e)
+        TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+        logger.exception(msg)
 
     try:
         api.update_contact(member.vkey, {u'groups': (group.group_key, )})
         group_member.synced = True
         group_member.save()
-    except Exception:
-        logger.info('Contact: %s update failed' % member)
+    except Exception as e:
+        msg = 'Contact: %s update failed. %s' % (member.msisdn, e)
+        TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+        logger.info(msg)
 
 
 def remove_group_member(api, member, group):
+    task_name = 'remove_group_member'
     try:
         contact = api.get_contact(msisdn=member.msisdn)
         if member.vkey is None or member.vkey == '':
             member.vkey = contact['key']
             member.save()
-    except Exception:
-        logger.info('Contact: %s not found in vumi' % member)
+    except Exception as e:
+        msg = 'Contact: %s not found in vumi. %s' % (member, e)
+        TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+        logger.info(msg)
         return
     groups = contact['groups']
     if group.group_key in groups:
@@ -224,11 +236,15 @@ def remove_group_member(api, member, group):
             updated_groups = ''
         try:
             api.update_contact(member.vkey, {u'groups': updated_groups})
-        except Exception:
-            logger.info('Contact: %s update failed' % member)
+        except Exception as e:
+            msg = 'Contact: %s update failed. %s' % (member, e)
+            TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+            logger.info(msg)
             return
 
     try:
         ContactGroupMember.objects.filter(group=group, contact=member).delete()
-    except Exception:
-        logger.exception('Failed to delete %s contact in %s group' % (member.msisdn, group.name))
+    except Exception as e:
+        msg = 'Failed to delete %s contact in %s group. %s' % (member.msisdn, group.name, e)
+        TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+        logger.exception(msg)
