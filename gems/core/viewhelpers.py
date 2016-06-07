@@ -190,17 +190,9 @@ def process_group_member(api, member, group):
     TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     if member.vkey is None or member.vkey == '':
         try:
-            msg = 'Processing member with no vkey %s. Getting the key from Vumi (get_contact)' % member.vkey
-            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
             contact = api.get_contact(msisdn=member.msisdn)
-            msg = 'Contact (msisdn: %s) retrieved from Vumi. vkey = %s' % (member.msisdn, contact['key'])
-            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
             member.vkey = contact['key']
-            msg = 'Updating contact :: STARTED'
-            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
             member.save()
-            msg = 'Updating contact :: COMPLETED'
-            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         except Exception as e:
             msg = 'Contact: %s not found in vumi. %s' % (member, e)
             TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
@@ -208,28 +200,16 @@ def process_group_member(api, member, group):
             return
 
     try:
-        msg = 'Getting contact group member. group = %s, contact = %s :: STARTING' % (group.name, member.msisdn)
-        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         group_member, created = ContactGroupMember.objects.get_or_create(group=group, contact=member)
-        msg = 'Getting contact group member. group = %s, contact = %s :: COMPLETED' % (group.name, member.msisdn)
-        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     except Exception as e:
         msg = 'Failed to add %s contact to %s group. %s' % (member.msisdn, group.name, e)
         TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
         logger.exception(msg)
 
     try:
-        msg = 'Updating contact on Vumi :: STARTED'
-        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         api.update_contact(member.vkey, {u'groups': (group.group_key, )})
-        msg = 'Updating contact on Vumi :: COMPLETED'
-        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         group_member.synced = True
-        msg = 'Updating contact :: STARTED'
-        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         group_member.save()
-        msg = 'Updating contact:: COMPLETED'
-        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     except Exception as e:
         msg = 'Contact: %s update failed. %s' % (member.msisdn, e)
         TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
@@ -239,16 +219,10 @@ def process_group_member(api, member, group):
 def remove_group_member(api, member, group):
     task_name = 'remove_group_member'
     try:
-        msg = 'Getting contact from Vumi. msisdn: %s' % member.msisdn
-        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         contact = api.get_contact(msisdn=member.msisdn)
         if member.vkey is None or member.vkey == '':
             member.vkey = contact['key']
-            msg = 'Updating vkey :: STARTED'
-            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
             member.save()
-            msg = 'Updating vkey :: COMPLETED'
-            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     except Exception as e:
         msg = 'Contact: %s not found in vumi. %s' % (member, e)
         TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
@@ -261,11 +235,7 @@ def remove_group_member(api, member, group):
         if updated_groups is None:
             updated_groups = ''
         try:
-            msg = 'Updating contact groups :: STARTED'
-            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
             api.update_contact(member.vkey, {u'groups': updated_groups})
-            msg = 'Updating contact groups :: COMPLETED'
-            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         except Exception as e:
             msg = 'Contact: %s update failed. %s' % (member, e)
             TaskLogger.objects.create(task_name=task_name, success=False, message=msg)

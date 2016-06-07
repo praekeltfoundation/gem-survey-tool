@@ -144,22 +144,13 @@ def import_contacts(self):
     TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     logger.info(msg)
 
-    msg = 'Getting Vumi API :: STARTED'
-    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     api = ContactsApiClient(settings.VUMI_TOKEN)
-    msg = 'Getting Vumi API :: COMPLETED'
-    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
 
     all_contacts = list()
     try:
-        msg = 'Fetching contacts from Vumi :: STARTED'
         TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         for contact in api.contacts():
-            msg = 'Appending contact. msisdn: %s, vkey: %s :: STARTED' % (contact['msisdn'], contact['vkey'])
-            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
             all_contacts.append(contact)
-            msg = 'Appending contact. msisdn: %s, vkey: %s :: STARTED' % (contact['msisdn'], contact['vkey'])
-            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     except Exception as e:
         msg = 'importing contacts :: Failed to fetch contacts. %s' % e
         TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
@@ -169,19 +160,11 @@ def import_contacts(self):
     for item in all_contacts:
         if 'msisdn' in item:
             try:
-                msg = 'Getting contact. msisdn: %s :: STARTED' % item['msisdn']
-                TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
                 contact, created = Contact.objects.get_or_create(msisdn=item['msisdn'])
-                msg = 'Getting contact. msisdn: %s :: COMPELTED' % item['msisdn']
-                TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
                 if not created:
                     continue
                 contact.vkey = item['key']
-                msg = 'Updating contact. msisdn: %s, vkey: %s :: STARTED' % (item['msisdn'], item['key'])
-                TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
                 contact.save()
-                msg = 'Updating contact. msisdn: %s, vkey: %s :: COMPLETED' % (item['msisdn'], item['key'])
-                TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
                 count += 1
             except Exception as e:
                 msg = 'creating contact :: Failed to create a contact %s. %s' % (item['msisdn'], e)
@@ -240,21 +223,13 @@ def add_members_to_group(api, group, members):
     logger.info(msg)
     for member in members:
         try:
-            msg = 'Getting contact: msisdn %s' % member['value']
-            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
             contact = Contact.objects.get(msisdn=member['value'])
-            msg = 'Contact with msisdn %s found' % member['value']
-            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         except Contact.DoesNotExist:
             msg = 'Contact with msisdn %s does not exist' % member['value']
             TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
             logger.info(msg)
             continue
-        msg = 'Processing group member :: STARTED'
-        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         process_group_member(api, contact, group)
-        msg = 'Processing group member :: COMPLETED'
-        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     msg = 'Adding members to %s group :: COMPLETED' % group.name
     TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     logger.info(msg)
@@ -267,11 +242,7 @@ def add_new_members_to_group(api, group, members):
     TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     logger.info(msg)
     for member in members:
-        msg = 'Processing group member :: STARTED'
-        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
         process_group_member(api, member, group)
-        msg = 'Processing group member :: COMPLETED'
-        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     msg = 'Adding members to %s group :: COMPLETED' % group.name
     TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
     logger.info(msg)
