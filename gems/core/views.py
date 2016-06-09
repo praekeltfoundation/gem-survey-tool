@@ -231,6 +231,21 @@ def build_query(payload, random=False):
         return rs
 
 
+def get_group_contacts(request):
+    if request.method == 'POST':
+        try:
+            payload = json.loads(request.body)
+        except ValueError:
+            print traceback.print_exc()
+            return HttpResponse('BAD REQUEST TYPE')
+
+        group_key = payload['group_key']
+        contact_group = ContactGroupMember.objects.filter(group__group_key=group_key).values_list('contact', flat=True)
+        return generate_json_response(json.dumps(list(contact_group)))
+
+    return HttpResponse('Bad request method')
+
+
 def export_survey(request):
     if request.method == 'GET':
         if 'pk' in request.GET:

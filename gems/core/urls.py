@@ -7,7 +7,8 @@ from rest_framework import routers
 
 from views import survey_csv_import, user_login, user_logout, save_data, export_survey, export_survey_results, \
     query, get_unique_keys, view_home, delete_contactgroup, create_contactgroup, \
-    update_contactgroup, get_surveys, LandingStatsView, LandingPage, get_answer_values, get_graph_data
+    update_contactgroup, get_surveys, LandingStatsView, LandingPage, get_answer_values, get_graph_data, \
+    get_group_contacts
 from gems.core.viewsets import SurveyResultViewSet, ContactGroupMemberViewSet, ContactViewSet, SurveyViewSet, \
     ContactGroupViewSet, SurveyResultRawViewSet
 
@@ -41,6 +42,8 @@ urlpatterns = patterns('',
     url(r'^export_survey_results/$', export_survey_results, name='export_survey_results'),
 
     url(r'^query/', query, name='query'),
+
+    url(r'^group/contacts', get_group_contacts),
 
     url(r'^get_unique_keys/', get_unique_keys, name='get_unique_keys'),
     url(r'^home/$', view_home, name='home'),

@@ -33,28 +33,60 @@ gems.controller('groupController', function($scope, $http){
         payload.filters = $scope.filters
         $scope.columns = $scope.origColumns.slice();
 
-        $http({
-            url: '/query/',
-            method: 'POST',
-            data: payload
+        if ($scope.createGroup == false && $scope.groupKey != null) {
+            var group_contacts;
+            $http({url: 'group/contacts', method: 'POST', data: {group_key: $scope.groupKey}})
+                .then(function(data) {
+                    group_contacts = data.data;
+                    $http({
+                        url: '/query/',
+                        method: 'POST',
+                        data: payload
+                    })
+                    .then(function(data){
+                        var results = data.data;
+                        var retVal = $scope.processQueryResults(results, $scope.columns, payload.filters);
+                        $scope.columns = retVal[0];
+                        $scope.rows = retVal[1];
+
+                        if ($scope.queryStarted == true) {
+                            $scope.buttonText = "Refresh Results";
+                        } else {
+                            $scope.buttonText = "Display Results";
+                        }
+
+                        for (var i=0; i<results.length; i++) {
+                            if (group_contacts.indexOf(results[i].contact) >= 0) {
+                                $scope.rows[i].selected = true;
+                            }
+                        }
+                        $scope.queryDone = true;
+                        $scope.currentPage = 0;
+                        $scope.pagedGroups = $scope.groupToPages($scope.rows);
+                    });
+                });
+        } else {
+            $http({
+                url: '/query/',
+                method: 'POST',
+                data: payload
             })
             .then(function(data){
                 var results = data.data;
-
                 var retVal = $scope.processQueryResults(results, $scope.columns, payload.filters);
                 $scope.columns = retVal[0];
                 $scope.rows = retVal[1];
 
-                if ($scope.queryStarted == true){
-                        $scope.buttonText = "Refresh Results";
-                }else{
+                if ($scope.queryStarted == true) {
+                    $scope.buttonText = "Refresh Results";
+                } else {
                     $scope.buttonText = "Display Results";
                 }
-
                 $scope.queryDone = true;
                 $scope.currentPage = 0;
                 $scope.pagedGroups = $scope.groupToPages($scope.rows);
-            })
+            });
+        }
     };
 
     $scope.selectRow = function selectRow(index){
