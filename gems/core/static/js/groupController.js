@@ -50,7 +50,7 @@ gems.controller('groupController', function($scope, $http){
                         $scope.rows = retVal[1];
 
                         if ($scope.queryStarted == true) {
-                                $scope.buttonText = "Refresh Results";
+                            $scope.buttonText = "Refresh Results";
                         } else {
                             $scope.buttonText = "Display Results";
                         }
@@ -78,7 +78,7 @@ gems.controller('groupController', function($scope, $http){
                 $scope.rows = retVal[1];
 
                 if ($scope.queryStarted == true) {
-                        $scope.buttonText = "Refresh Results";
+                    $scope.buttonText = "Refresh Results";
                 } else {
                     $scope.buttonText = "Display Results";
                 }
