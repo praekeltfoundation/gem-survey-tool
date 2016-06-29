@@ -60,3 +60,5 @@ target/
 
 # virtual evnironemnt
 ve/
+
+local_settings.py

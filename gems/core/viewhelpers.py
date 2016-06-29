@@ -6,6 +6,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+default_survey_name = 'New Survey - Please update'
+
 
 class FieldFilter:
     def __init__(self, operator, value, field, loperator=None):

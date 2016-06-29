@@ -10,9 +10,8 @@ from django.views.generic import View
 from django.shortcuts import render
 from django.db import connection
 from go_http.contacts import ContactsApiClient
-from go_http.metrics import MetricsApiClient
 from forms import SurveyImportForm
-from viewhelpers import Filter, UIField, UIFieldEncoder, get_surveyresult_hstore_keys
+from viewhelpers import Filter, UIField, UIFieldEncoder, get_surveyresult_hstore_keys, default_survey_name
 from csv_utils import process_file
 from models import Survey, SurveyResult, IncomingSurvey, Contact, ContactGroupMember, ContactGroup, RawSurveyResult, \
     Setting, SentMessage
@@ -24,11 +23,9 @@ import time
 import traceback
 from gems.core.tasks import add_members_to_group, remove_members_from_group, add_new_members_to_group
 
-
 logger = logging.getLogger(__name__)
 
 max_display_values = 100
-
 
 def user_login(request):
     # Like before, obtain the context for the user's request.
@@ -131,7 +128,7 @@ def save_data(request):
                     survey = Survey.objects.get(survey_id__exact=conversation_key)
                 except Survey.DoesNotExist:
                     survey = Survey(
-                        name='New Survey - Please update',
+                        name=default_survey_name,
                         survey_id=conversation_key
                     )
                     survey.save()

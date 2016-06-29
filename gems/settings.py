@@ -137,7 +137,7 @@ INSTALLED_APPS = (
 
 LOGIN_URL = 'login/'
 
-VUMI_TOKEN = '996CA00F-6184-4734-B28F-0A56FD8367A3'
+VUMI_TOKEN = 'PUT YOUR CODE IN local_settings.py'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
