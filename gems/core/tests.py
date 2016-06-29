@@ -6,7 +6,8 @@ from django.test import Client
 from django.db import connection
 from gems.core.models import Contact, ContactGroup, ContactGroupMember, Survey, SurveyResult, RawSurveyResult, \
     IncomingSurvey, User, Setting
-from gems.core.tasks import construct_summary_table_sql
+from gems.core.tasks import construct_summary_table_sql, fetch_survey_names
+from gems.core.viewhelpers import default_survey_name
 from mock import patch
 from csv_utils import process_header, process_line, split_line, survey_lookup, process_file
 from datetime import datetime
@@ -744,9 +745,18 @@ class ModelTests(TestCase):
 
 
 class TaskTests(TestCase):
-    def test_rj_metrics_task(self):
-        pass
-        # TODO: Complete Tests
+    @patch('gems.core.tasks.AccountApiClient.conversations')
+    def test_fetch_survey_names(self, fake_conversations):
+        fake_conversations.return_value = [
+            {u'uuid': u'1234', u'name': u'Test Convo'},
+            {u'uuid': u'1235554', u'name': u'Test Convo2'}
+        ]
+
+        Survey.objects.create(survey_id='1234', name=default_survey_name)
+        fetch_survey_names()
+
+        s = Survey.objects.get(survey_id='1234')
+        self.assertEquals(s.name, 'Test Convo')
 
 
 class CsvImportTests(TestCase):
@@ -1005,9 +1015,11 @@ class AdminTests(TestCase):
         self.admin_page_test_helper(c, "/admin/core/exporttypemapping/")
         self.admin_page_test_helper(c, "/admin/core/incomingsurvey/")
         self.admin_page_test_helper(c, "/admin/core/rawsurveyresult/")
+        self.admin_page_test_helper(c, "/admin/core/sentmessage/")
         self.admin_page_test_helper(c, "/admin/core/surveyresult/")
-        self.admin_page_test_helper(c, "/admin/core/surveyresult/")
+        self.admin_page_test_helper(c, "/admin/core/survey/")
         self.admin_page_test_helper(c, "/admin/core/setting/")
+        self.admin_page_test_helper(c, "/admin/core/tasklogger/")
         self.admin_page_test_helper(c, "/admin/survey_csv_import/")
 
 

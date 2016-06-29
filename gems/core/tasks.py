@@ -8,10 +8,12 @@ import json
 import requests
 from go_http.contacts import ContactsApiClient
 from go_http.metrics import MetricsApiClient
+from go_http.account import AccountApiClient
 from gems.core.models import Contact, ContactGroupMember, SentMessage
 from gems.core.viewhelpers import get_surveyresult_hstore_keys
 from gems.core.viewhelpers import process_group_member, remove_group_member
 from datetime import datetime, timedelta
+from gems.core.viewhelpers import default_survey_name
 
 logger = logging.getLogger(__name__)
 
@@ -334,3 +336,51 @@ def fetch_total_sent_smses():
             logger.error('Saving result failed. Reason: ', e.message)
 
     logger.info('Fetching TOTAL SENT SMSES::COMPLETED')
+
+
+@task
+def fetch_survey_names_task():
+    fetch_survey_names()
+
+
+def fetch_survey_names():
+    task_name = 'fetch_survey_name'
+    msg = 'Fetching Survey Names::STARTED'
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+
+    # fetch all the surveys that need names
+    surveys = Survey.objects.filter(name=default_survey_name)
+
+    if surveys.count() > 0:
+        conversations = []
+
+        try:
+            msg = 'Fetching Survey Names::Fetching vumi conversations - Start'
+            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+
+            # if we have any fetch all the conversations from vumi
+            api = AccountApiClient(settings.VUMI_TOKEN)
+            conversations = api.conversations(settings.VUMI_ACCOUNT_KEY)
+
+            msg = 'Fetching Survey Names::Fetching vumi conversations - Done'
+            TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+        except Exception as e:
+            msg = 'Fetching Survey Names::Fetching vumi conversations - Failed. Reason: ', e.message
+            TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+
+        for c in conversations:
+            for s in surveys:
+                if 'uuid' in c and s.survey_id == c['uuid']:
+                    try:
+                        msg = 'Fetching Survey Names::Setting %s to %s' % (s.survey_id, c['name'])
+                        TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+
+                        s.name = c['name']
+                        s.save()
+                    except Exception as e:
+                        msg = 'Fetching Survey Names::Setting %s to %s failed. Reason: %s' % \
+                              (s.survey_id, c['name'], e.message)
+                        TaskLogger.objects.create(task_name=task_name, success=False, message=msg)
+
+    msg = 'Fetching Survey Names::COMPLETED'
+    TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
