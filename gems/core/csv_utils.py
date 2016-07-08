@@ -117,7 +117,10 @@ def contact_lookup(msisdn, key):
     if contact is None:
         with transaction.atomic():
             try:
-                contact = Contact.objects.create(msisdn=msisdn, vkey=key)
+                if key is None:
+                    contact = Contact.objects.create(msisdn=msisdn)
+                else:
+                    contact = Contact.objects.create(msisdn=msisdn, vkey=key)
             except:
                 contact = None
 
