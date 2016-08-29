@@ -44,13 +44,13 @@
             <input type="submit" value="Submit"/>
         </form>
     {% else %}
-        <h2>Rows Processed: {{ num_rows }}</h2>
         {% if errors %}
-            <br>
             <h2 class="red-front">Errors:</h2>
             {% for error in errors %}
                 <p>Row: {{ error.row }} - {{ error.error }}</p>
             {% endfor %}
+        {% else %}
+            <p>Thank you for submitting survey data. The results will be sent to {{ email_address }} shortly.</p>
         {% endif %}
     {% endif %}
 {% endblock %}
