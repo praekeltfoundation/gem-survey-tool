@@ -557,7 +557,7 @@ def survey_csv_import(request):
             f = request.FILES['file']
             email_address = form.data["email_address"]
             done = True
-            mail_csv_import_results(email_address=email_address, filename=f.name, f=f)
+            mail_csv_import_results.delay(email_address=email_address, filename=f.name, f=f)
         else:
             errors = "No file specified"
     else:
