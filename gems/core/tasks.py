@@ -3,17 +3,21 @@ from celery import task
 from gems.core.models import SurveyResult, ExportTypeMapping, Survey, TaskLogger
 from django.conf import settings
 from django.db import connection
+from django.core.mail import EmailMessage
 import logging
 import json
+from pygments.lexers.lisp import EmacsLispLexer
 import requests
 from go_http.contacts import ContactsApiClient
 from go_http.metrics import MetricsApiClient
 from go_http.account import AccountApiClient
+from go_http.send import HttpApiSender
 from gems.core.models import Contact, ContactGroupMember, SentMessage
 from gems.core.viewhelpers import get_surveyresult_hstore_keys
 from gems.core.viewhelpers import process_group_member, remove_group_member
 from datetime import datetime, timedelta
 from gems.core.viewhelpers import default_survey_name
+from gems.core.csv_utils import process_file
 
 logger = logging.getLogger(__name__)
 
@@ -383,3 +387,28 @@ def fetch_survey_names():
 
     msg = 'Fetching Survey Names::COMPLETED'
     TaskLogger.objects.create(task_name=task_name, success=True, message=msg)
+
+
+@task
+def mail_csv_import_results(email_address, filename, f=None):
+    errors, i = process_file(filename, f=f)
+    subject = 'GEMS CSV import '
+    msg = 'Rows processed: %i \n' % i
+    if len(errors) > 0:
+        subject += 'failed'
+        msg += 'Errors occurred during import of %s. \n' % filename
+        msg += ' \n'.join(['Row: %d - %s' % (entry["row"], entry["error"]) for entry in errors])
+    else:
+        subject += 'successful'
+        msg += 'GEMS CSV import successful. \n'
+
+    email = EmailMessage(
+        subject=subject,
+        body=msg,
+        from_email='',
+        to=(email_address,)
+    )
+    try:
+        email.send()
+    except Exception:
+        pass

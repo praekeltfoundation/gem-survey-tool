@@ -21,7 +21,8 @@ import logging
 from datetime import datetime, timedelta
 import time
 import traceback
-from gems.core.tasks import add_members_to_group, remove_members_from_group, add_new_members_to_group
+from gems.core.tasks import add_members_to_group, remove_members_from_group, add_new_members_to_group, \
+    mail_csv_import_results
 
 logger = logging.getLogger(__name__)
 
@@ -549,13 +550,14 @@ def get_surveys(request):
 def survey_csv_import(request):
     errors = None
     done = None
-    num_rows = None
+    email_address = None
     if request.method == "POST":
         form = SurveyImportForm(request.POST, request.FILES)
         if form.is_valid():
             f = request.FILES['file']
+            email_address = form.data["email_address"]
             done = True
-            errors, num_rows = process_file(filename=f.name, f=f)
+            mail_csv_import_results.delay(email_address=email_address, filename=f.name, f=f)
         else:
             errors = "No file specified"
     else:
@@ -566,7 +568,7 @@ def survey_csv_import(request):
         {
             "form": form,
             "errors": errors,
-            "num_rows": num_rows,
+            "email_address": email_address,
             "done": done
         },
         context_instance=RequestContext(request)
