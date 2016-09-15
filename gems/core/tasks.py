@@ -391,9 +391,15 @@ def fetch_survey_names():
 
 @task
 def mail_csv_import_results(email_address, filename, f=None):
+    task_name = 'mail_csv_import_results'
+    
+    logmsg = 'mail_csv_import_results - importing file '
+    TaskLogger.objects.create(task_name=task_name, success=True, message=logmsg)
+ 
     errors, i = process_file(filename, f=f)
     subject = 'GEMS CSV import '
     msg = 'Rows processed: %i \n' % i
+    
     if len(errors) > 0:
         subject += 'failed'
         msg += 'Errors occurred during import of %s. \n' % filename
@@ -402,13 +408,20 @@ def mail_csv_import_results(email_address, filename, f=None):
         subject += 'successful'
         msg += 'GEMS CSV import successful. \n'
 
+    logmsg = 'mail_csv_import_results - email message: ' + msg
+    TaskLogger.objects.create(task_name=task_name, success=True, message=logmsg)
+
     email = EmailMessage(
         subject=subject,
         body=msg,
         from_email='',
         to=(email_address,)
     )
+
     try:
         email.send()
-    except Exception:
-        pass
+        logmsg = 'mail_csv_import_results - sending email completed'
+        TaskLogger.objects.create(task_name=task_name, success=True, message=logmsg) 
+    except Exception as e:
+        logmsg = 'mail_csv_import_results - sending email failed: ', e
+        TaskLogger.objects.create(task_name=task_name, success=False, message=logmsg) 
